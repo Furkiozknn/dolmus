@@ -1,0 +1,12 @@
+# local test output and tooling
+node_modules/
+*.log
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.tmp
+.heavy.lock
+
+# model build previews: the .glb copies live in assets/models/
+assets/out/*.glb
