@@ -1,5 +1,7 @@
 # Dolmuş
 
+**Play online:** https://furkiozknn.github.io/dolmus/ (desktop and phone, no install)
+
 A 3D arcade driving game about the shared minibus taxis of Turkish cities. Drive a yellow dolmuş through a compact,
 low-poly Istanbul-style neighbourhood: pick up waving passengers, learn their stops from the chat bubbles, drop them off,
 earn fares and tips, and keep out of trouble. Eight levels, an endless mode, rain, a tram, a VIP passenger, a traffic jam
