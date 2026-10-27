@@ -190,10 +190,12 @@ and the procedural versions stay as the fallback (`?noassets` skips them). Licen
 list, sizes and fps before and after: [docs/assets.md](docs/assets.md). Model scripts: `assets/src/`.
 
 Dolmuş is part of the **Claude Game Arena** series, where each game is built by a Claude model from one prompt. The
-other games: [Kervan](https://furkiozknn.github.io/kervan/) · [Peri Golf](https://furkiozknn.github.io/peri-golf/) ·
-[Mehter](https://furkiozknn.github.io/mehter/) · [Boğaz Vapuru](https://furkiozknn.github.io/bogaz-vapuru/) ·
-[Simit Fırını](https://furkiozknn.github.io/simit-firini/) · [Karagöz](https://furkiozknn.github.io/karagoz/) ·
-[Lale Bahçesi](https://furkiozknn.github.io/lale-bahcesi/)
+other games: [Hisar](https://furkiozknn.github.io/kale-savunmasi/) ·
+[Çay Ocağı](https://furkiozknn.github.io/cay-ocagi/) · [Çini Ustası](https://furkiozknn.github.io/cini-ustasi/) ·
+[Martı](https://furkiozknn.github.io/marti/) · [Kervan](https://furkiozknn.github.io/kervan/) ·
+[Peri Golf](https://furkiozknn.github.io/peri-golf/) · [Mehter](https://furkiozknn.github.io/mehter/) ·
+[Boğaz Vapuru](https://furkiozknn.github.io/bogaz-vapuru/) · [Simit Fırını](https://furkiozknn.github.io/simit-firini/)
+· [Karagöz](https://furkiozknn.github.io/karagoz/) · [Lale Bahçesi](https://furkiozknn.github.io/lale-bahcesi/)
 
 ## Türkçe
 
