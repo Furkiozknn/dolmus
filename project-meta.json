@@ -37,8 +37,8 @@
   "media": {
     "hero": "docs/02-gameplay-day.png",
     "screenshots": [
-      "docs/01-title.png",
       "docs/02-gameplay-day.png",
+      "docs/01-title.png",
       "docs/03-rain-van.png",
       "docs/04-night.png",
       "docs/05-phone-portrait.png",
