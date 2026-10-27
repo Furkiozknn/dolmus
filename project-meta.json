@@ -1,0 +1,83 @@
+{
+  "schema_version": "1.0.0",
+  "id": "dolmus",
+  "owner": "Furkiozknn",
+  "repository": "https://github.com/Furkiozknn/dolmus",
+  "homepage": "https://furkiozknn.github.io/dolmus/",
+  "releases": null,
+  "status": "active",
+  "category": "game",
+  "platform": [
+    "web"
+  ],
+  "primary_language": "JavaScript",
+  "technologies": [
+    "Three.js r170",
+    "Web Audio API",
+    "Blender"
+  ],
+  "version": null,
+  "license": "MIT",
+  "topics": [
+    "browser-game",
+    "threejs",
+    "driving-game",
+    "arcade-game",
+    "claude-code",
+    "claude-game-arena"
+  ],
+  "summary": "3D arcade driving game with a yellow shared minibus in a low-poly Istanbul neighbourhood, built by Claude Sonnet 5.5 · Alçak poligon bir İstanbul mahallesinde sarı dolmuşla 3D arcade sürüş, Claude Sonnet 5.5 yaptı",
+  "key_features": [
+    "Stop, open the door and pick up waving passengers; each one names their stop in a chat bubble, 12 seats",
+    "Tips for fast and smooth rides; red lights, crashes, hard braking and skipped passengers cost money",
+    "Eight shifts and an endless mode with a tram, rain, a VIP passenger, a traffic jam and a night shift",
+    "The ?auto bot finished all 8 levels with the same controls and rules as a player",
+    "About 60 fps (vsync cap) on an Intel UHD 630 laptop at 1280x720 with 42 draw calls; one index.html, optional CC0 asset pass"
+  ],
+  "media": {
+    "hero": "docs/02-gameplay-day.png",
+    "screenshots": [
+      "docs/01-title.png",
+      "docs/02-gameplay-day.png",
+      "docs/03-rain-van.png",
+      "docs/04-night.png",
+      "docs/05-phone-portrait.png",
+      "docs/06-shift-summary.png"
+    ],
+    "gifs": [
+      "docs/gameplay.gif"
+    ],
+    "videos": [
+      "docs/gameplay.mp4",
+      "https://github.com/Furkiozknn/social-videos/releases/download/promo-2026-10/2026-10-28-dolmus-en.mp4",
+      "https://github.com/Furkiozknn/social-videos/releases/download/promo-2026-10/2026-10-28-dolmus-tr.mp4"
+    ]
+  },
+  "tests": null,
+  "ci": {
+    "workflows": [],
+    "badge": null
+  },
+  "docs": {
+    "readme": "README.md",
+    "changelog": null,
+    "version_history": null,
+    "roadmap": null,
+    "security": null,
+    "contributing": null,
+    "license_file": "LICENSE"
+  },
+  "social": {
+    "headline": "Drive a yellow dolmuş through Istanbul: pick up passengers, learn their stops, earn fares and tips · Sarı dolmuşla İstanbul'da yolcu al, durağını öğren, ücret ve bahşiş topla",
+    "hashtags": [
+      "claudecode",
+      "indiegame"
+    ],
+    "primary_link": "https://furkiozknn.github.io/dolmus/"
+  },
+  "provenance": {
+    "generated_at": "2026-10-27",
+    "generator": "hand-written",
+    "rule": "mechanical fields read from the repository; editorial fields hand-written from the README, index.html, docs/assets.md and the video-studio analiz.md; no field is generated from a guess"
+  }
+}
