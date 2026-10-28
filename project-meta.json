@@ -16,7 +16,7 @@
     "Web Audio API",
     "Blender"
   ],
-  "version": null,
+  "version": "2.0.0",
   "license": "MIT",
   "topics": [
     "browser-game",
@@ -29,10 +29,11 @@
   "summary": "3D arcade driving game with a yellow shared minibus in a low-poly Istanbul neighbourhood, built by Claude Sonnet 5.5 · Alçak poligon bir İstanbul mahallesinde sarı dolmuşla 3D arcade sürüş, Claude Sonnet 5.5 yaptı",
   "key_features": [
     "Stop, open the door and pick up waving passengers; each one names their stop in a chat bubble, 12 seats",
-    "Tips for fast and smooth rides; red lights, crashes, hard braking and skipped passengers cost money",
-    "Eight shifts and an endless mode with a tram, rain, a VIP passenger, a traffic jam and a night shift",
-    "The ?auto bot finished all 8 levels with the same controls and rules as a player",
-    "About 60 fps (vsync cap) on an Intel UHD 630 laptop at 1280x720 with 42 draw calls; one index.html, optional CC0 asset pass"
+    "v2: a 3-2-1 start and a coached first stop with a pulsing ring and an arrow instead of a blocking intro screen",
+    "v2: from level 2 some riders just want to be dropped anywhere safe near their stop; the minimap marks them with a ? and crossings and junctions are refused",
+    "v2: fares hop forward along the occupied seats (the fare chain) and the shift summary names your two costliest mistakes with a tip",
+    "Eight shifts and an endless mode with a tram, rain, a VIP passenger, a traffic jam and a night shift, with district looks, rain umbrellas and lit windows at night",
+    "The ?auto bot finished all 8 levels with the same controls and rules as a player; one index.html, optional CC0 asset pass"
   ],
   "media": {
     "hero": "docs/02-gameplay-day.png",
@@ -77,8 +78,9 @@
     "primary_link": "https://furkiozknn.github.io/dolmus/"
   },
   "provenance": {
-    "generated_at": "2026-10-27",
+    "generated_at": "2026-10-28",
     "generator": "hand-written",
-    "rule": "mechanical fields read from the repository; editorial fields hand-written from the README, index.html, docs/assets.md and the video-studio analiz.md; no field is generated from a guess"
+    "rule": "mechanical fields read from the repository; editorial fields hand-written from the README, index.html, docs/assets.md and the video-studio analiz.md; no field is generated from a guess",
+    "note": "v2 upgrade 2026-10-28"
   }
 }

@@ -20,6 +20,10 @@
 
 <p align="center"><b>Play online: <a href="https://furkiozknn.github.io/dolmus/">https://furkiozknn.github.io/dolmus/</a></b> (desktop and phone, no install)</p>
 
+<!-- portals:start -->
+<p align="center">Also on: <a href="https://furkiozknn.itch.io/dolmus">itch.io</a></p>
+<!-- portals:end -->
+
 ## Highlights
 
 - **A shared taxi, not a race.** Stop at the stops, open the door, let passengers off (they pay) and new ones on; each
@@ -240,3 +244,5 @@ tarayıcıda oynanır. Claude Sonnet 5.5 tarafından Claude Code ile tek bir pro
 ## License
 
 MIT, see [LICENSE](LICENSE). Third-party assets are CC0, see [CREDITS.md](CREDITS.md).
+
+Like the game? You can support new rounds on [Buy Me a Coffee](https://buymeacoffee.com/furkiozkann). The game stays free.
