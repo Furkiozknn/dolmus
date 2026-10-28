@@ -23,7 +23,13 @@
 ## Highlights
 
 - **A shared taxi, not a race.** Stop at the stops, open the door, let passengers off (they pay) and new ones on; each
-  one tells you where they are going in a chat bubble, and the 12 seat chips show who gets off where.
+  one tells you where they are going in a chat bubble, and the 12 seat chips show who gets off where. Press Play and
+  you are driving after a 3-2-1 countdown, with the first stop coached by a pulsing ring.
+- **"Müsait bir yerde!" (v2).** From level 2 about a third of the passengers just ask to be dropped anywhere safe near
+  their stop: pick a legal curb within 70 m and press Space. Crossings, junctions, signal queues and the oncoming lane
+  are refused; a spot close to them earns a penalty and a honk, a good one an "easy stop" tip.
+- **The fare chain (v2).** Fares are passed forward along the occupied seats, one hop per row, and the door waits for the
+  last coin; pull away early and you lose that tip.
 - **Tips for good driving.** Fast and smooth rides earn tips; red lights, crashes, hard braking with passengers on board
   and skipped passengers cost you, and at 100 % dents the shift is over.
 - **Eight shifts and an endless mode.** New routes, a tram and buses, rain, a double-parked van, narrow streets with a
@@ -45,7 +51,9 @@
 
 Waiting passengers wave when you get close. Press **Space** within about 13 m of a stop (or of a waving passenger): the
 dolmuş brakes to a halt and opens the door. Passengers get off first and pay, then new ones board and tell you their
-stop (chat bubble, numbered seat chip, green ring and light beam at the destination).
+stop (chat bubble, numbered seat chip, green ring and light beam at the destination). A chip with a **?** is an
+"anywhere" rider: on the minimap their destination is a 70 m green stretch of the route, and any safe curb inside it
+will do.
 
 <details>
 <summary><b>More rules</b></summary>
@@ -89,7 +97,8 @@ A gamepad works too: RT / A accelerate, LT / B brake, the left stick steers, X o
 pauses.
 
 Settings are saved in `localStorage` under `arena.dolmus.settings`; best scores, stars and the run you can continue
-under `arena.dolmus.save`. Turkish is the default language.
+under `arena.dolmus.save`. The language follows the browser (Turkish when the browser language starts with `tr`,
+English otherwise); the toggle and `?lang=` override it.
 
 <details>
 <summary><b>URL flags for testing</b></summary>
@@ -204,6 +213,20 @@ other games: [Hisar](https://furkiozknn.github.io/kale-savunmasi/) ·
 **Round 6:** [Topkapı Gecesi](https://furkiozknn.github.io/topkapi-gecesi/) ·
 [Hamsi](https://furkiozknn.github.io/hamsi/) · [Pamukkale](https://furkiozknn.github.io/pamukkale/) ·
 [Mimar Sinan](https://furkiozknn.github.io/mimar-sinan/)
+
+## v2 update
+
+Upgraded by Claude Sonnet 5.5 with Claude Code from [prompts/dolmus-v2.md](prompts/dolmus-v2.md):
+
+- Play starts the shift after a 3-2-1 countdown; the first stop is coached with a pulsing ring and an arrow. The
+  language follows the browser.
+- "Anywhere" riders (from level 2): drop them at any safe curb within 70 m; crossings, junctions and signal queues are
+  refused.
+- The fare chain: coins hop forward along the occupied seats and the door waits for the last one.
+- 24 passenger lines per language by passenger type, with a no-repeat window (12 boardings in a row are all different).
+- A shift summary that names the two costliest mistakes with a one-line tip, the best tip and the anywhere drops.
+- District identity (Balat, Galata / Karaköy, Kadıköy pier), shop awnings, umbrellas and puddles in rain, lit windows
+  and stop-shelter glow at night, and the white Turkish Van kitten on the summary card.
 
 ## Türkçe
 

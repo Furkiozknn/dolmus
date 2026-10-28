@@ -137,6 +137,36 @@ input[type=range]{width:100%;height:44px;accent-color:var(--accent);background:t
 ul.feat{list-style:none;padding:0;margin:8px 0;text-align:left}
 ul.feat li{padding:5px 10px;margin:4px 0;border-radius:10px;background:rgba(255,255,255,.07);font-size:14px}
 ul.feat li::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--accent);margin-right:8px}
+/* v2: level card, countdown, coach, fare chain, tips, mascot */
+#lvCard{position:absolute;left:max(8px,env(safe-area-inset-left));top:calc(var(--barh,56px) + max(8px,env(safe-area-inset-top)) + 16px);width:min(86vw,320px);padding:10px 12px 10px 14px;pointer-events:auto;text-align:left;display:none}
+#lvCard.show{display:block;animation:tin .25s ease-out}
+#lvCard h3{margin:0 44px 4px 0;font-size:16px;color:var(--accent)}
+#lvCard p{margin:2px 0 6px;font-size:12.5px;color:#e8ebf2;font-weight:600}
+#lvCard ul.feat{margin:4px 0 0}#lvCard ul.feat li{font-size:12px;padding:3px 8px;margin:3px 0}
+#lvCard .x{position:absolute;right:0;top:0;width:44px;height:44px;border:0;background:transparent;color:var(--dim);display:flex;align-items:center;justify-content:center}
+#lvCard .tgt{display:flex;gap:6px 12px;flex-wrap:wrap;font-size:12px;color:var(--dim);margin-top:6px;align-items:center}
+body.touch #lvCard{top:calc(var(--barh,66px) + max(8px,env(safe-area-inset-top)) + 118px);width:min(58vw,300px)}
+@media (orientation:portrait){body.touch #lvCard{top:calc(var(--barh,66px) + max(8px,env(safe-area-inset-top)) + 196px);width:min(76vw,320px)}}
+#countdown{position:fixed;left:50%;top:38%;transform:translate(-50%,-50%);z-index:12;pointer-events:none;text-align:center;display:none}
+#countdown.show{display:block}
+#countdown b{display:block;font-size:min(34vw,170px);line-height:1;color:var(--accent);text-shadow:0 6px 0 rgba(0,0,0,.45),0 0 40px rgba(250,204,21,.45);animation:cdpop .9s ease-out both}
+#countdown span{display:block;margin-top:6px;font-size:18px;color:var(--ink);text-shadow:0 2px 0 rgba(0,0,0,.6)}
+@keyframes cdpop{0%{transform:scale(1.7);opacity:0}25%{opacity:1}100%{transform:scale(.9);opacity:.85}}
+#guideBox.coach{white-space:normal;max-width:min(90vw,440px)}
+#guideBox.coach #guideArrow svg{animation:cpulse .6s infinite alternate}
+@keyframes cpulse{to{transform:scale(1.35)}}
+.seat.drv{background:rgba(250,204,21,.18);border-color:var(--accent);color:var(--accent)}
+.seat.drv svg.ic{width:18px;height:18px}
+body.touch .seat.drv svg.ic{width:12px;height:12px}
+.coin{position:absolute;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff3b0,#FACC15 55%,#b88a05);border:1px solid #6b5100;box-shadow:0 2px 6px rgba(0,0,0,.45);pointer-events:none;z-index:2;display:none}
+ul.tips{margin:6px 0 2px}
+ul.tips li{font-size:13.5px;border-left:3px solid var(--bad);border-radius:6px 10px 10px 6px}
+ul.tips li.ok{border-left-color:var(--good)}
+ul.tips li::before{display:none}
+.mascot{position:absolute;right:10px;top:8px;width:84px;height:84px;pointer-events:none}
+.mascot::before{content:"";position:absolute;left:4%;right:4%;bottom:3px;height:13px;border-radius:8px;background:#b08d17;box-shadow:0 3px 0 #7a610c}
+.mascot img{position:relative;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 3px 0 rgba(0,0,0,.3))}
+@media (max-width:760px){.mascot{width:60px;height:60px;right:6px;top:6px}}
 #dbg{position:fixed;left:8px;top:92px;z-index:50;font:12px/1.35 monospace;color:#9fffa8;background:rgba(0,0,0,.6);padding:6px 8px;border-radius:6px;white-space:pre;pointer-events:none;display:none;max-width:60vw}
 #vignette{position:fixed;inset:0;pointer-events:none;z-index:4;background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,20,.35));opacity:.9}
 #hurt{position:fixed;inset:0;pointer-events:none;z-index:6;box-shadow:inset 0 0 90px 20px rgba(255,60,40,.8);opacity:0;transition:opacity .35s}
@@ -185,6 +215,8 @@ ul.feat li::before{content:"";display:inline-block;width:8px;height:8px;border-r
     <symbol id="i-dent" viewBox="0 0 24 24"><path d="M3 15l2-6h14l2 6v3H3z"/><circle cx="7.5" cy="18" r="1.8" fill="currentColor"/><circle cx="16.5" cy="18" r="1.8" fill="currentColor"/><path d="M9 4l1.5 2.5L12 3.5l1.5 3L15 4"/></symbol>
     <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z"/></symbol>
     <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M12 2l8 18-8-4-8 4z"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+    <symbol id="i-wheel" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.2" fill="currentColor"/><path d="M12 14.2V21M10 11L3.6 9.4M14 11l6.4-1.6"/></symbol>
   </defs>
 </svg>
 
@@ -206,6 +238,7 @@ ul.feat li::before{content:"";display:inline-block;width:8px;height:8px;border-r
     </div>
   </div>
   <div id="toasts"></div>
+  <div id="lvCard" class="glass"><button class="x" id="bCardX" data-t="close" aria-label="Close"><svg class="ic"><use href="#i-close"/></svg></button><h3 id="cdTitle"></h3><p id="cdDesc"></p><ul class="feat" id="cdList"></ul><div class="tgt" id="cdTarget"></div></div>
   <canvas id="minimap" width="420" height="316"></canvas>
   <div id="guideBox" class="glass"><div id="guideArrow"><svg viewBox="0 0 24 24"><use href="#i-arrow"/></svg></div><div id="guideTxt"></div></div>
   <div id="hint" class="glass"></div>
@@ -220,6 +253,8 @@ ul.feat li::before{content:"";display:inline-block;width:8px;height:8px;border-r
     <div id="tHorn" class="pedal glass" aria-label="Horn"><svg class="ic" style="width:26px;height:26px"><use href="#i-horn"/></svg></div>
   </div>
 </div>
+
+<div id="countdown" aria-live="assertive"><b id="cdNum"></b><span id="cdSub"></span></div>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
   <symbol id="logo" viewBox="0 0 68 52">
@@ -255,17 +290,6 @@ ul.feat li::before{content:"";display:inline-block;width:8px;height:8px;border-r
     </div>
   </section>
 
-  <section class="screen dim" id="sIntro">
-    <div class="card glass">
-      <h2 id="inTitle"></h2>
-      <p id="inDesc"></p>
-      <ul class="feat" id="inList"></ul>
-      <div class="kv" id="inTarget"></div>
-      <div class="col"><button class="btn primary" id="bStart"><svg class="ic fill"><use href="#i-play"/></svg><span data-i="startShift"></span></button>
-      <button class="btn" id="bIntroBack"><svg class="ic"><use href="#i-home"/></svg><span data-i="menu"></span></button></div>
-    </div>
-  </section>
-
   <section class="screen dim" id="sPause">
     <div class="card glass">
       <h2 data-i="paused"></h2>
@@ -296,11 +320,13 @@ ul.feat li::before{content:"";display:inline-block;width:8px;height:8px;border-r
   </section>
 
   <section class="screen dim" id="sEnd">
-    <div class="card glass">
+    <div class="card glass" style="position:relative">
+      <div class="mascot hidden" id="mascot"><img id="mascotImg" alt="" width="84" height="84"></div>
       <h2 id="enTitle"></h2>
       <p id="enSub"></p>
       <div class="stars" id="enStars"></div>
       <div class="kv" id="enStats"></div>
+      <ul class="feat tips" id="enTips"></ul>
       <div class="rec hidden" id="enRec"></div>
       <div class="col">
         <button class="btn primary" id="bNext"><span id="nextTxt"></span></button>
@@ -344,6 +370,7 @@ const SIM_PRE = parseFloat(Q.get('sim')) || 0;
 const SEED = parseInt(Q.get('seed') || '7', 10);
 const START_LEVEL = parseInt(Q.get('level') || '0', 10);
 let WR = mulberry(1234);            // world-generation rng
+const DR = mulberry(2024);            // district / decoration rng (separate stream)
 let R = mulberry(SEED);             // gameplay rng
 const rr = (a, b) => a + R() * (b - a);
 const pick = arr => arr[Math.floor(R() * arr.length)];
@@ -396,8 +423,32 @@ const STR = {
     sFares: 'Ücretler', sTips: 'Bahşişler', sPen: 'Cezalar', sNet: 'Net hasılat', sPass: 'Taşınan yolcu', sDent: 'Hasar', sTotal: 'Toplam', sWave: 'Vardiya',
     newRecord: 'Yeni rekor!', hintStop: 'Dur / kapı', hintSpace: '<b>Boşluk</b> dur + kapı · <b>H</b> korna', hintDoor: 'Kapı açık…',
     guideTo: '{0}', guideDrop: 'İndir', guidePick: 'Yolcu al', guideCruise: 'Sonraki durak', guideM: '{0} m',
-    bub: ['Kaptan, {0}!', '{0}, usta!', 'Müsait yerde… {0}!', '{0} lütfen, şoför bey!', '{0}, abi!'],
-    bubVip: 'Acelem var! {0}, hemen!', thx: ['Sağ ol kaptan!', 'Eline sağlık!', 'Allah razı olsun!', 'Kolay gelsin!'], angry: ['Çok bekledim!', 'Bu ne yavaşlık!', 'İneceğim!'],
+    bubVip: 'Acelem var! {0}, hemen!',
+    // passenger voices (flavour only): one group per passenger type, plus the "anywhere" riders; {0} is the destination
+    voice: {
+      student: ['Dersim var, {0}’a yetiştir abi!', 'Kaptan, {0}! Sınava geç kalıyorum.', '{0}, öğrenci var abi!', 'Abi, {0}’da inerim, yavaş git.'],
+      grandmother: ['Evladım, {0}’a gider misin?', 'Yavaş git oğlum, {0}.', 'Allah razı olsun, {0} lütfen.', 'Torunlara gidiyorum, {0}…'],
+      shopkeeper: ['Dükkânı açacağım, {0}!', '{0}, kolay gelsin usta!', 'Mal bekliyor, {0} diyelim.', 'Çay benden, {0}’a bırak!'],
+      tourist: ['Bu araç {0}’a gider mi? Çok güzel!', 'Excuse me… {0}? Tamam?', 'Şehir harika! {0}, lütfen.', 'Fotoğraf çekiyorum, {0}!'],
+      commuter: ['Acelem var, {0}!', '{0}, toplantıya yetişmem lazım!', 'Hızlı ama güvenli, {0}.', '{0}, çabuk olalım kaptan!'],
+      any: ['Müsait bir yerde! {0} civarı yeter.', '{0} yakınında müsait bir yerde, usta!', 'Şurada müsait bir yer olunca, {0} dolayları.', 'Müsait yerde bırak, {0} civarı!', 'Uygun bir yerde dur, {0} yakını olsun!', 'Müsait bir yerde, kaptan! {0} tarafı.'],
+    },
+    close: 'Kapat', go: 'Hadi!',
+    coach: 'Halkanın yanında dur, Boşluğa bas (ya da kapı düğmesine dokun)',
+    f_any: 'Müsait bir yerde: bazı yolcular güvenli kaldırımda iner',
+    penBadStop: 'Tehlikeli yerde indirdin -{0} TL', easyStop: '+{0} TL kolay iniş',
+    tipLost: 'Para üstü zinciri bitmeden kalktın: -{0} TL bahşiş',
+    anyNo_zebra: 'Zebra geçidinde yolcu indirilmez!', anyNo_junction: 'Kavşakta durma! Trafik korna çalıyor.', anyNo_signal: 'Işık kuyruğunda durma! Trafik korna çalıyor.',
+    anyNo_lane: 'Şeridi kapatıyorsun, kenara çek.', anyNo_bridge: 'Köprüde durulmaz.', anyNo_curb: 'Burada kaldırım yok.',
+    tip_brakes: 'Yolcular varken sert fren {0} TL kaybettirdi: frene daha erken bas.',
+    tip_reds: 'Kırmızıda geçmek {0} TL kaybettirdi: sarıda yavaşla, kırmızıda dur.',
+    tip_skips: 'El sallayan yolcuları geçmek {0} TL kaybettirdi: durağa yaklaşırken yavaşla.',
+    tip_hits: 'Çarpışmalar {0} TL kaybettirdi: öndeki araçla mesafeni koru.',
+    tip_ped: 'Yayaya çarpmak {0} TL kaybettirdi: zebra geçitlerinde yavaşla.',
+    tip_gaveUp: 'Sabrı taşan yolcular {0} TL kaybettirdi: bekleyenleri çok bekletme.',
+    tip_badStop: 'Kavşağa ya da geçide yakın indirmek {0} TL kaybettirdi: müsait yeri seç.',
+    tip_tipsLost: 'Para üstü zinciri bitmeden kalkmak {0} TL bahşiş kaybettirdi: son parayı bekle.',
+    tipClean: 'Temiz vardiya: ceza ve kayıp bahşiş yok.', bestTipLine: 'En iyi bahşiş: {0} TL', anyDropsLine: 'Müsait yerde inen yolcu: {0}', thx: ['Sağ ol kaptan!', 'Eline sağlık!', 'Allah razı olsun!', 'Kolay gelsin!'], angry: ['Çok bekledim!', 'Bu ne yavaşlık!', 'İneceğim!'],
     keyHelp: 'Ok / WASD sür · Boşluk dur-kapı · H korna',
     pausedAuto: 'Sekme gizlendi, oyun duraklatıldı.', autoOn: 'Otomatik pilot açık',
   },
@@ -439,8 +490,31 @@ const STR = {
     sFares: 'Fares', sTips: 'Tips', sPen: 'Penalties', sNet: 'Net fares', sPass: 'Passengers carried', sDent: 'Damage', sTotal: 'Total', sWave: 'Shift',
     newRecord: 'New record!', hintStop: 'Stop / door', hintSpace: '<b>Space</b> stop + door · <b>H</b> horn', hintDoor: 'Door open…',
     guideTo: '{0}', guideDrop: 'Drop off', guidePick: 'Pick up', guideCruise: 'Next stop', guideM: '{0} m',
-    bub: ['{0}, driver!', 'Take me to {0}!', 'Anywhere near {0}, please!', '{0}, mate!', '{0}, please!'],
-    bubVip: 'I am in a hurry! {0}, now!', thx: ['Thanks, driver!', 'Well done!', 'God bless you!', 'Take care!'], angry: ['Waited too long!', 'So slow!', 'Let me out!'],
+    bubVip: 'I am in a hurry! {0}, now!',
+    voice: {
+      student: ['I have class, {0} please!', 'Exam today! {0}, driver!', '{0}, student here, thanks!', 'Drop me at {0}, I’m late for lectures.'],
+      grandmother: ['Dear, could you take me to {0}?', 'Slowly please, son, {0}.', 'Bless you, {0} please.', 'Off to see the grandkids, {0}…'],
+      shopkeeper: ['Got to open the shop, {0}!', '{0}, easy does it, boss!', 'Deliveries waiting, {0} please.', 'Tea is on me, drop me at {0}!'],
+      tourist: ['Is this going to {0}? Lovely!', 'Excuse me, {0}, yes?', 'Beautiful city! {0}, please.', 'Taking photos! {0}, thanks.'],
+      commuter: ['In a rush, {0}!', '{0}, I have a meeting at nine!', 'Quick but safe, {0}.', 'Let’s be quick, {0}, driver!'],
+      any: ['Anywhere safe near {0}, please!', 'Pull over anywhere good by {0}!', 'Somewhere handy near {0} is fine!', 'Drop me wherever it’s safe near {0}!', 'Anywhere free around {0}, driver!', 'Whenever there’s room, near {0}!'],
+    },
+    close: 'Close', go: 'Go!',
+    coach: 'Stop near the ring, press Space (or tap the door button)',
+    f_any: 'Anywhere riders: some get off at a safe curb',
+    penBadStop: 'Unsafe drop-off -{0} TL', easyStop: '+{0} TL easy stop',
+    tipLost: 'You left before the fare chain ended: -{0} TL tip',
+    anyNo_zebra: 'No drop-offs on a crossing!', anyNo_junction: 'Not in the junction! Traffic honks.', anyNo_signal: 'Do not stop in the signal queue! Traffic honks.',
+    anyNo_lane: 'You are blocking the lane, pull to the curb.', anyNo_bridge: 'No stopping on the bridge.', anyNo_curb: 'No curb here.',
+    tip_brakes: 'Hard braking with passengers aboard cost you {0} TL: ease off earlier.',
+    tip_reds: 'Running red lights cost you {0} TL: slow down on amber and stop on red.',
+    tip_skips: 'Passing waving passengers cost you {0} TL: slow down as you near a stop.',
+    tip_hits: 'Collisions cost you {0} TL: keep your distance from traffic ahead.',
+    tip_ped: 'Hitting pedestrians cost you {0} TL: slow down at crossings.',
+    tip_gaveUp: 'Passengers who gave up waiting cost you {0} TL: do not keep people waiting.',
+    tip_badStop: 'Dropping riders near a crossing or junction cost you {0} TL: pick a safe curb.',
+    tip_tipsLost: 'Pulling away before the fare chain finished lost {0} TL in tips: wait for the last coin.',
+    tipClean: 'Clean shift: no penalties and no lost tips.', bestTipLine: 'Best tip: {0} TL', anyDropsLine: 'Anywhere drops: {0}', thx: ['Thanks, driver!', 'Well done!', 'God bless you!', 'Take care!'], angry: ['Waited too long!', 'So slow!', 'Let me out!'],
     keyHelp: 'Arrows / WASD drive · Space stop-door · H horn',
     pausedAuto: 'Tab hidden, game paused.', autoOn: 'Autopilot on',
   },
@@ -459,7 +533,7 @@ const fmt = n => Math.round(n).toLocaleString(LANG === 'tr' ? 'tr-TR' : 'en-US')
 // ---------------------------------------------------------------- settings / save (all in try/catch)
 const KEY_SET = 'arena.dolmus.settings', KEY_SAVE = 'arena.dolmus.save';
 const isPhone = /Android|iPhone|iPad|iPod|Mobi/i.test(navigator.userAgent) || (matchMedia && matchMedia('(pointer:coarse)').matches && Math.min(screen.width, screen.height) < 800);
-const settings = { master: 0.8, music: 0.6, sfx: 0.8, lang: 'tr', quality: isPhone ? 'low' : 'high', mapRot: true };
+const settings = { master: 0.8, music: 0.6, sfx: 0.8, lang: String(navigator.language || '').toLowerCase().startsWith('tr') ? 'tr' : 'en', quality: isPhone ? 'low' : 'high', mapRot: true };
 function lsGet(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } }
 function lsSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* ignore */ } }
 (function loadSettings() {
@@ -1030,7 +1104,7 @@ const ROUTE_STOPS = {
 };
 const LEVELS = [
   { route: 'A', stops: null, h0: 7.0, h1: 9.5, tram: false, bus: 0, van: false, rain: [], vip: [], jam: null, cars: 8, peds: 12, pInt: 38, pat: 70, target: 210, feat: ['f_traffic', 'f_stops:6'] },
-  { route: 'B', stops: ['balat', 'meydan', 'besiktas', 'iskele', 'karakoy', 'eminonu', 'tram'], h0: 8.5, h1: 11.5, tram: true, bus: 1, van: false, rain: [], vip: [], jam: null, cars: 11, peds: 14, pInt: 36, pat: 66, target: 200, feat: ['f_bridge', 'f_tram', 'f_bus', 'f_stops:7'] },
+  { route: 'B', stops: ['balat', 'meydan', 'besiktas', 'iskele', 'karakoy', 'eminonu', 'tram'], h0: 8.5, h1: 11.5, tram: true, bus: 1, van: false, rain: [], vip: [], jam: null, cars: 11, peds: 14, pInt: 36, pat: 66, target: 200, feat: ['f_bridge', 'f_tram', 'f_bus', 'f_any', 'f_stops:7'] },
   { route: 'B', stops: ['balat', 'galata', 'meydan', 'besiktas', 'iskele', 'karakoy', 'eminonu', 'tram'], h0: 11, h1: 14.5, tram: true, bus: 1, van: true, rain: [[60, 130], [165, 215]], vip: [], jam: null, cars: 12, peds: 15, pInt: 34, pat: 62, target: 200, feat: ['f_rain', 'f_van', 'f_stops:8'] },
   { route: 'C', stops: null, h0: 13.5, h1: 17, tram: true, bus: 1, van: true, rain: [], vip: [65], jam: null, cars: 12, peds: 16, pInt: 32, pat: 60, target: 210, feat: ['f_side', 'f_vip', 'f_stops:8'] },
   { route: 'C', stops: null, h0: 15.5, h1: 18.5, tram: true, bus: 1, van: true, rain: [[35, 100]], vip: [50], jam: [[95, 140]], cars: 14, peds: 16, pInt: 31, pat: 58, target: 160, feat: ['f_jam', 'f_rain', 'f_stops:8'] },
@@ -1050,7 +1124,7 @@ function endlessLevel(wave) { // wave >= 1
 
 // ---------------------------------------------------------------- world construction (static, merged)
 const mProp = new Mesher(false, 0.07), mPark = new Mesher(false, 0.07), mStatic = new Mesher(false, 0.07), mRoad = new Mesher(false, 0.035), mWinL = new Mesher(false, 0), mWinD = new Mesher(false, 0), mSign = new Mesher(true, 0);
-const WORLD = { lamps: [], sigHeads: [], shelters: [], vendors: [], parked: [], shelterInst: [], carts: [], zebraPts: [], treeCount: 0, buildingCount: 0, signCells: {} };
+const WORLD = { shopPools: [], lamps: [], sigHeads: [], shelters: [], vendors: [], parked: [], shelterInst: [], carts: [], zebraPts: [], treeCount: 0, buildingCount: 0, signCells: {} };
 // orient a quad so its geometric normal points toward (wx,wy,wz)
 Mesher.prototype.quadTo = function (a, b, c, d, col, wx, wy, wz, uv) {
   const e1x = b[0] - a[0], e1y = b[1] - a[1], e1z = b[2] - a[2], e2x = c[0] - b[0], e2y = c[1] - b[1], e2z = c[2] - b[2];
@@ -1106,12 +1180,13 @@ function windowsFacade(Fx, Fz, nx, nz, Lf, yBase, yTop, firstFloor) {
     }
   }
 }
-function shopFront(Fx, Fz, nx, nz, Lf, yG) {
+function shopFront(Fx, Fz, nx, nz, Lf, yG, cellOv) {
   const units = clamp(Math.round(Lf / 4.6), 1, 3), uw = Lf / units, ux = nz, uz = -nx;
   const awn = wpick(PAL_AWN);
   for (let k = 0; k < units; k++) {
     const du = -Lf / 2 + (k + 0.5) * uw;
-    facadeQuad(mStatic, Fx, Fz, nx, nz, du, uw - 0.9, yG + 0.35, yG + 2.2, 0x35505e, 0.05);
+    facadeQuad(mWinL, Fx, Fz, nx, nz, du, uw - 0.9, yG + 0.35, yG + 2.2, 0xffffff, 0.05);   // shop glass shares the lit-window mesh: sky blue by day, warm at night
+    if (DR() < 0.55) WORLD.shopPools.push([Fx + ux * du + nx * 2.2, Fz + uz * du + nz * 2.2]);
     facadeQuad(mStatic, Fx, Fz, nx, nz, du + uw * 0.3, 1.05, yG, yG + 2.15, 0x6b4a32, 0.07);
     // awning (striped, sloped)
     const aw = uw - 0.4, segs = 4;
@@ -1121,7 +1196,7 @@ function shopFront(Fx, Fz, nx, nz, Lf, yG) {
       mStatic.quadTo(PT(a0, 0.05, yG + 2.7), PT(a1, 0.05, yG + 2.7), PT(a1, 1.6, yG + 2.25), PT(a0, 1.6, yG + 2.25), col, 0, 1, 0);
       mStatic.quadTo(PT(a0, 1.6, yG + 2.25), PT(a1, 1.6, yG + 2.25), PT(a1, 1.6, yG + 1.95), PT(a0, 1.6, yG + 1.95), col, nx, 0, nz);
     }
-    const cell = Math.floor(WR() * 20);
+    const cell0 = Math.floor(WR() * 20), cell = cellOv === undefined ? cell0 : cellOv;
     facadeQuad(mSign, Fx, Fz, nx, nz, du, Math.min(uw - 0.5, 3.4), yG + 2.8, yG + 3.4, 0xffffff, 0.06, signUV(cell));
   }
 }
@@ -1129,10 +1204,11 @@ function building(x0, z0, x1, z1, nx, nz, shop, opts = {}) {
   const cx = (x0 + x1) / 2, cz = (z0 + z1) / 2, sx = x1 - x0, sz = z1 - z0;
   const gs = [hillH(x0, z0), hillH(x1, z0), hillH(x0, z1), hillH(x1, z1), hillH(cx, cz)];
   const gmin = Math.min(...gs), gmax = Math.max(...gs);
-  const floors = opts.floors || wpick([2, 3, 3, 4, 4, 5]), h = floors * 3.3 + 0.6;
-  const wall = opts.wall || wpick(PAL_WALL), top = gmax + h;
+  const D = opts.dist || null, dp = a => a[Math.floor(DR() * a.length)];
+  const floors = opts.floors || (D ? dp(D.floors) : wpick([2, 3, 3, 4, 4, 5])), h = floors * 3.3 + 0.6;
+  const wall = opts.wall || (D ? dp(D.wall) : wpick(PAL_WALL)), top = gmax + h;
   mStatic.boxB(cx, gmin - 0.9, cz, sx, top - gmin + 0.9, sz, wall);
-  if (WR() < 0.58) mStatic.gable(cx, cz, sx, sz, top, wr(1.8, 3), wpick(PAL_ROOF), wall);
+  if (WR() < (D ? D.gable : 0.58)) mStatic.gable(cx, cz, sx, sz, top, wr(1.8, 3), D && D.roof ? dp(D.roof) : wpick(PAL_ROOF), wall);
   else {
     mStatic.boxB(cx, top, cz, sx + 0.3, 0.45, sz + 0.3, 0xe9e2d6);
     if (WR() < 0.6) mStatic.boxB(cx + wr(-sx / 4, sx / 4), top + 0.45, cz + wr(-sz / 4, sz / 4), wr(1.4, 2.4), wr(1, 1.8), wr(1.4, 2.4), wpick([0x8f98a3, 0xb0703c, 0xd6d1c7]));
@@ -1432,23 +1508,67 @@ const BLOCKS = [
   { x0: 9.5, x1: 91.5, z0: 79, z1: 110.5, shop: { s: true } },
   { x0: 108.5, x1: 170, z0: 79, z1: 110.5, shop: { s: true } },
 ];
+// per-district identity: Balat = tall narrow colourful houses, Galata / Karaköy = stone and cream, Kadıköy pier = pastel low-rise
+const DIST = {
+  balat: { wall: [0xe8836f, 0xf2c14e, 0x6fb3a5, 0xd9677e, 0x7fa6d6, 0xe9a35c, 0xb98ad1, 0xf08a4b], roof: [0xb5503a, 0x7a6a8a, 0x8a5a44, 0x4f6b8a], floors: [4, 4, 5, 5, 6], wMin: 5.2, wMax: 8, gable: 0.85 },
+  galata: { wall: [0xdcd0b8, 0xe8dec9, 0xcdbf9f, 0xebe3d1, 0xc2b79d, 0xd6c7a8], roof: [0x8a8f99, 0x6b7280, 0x9a8a78], floors: [4, 5, 5, 6], wMin: 9, wMax: 14, gable: 0.18 },
+  kadikoy: { wall: [0xf7d6d0, 0xd6ecd9, 0xd3e3f6, 0xfbeec2, 0xe7d6f3, 0xf9e0c4], roof: [0xd9835f, 0xc1583c, 0x9bb7d4], floors: [2, 2, 3], wMin: 7, wMax: 12, gable: 0.75 },
+};
+function districtAt(x, z) {
+  if (z > 62) return x < 20 ? DIST.galata : DIST.kadikoy;
+  if (x < -55) return DIST.balat;
+  if (x < 45) return DIST.galata;
+  return null;   // Beşiktaş keeps the mixed palette
+}
 function buildBlock(b) {
   const w = b.x1 - b.x0, d = b.z1 - b.z0;
   const dN = Math.min(wr(11, 15), d * 0.46), dS = Math.min(wr(11, 15), d * 0.46), dW = Math.min(wr(10, 14), w * 0.46), dE = Math.min(wr(10, 14), w * 0.46);
+  const posAt = (side, a) => side === 'n' ? [a, b.z0] : side === 's' ? [a, b.z1] : side === 'w' ? [b.x0, a] : [b.x1, a];
   const row = (side, a0, a1, fn) => {
     let a = a0;
     while (a < a1 - 2.5) {
-      let ww = Math.min(wr(7, 13), a1 - a); if (a1 - (a + ww) < 5) ww = a1 - a;
-      fn(a, a + ww); a += ww;
+      const D = districtAt(...posAt(side, a));
+      let ww = Math.min(D ? wr(D.wMin, D.wMax) : wr(7, 13), a1 - a); if (a1 - (a + ww) < 5) ww = a1 - a;
+      fn(a, a + ww, D); a += ww;
     }
   };
   const sh = (k) => b.shop[k] !== undefined ? b.shop[k] : false;
-  row('n', b.x0, b.x1, (a0, a1) => building(a0, b.z0, a1, b.z0 + dN, 0, -1, sh('n')));
-  row('s', b.x0, b.x1, (a0, a1) => building(a0, b.z1 - dS, a1, b.z1, 0, 1, sh('s')));
-  row('w', b.z0 + dN, b.z1 - dS, (a0, a1) => building(b.x0, a0, b.x0 + dW, a1, -1, 0, sh('w')));
-  row('e', b.z0 + dN, b.z1 - dS, (a0, a1) => building(b.x1 - dE, a0, b.x1, a1, 1, 0, sh('e')));
+  row('n', b.x0, b.x1, (a0, a1, D) => building(a0, b.z0, a1, b.z0 + dN, 0, -1, sh('n'), { dist: D }));
+  row('s', b.x0, b.x1, (a0, a1, D) => building(a0, b.z1 - dS, a1, b.z1, 0, 1, sh('s'), { dist: D }));
+  row('w', b.z0 + dN, b.z1 - dS, (a0, a1, D) => building(b.x0, a0, b.x0 + dW, a1, -1, 0, sh('w'), { dist: D }));
+  row('e', b.z0 + dN, b.z1 - dS, (a0, a1, D) => building(b.x1 - dE, a0, b.x1, a1, 1, 0, sh('e'), { dist: D }));
   const ix0 = b.x0 + dW, ix1 = b.x1 - dE, iz0 = b.z0 + dN, iz1 = b.z1 - dS;
-  if (ix1 - ix0 > 5 && iz1 - iz0 > 5) building(ix0, iz0, ix1, iz1, 0, 1, false, { plain: true, floors: wpick([4, 5, 6]) });
+  if (ix1 - ix0 > 5 && iz1 - iz0 > 5) building(ix0, iz0, ix1, iz1, 0, 1, false, { plain: true, floors: wpick([4, 5, 6]), dist: districtAt((ix0 + ix1) / 2, (iz0 + iz1) / 2) });
+}
+/** three small stalls with striped awnings and bakery / tea / simit signs beside stops (merged into the static meshes) */
+function stopStalls() {
+  for (const [key, cell] of [['balat', 1], ['karakoy', 2], ['iskele', 5]]) {
+    const d = STOPDEF.B.find(q => q.key === key); if (!d) continue;
+    const y = hillH(d.sx, d.sz), cx = d.sx + d.hx * 7 + d.rx * 0.9, cz = d.sz + d.hz * 7 + d.rz * 0.9, ry = Math.atan2(d.hx, d.hz);
+    mStatic.box(cx, y + 1.45, cz, 1.4, 2.9, 3.2, 0xefe3c9, ry);
+    mStatic.box(cx, y + 2.97, cz, 1.6, 0.14, 3.4, 0xc1583c, ry);
+    shopFront(cx - d.rx * 0.7, cz - d.rz * 0.7, -d.rx, -d.rz, 3.2, y, cell);
+    const ex = Math.abs(d.hx) > 0.5 ? 1.7 : 0.8, ez = Math.abs(d.hx) > 0.5 ? 0.8 : 1.7;
+    obBox(cx - ex, cz - ez, cx + ex, cz + ez);
+    WORLD.shelters.push({ x: cx, z: cz, hx: d.hx, hz: d.hz });   // keeps trees, lamps and parked cars away
+  }
+}
+/** flat puddles on the lanes: invisible and not drawn while it is dry, they fade in with the rain */
+function buildPuddles() {
+  const M = new Mesher(false, 0), rnd = mulberry(31337);
+  for (const r of ROADS) {
+    if (r.virtual) continue;
+    const iv = crossIntervals(r);
+    for (let t = r.t0 + 8; t < r.t1 - 8; t += 11 + rnd() * 9) {
+      if (inAny(t, iv, 4)) continue;
+      if (!r.horiz && (r.id === 'v0' || r.id === 'v2') && t > 46 && t < 84) continue;
+      const lat = (rnd() < 0.5 ? -1 : 1) * (r.lane + (rnd() - 0.5) * 1.6), rx = 0.9 + rnd() * 1.3, rz = 0.6 + rnd() * 0.8, rot = rnd() * Math.PI, n = 9;
+      const cx = r.horiz ? t : r.a[0] + lat, cz = r.horiz ? r.a[1] + lat : t, cy = yAt(cx, cz) + 0.085;
+      const P = a => [cx + Math.cos(a) * rx * Math.cos(rot) - Math.sin(a) * rz * Math.sin(rot), cy, cz + Math.cos(a) * rx * Math.sin(rot) + Math.sin(a) * rz * Math.cos(rot)];
+      for (let k = 0; k < n; k++) M.tri([cx, cy, cz], P((k + 1) / n * TAU), P(k / n * TAU), 0xcfe0ee, rnd);
+    }
+  }
+  return M.build();
 }
 function buildProps() {
   // trees and lamps along roads
@@ -1592,6 +1712,13 @@ function buildFar() {
     const a = Math.PI + rnd() * Math.PI, rad = 380 + rnd() * 120, x = Math.cos(a) * rad * 1.2, z = Math.sin(a) * rad * 0.9 - 40;
     mStatic.cyl(x, -2, z, 90 + rnd() * 90, 25, 40 + rnd() * 50, 8, [0x7ea86a, 0x8fb274, 0x6e9b62][Math.floor(rnd() * 3)]);
   }
+  // a Galata-Tower-like silhouette on the far northern skyline (stone drum, gallery, conical cap) with a few houses at its feet
+  {
+    const tx = -70, tz = -255, y0 = -0.2;
+    mStatic.cyl(tx, y0, tz, 6.6, 6.0, 46, 12, 0xd7cbb1); mStatic.cyl(tx, y0 + 46, tz, 8.3, 8.3, 2.2, 12, 0xb9ac8f);
+    mStatic.cyl(tx, y0 + 48.2, tz, 6.3, 6.3, 7, 12, 0xe0d5bd); mStatic.cyl(tx, y0 + 55.2, tz, 8.0, 0.1, 13, 12, 0x6b7280);
+    for (let k = 0; k < 7; k++) { const ang = k / 7 * TAU + 0.4, rad = 20 + (k % 3) * 7; mStatic.boxB(tx + Math.cos(ang) * rad, y0, tz + Math.sin(ang) * rad, 12 + (k % 2) * 5, 9 + (k % 3) * 4, 12, [0xe8836f, 0xf2c14e, 0xdcd0b8, 0xd9677e][k % 4]); }
+  }
   // outer ground
   const gcol = 0xa6c476, oy = -0.02;
   const quad = (x0, z0, x1, z1) => mStatic.quadTo([x0, oy, z0], [x1, oy, z0], [x1, oy, z1], [x0, oy, z1], gcol, 0, 1, 0);
@@ -1619,9 +1746,9 @@ function buildWorldGeometry(stage) {
     case 0: WORLD.groundGeo = buildGroundMesh(); break;
     case 1: buildRoads(); break;
     case 2: BLOCKS.forEach(buildBlock); break;
-    case 3: buildBridgesAndWalls(); for (const s of WORLD.shelters) shelterAt(s.x, s.z, s.hx, s.hz); buildProps(); break;
+    case 3: WR = mulberry(777); buildBridgesAndWalls(); for (const s of WORLD.shelters) shelterAt(s.x, s.z, s.hx, s.hz); stopStalls(); buildProps(); break;
     case 4:
-      WORLD.staticGeo = mStatic.build(); WORLD.propGeo = mProp.build(); WORLD.parkGeo = mPark.build(); WORLD.roadGeo = mRoad.build(); WORLD.winLGeo = mWinL.build(); WORLD.winDGeo = mWinD.build(); WORLD.signGeo = mSign.build(); WORLD.ferryGeo = buildFerry();
+      WORLD.staticGeo = mStatic.build(); WORLD.propGeo = mProp.build(); WORLD.parkGeo = mPark.build(); WORLD.roadGeo = mRoad.build(); WORLD.winLGeo = mWinL.build(); WORLD.winDGeo = mWinD.build(); WORLD.signGeo = mSign.build(); WORLD.ferryGeo = buildFerry(); WORLD.puddleGeo = buildPuddles();
       break;
   }
 }
@@ -1631,6 +1758,20 @@ const HOOK = { toast() { }, float() { }, bubble() { }, snd() { }, shake() { }, h
 const CAR_COLS = [0xd94f4f, 0x3d7fc4, 0xe8e2d0, 0x39393f, 0x7a9d5a, 0xe0a030, 0x8c8f99, 0xf2f2f2, 0x7a4fb5, 0x2f9e9a, 0xe27b3b];
 const SKINS = [0xf0c8a0, 0xe0ac80, 0xc68b5e, 0x8d5a3a, 0xf5d6b5];
 const SHIRTS = [0xe5484d, 0x2b8cc4, 0x3fae6a, 0xf2a33a, 0x7a4fb5, 0xf0e6d2, 0x2d3b55, 0xd1568b, 0x56b3a8, 0x9aa3ad];
+// Cosmetic rng: passenger types, voices, drop-off spots and thank-you lines use it, never the gameplay rng R, so adding
+// flavour does not change how a seeded shift plays out.
+let CR = mulberry(4711);
+const cpick = arr => arr[Math.floor(CR() * arr.length)];
+// every passenger type has its own shirts (all taken from SHIRTS) and body scale
+const PTYPES = {
+  student: { shirts: [0x2b8cc4, 0x7a4fb5, 0x56b3a8, 0xd1568b], scale: [0.86, 0.95] },
+  grandmother: { shirts: [0x9aa3ad, 0x7a4fb5, 0xf0e6d2], scale: [0.82, 0.88] },
+  shopkeeper: { shirts: [0x3fae6a, 0xf2a33a, 0xf0e6d2], scale: [0.95, 1.05] },
+  tourist: { shirts: [0xe5484d, 0xf2a33a, 0x56b3a8, 0xd1568b], scale: [1.0, 1.12] },
+  commuter: { shirts: [0x2d3b55, 0x9aa3ad, 0x2b8cc4], scale: [0.98, 1.08] },
+};
+const PTYPE_KEYS = Object.keys(PTYPES);
+function styleByType(p) { const ty = PTYPES[p.ptype]; p.shirt = cpick(ty.shirts); p.scale = ty.scale[0] + CR() * (ty.scale[1] - ty.scale[0]); }
 const SIM = {
   lv: null, lvIdx: 0, t: 0, hour: 8, rain: 0, rainTarget: 0, jam: false, running: false, over: false, overKind: '',
   cars: [], peds: [], stops: [], hailers: [], pigeons: [], tram: null, van: null, nextId: 1,
@@ -1640,7 +1781,7 @@ const SIM = {
 const player = {
   x: 0, z: 0, hd: 0, vx: 0, vz: 0, steer: 0, y: 0, pitch: 0, roll: 0, ax: 0, load: 0, dent: 0, speed: 0, vf: 0, vl: 0,
   door: { state: 'closed', t: 0 }, stopReq: false, seats: [], boarding: 0, hornOn: false, brakeFlag: 0, hitT: 0, skid: 0, thr: 0,
-  routeS: 0, nearStop: -1, actT: 0, wheel: 0, lastPen: 0, redT: 0, camHd: 0,
+  routeS: 0, nearStop: -1, actT: 0, wheel: 0, lastPen: 0, redT: 0, camHd: 0, chain: [], anyDrop: false,
 };
 const input = { throttle: 0, brake: 0, steer: 0, door: false, horn: false };
 const AG = [];   // dynamic collision circles
@@ -1969,11 +2110,11 @@ let SC = null;
 const netScore = () => SC.fares + SC.tips - SC.pen;
 const SHIFT = 240;
 const SEATS = 12;
-function newScore() { return { fares: 0, tips: 0, pen: 0, pass: 0, hits: 0, reds: 0, brakes: 0, skips: 0, gaveUp: 0, ped: 0 }; }
+function newScore() { return { fares: 0, tips: 0, pen: 0, pass: 0, hits: 0, reds: 0, brakes: 0, skips: 0, gaveUp: 0, ped: 0, badStop: 0, tipsLost: 0, tipsLostN: 0, anyDrops: 0, bestTip: 0, cost: {} }; }
 function logEv(kind, extra) { if (typeof G !== 'undefined') { G.events.push(Object.assign({ t: +SIM.t.toFixed(1), kind, x: +player.x.toFixed(1), z: +player.z.toFixed(1), v: +player.speed.toFixed(1) }, extra || {})); if (G.events.length > 300) G.events.shift(); } }
 function penalize(amount, msgKey, kind) {
   logEv(kind, { amount });
-  SC.pen += amount; SC[kind] = (SC[kind] || 0) + 1;
+  SC.pen += amount; SC[kind] = (SC[kind] || 0) + 1; SC.cost[kind] = (SC.cost[kind] || 0) + amount;
   HOOK.toast(t(msgKey, amount), 'bad'); HOOK.float('-' + amount, true); HOOK.snd('bad');
 }
 function rough() { for (const s of player.seats) s.smooth = false; }
@@ -1997,6 +2138,7 @@ function spawnPax(stop, vip = false) {
   const sp = standSpot(stop, k), d = stop.def;
   const pat = SIM.lv.pat * rr(0.8, 1.2) * (SIM.rain > 0.5 ? 0.8 : 1) * (vip ? 0.8 : 1);
   const p = newPed('pax', sp.x, sp.z, { st: 'wait', stop: stop.idx, slot: k, pat, patMax: pat, vip, hd: Math.atan2(d.rx, d.rz), shirt: vip ? 0xFACC15 : pick(SHIRTS), scale: vip ? 1.12 : 0.92 + R() * 0.2 });
+  if (vip) p.ptype = 'commuter'; else { p.ptype = cpick(PTYPE_KEYS); styleByType(p); }
   stop.wait.push(p); return p;
 }
 function spawnHailer(ahead) {
@@ -2015,6 +2157,7 @@ function spawnHailer(ahead) {
     if (from < 0) from = SIM.stops.length - 1;
     const pat = SIM.lv.pat * rr(0.8, 1.1) * (SIM.rain > 0.5 ? 0.8 : 1);
     const h = newPed('hail', x, z, { st: 'wait', from, s, pat, patMax: pat, hd: Math.atan2(rt.x, rt.z), hail: true });
+    h.ptype = cpick(PTYPE_KEYS); styleByType(h);
     SIM.hailers.push(h); return h;
   }
   return null;
@@ -2056,38 +2199,129 @@ function finishBoard(p) {
   const dst = SIM.stops[dest];
   const boardS = p.s !== undefined ? p.s : SIM.stops[from].def.s, dist = Math.max(60, fwdDist(SIM.route.L, boardS, dst.def.s));
   const expT = dist / 8 + 10;
-  const seat = { shirt: p.shirt, skin: p.skin, dest, vip: p.vip, dist, boardT: SIM.t, expT, smooth: true, ridePat: p.patMax * 0.9 + expT * 0.6, ridePatMax: p.patMax * 0.9 + expT * 0.6, scale: p.scale, missedPass: false, seatIdx: freeSeatIdx() };
+  const seat = { shirt: p.shirt, skin: p.skin, dest, vip: p.vip, dist, boardT: SIM.t, expT, smooth: true, ridePat: p.patMax * 0.9 + expT * 0.6, ridePatMax: p.patMax * 0.9 + expT * 0.6, scale: p.scale, missedPass: false, seatIdx: freeSeatIdx(), ptype: p.ptype || 'commuter', any: !p.vip && SIM.lv.id >= 2 && CR() < 0.34 };
   player.seats.push(seat);
   HOOK.snd('pop');
-  const txt = p.vip ? t('bubVip', stopName(dst.key)) : pick(t('bub')).replace('{0}', stopName(dst.key));
+  const txt = p.vip ? t('bubVip', stopName(dst.key)) : voiceLine(seat, stopName(dst.key));
   HOOK.bubble(txt);
   if (p.vip) HOOK.toast(t('vipAboard'), 'info');
 }
+// no-repeat window: a line cannot come back until 12 other lines were used (24 lines per language)
+const VOICE_WINDOW = 12, voiceRecent = [];
+function voiceLine(seat, name) {
+  const V = (STR[LANG] && STR[LANG].voice) || STR.en.voice, own = seat.any ? 'any' : seat.ptype;
+  const ids = k => V[k].map((_, i) => k + ':' + i);
+  let c = ids(own).filter(id => !voiceRecent.includes(id));
+  if (!c.length) c = Object.keys(V).flatMap(ids).filter(id => !voiceRecent.includes(id));
+  const id = cpick(c); voiceRecent.push(id); if (voiceRecent.length > VOICE_WINDOW) voiceRecent.shift();
+  const [k, i] = id.split(':');
+  (G.voices || (G.voices = [])).push(id); if (G.voices.length > 400) G.voices.shift();   // QA: which lines were spoken, in order
+  return V[k][+i].replace('{0}', name);
+}
 function freeSeatIdx() { for (let i = 0; i < SEATS; i++) if (!player.seats.some(s => s.seatIdx === i)) return i; return 0; }
-function alight(seat, stopIdx) {
-  const i = player.seats.indexOf(seat); if (i < 0) return;
-  player.seats.splice(i, 1);
-  const base = Math.round(6 + seat.dist / 28), fare = seat.vip ? base * 3 + 10 : base;
-  let tip = 0;
+const HOP_T = 0.25, ANY_RANGE = 70;   // seconds per hop of the fare chain; metres before or after the stop where an "anywhere" rider may get off
+function alight(seat, stopIdx, opts = {}) {
+  const P = player, i = P.seats.indexOf(seat); if (i < 0) return;
+  P.seats.splice(i, 1);
+  const base = Math.round(6 + seat.dist / 28);
+  let fare = seat.vip ? base * 3 + 10 : base;
+  if (opts.early > 0) fare = Math.max(1, Math.round(fare * clamp(1 - opts.early / Math.max(seat.dist, 60), 0.7, 1)));   // got off before the stop: shorter ride
+  let tip = 0, easy = 0;
   const ride = SIM.t - seat.boardT;
   if (seat.ridePat > 0) {
     const speedy = ride <= seat.expT * 1.15 ? 0.4 : (ride <= seat.expT * 1.5 ? 0.15 : 0), smooth = seat.smooth ? 0.3 : 0;
     tip = Math.round(fare * (speedy + smooth) * clamp(seat.ridePat / seat.ridePatMax * 1.4, 0.3, 1) * (seat.vip ? 1.5 : 1));
   }
   const got = seat.ridePat > 0 ? fare : Math.round(fare * 0.6);
-  SC.fares += got; SC.tips += tip; SC.pass++;
-  HOOK.float('+' + (got + tip), false); HOOK.snd('coin'); HOOK.sparkle && HOOK.sparkle();
-  if (tip > 0) HOOK.toast(t('tipAdd', tip) + ' · ' + pick(t('thx')), 'good');
-  const st = SIM.stops[stopIdx], d = st.def, door = doorPos();
-  const sp = standSpot(st, Math.floor(R() * 5));
-  newPed('alight', door.x, door.z, { st: 'alight', tx: sp.x + d.hx * rr(-3, 3), tz: sp.z + d.hz * rr(-3, 3), shirt: seat.shirt, skin: seat.skin, hd: player.hd, t: 0, scale: seat.scale });
+  if (opts.any) {
+    SC.anyDrops++;
+    if (opts.bad) { tip = 0; penalize(4, 'penBadStop', 'badStop'); HOOK.honk && HOOK.honk(); }   // too close to a crossing or junction
+    else easy = seat.vip ? 3 : 2;                                                                  // safe curb: small "easy stop" tip
+  }
+  // the fare is passed forward along the occupied seats (0.25 s per hop) and credited when the coin reaches the driver
+  const row = seat.seatIdx >> 1;
+  const ahead = P.seats.filter(q => (q.seatIdx >> 1) > row).sort((a, b) => a.seatIdx - b.seatIdx).map(q => q.seatIdx).slice(0, 6);
+  P.chain.push({ got, tip, easy, path: [seat.seatIdx, ...ahead, 12], t: 0, dur: (ahead.length + 1) * HOP_T });
+  logEv('alight', { atStop: !opts.any, any: !!opts.any, bad: !!opts.bad, stop: stopIdx, fare: got, tip: tip + easy });
+  const st = SIM.stops[stopIdx], door = doorPos();
+  let tx, tz;
+  if (opts.any) { const rt = rightOf(Math.sin(P.hd), Math.cos(P.hd)), side = 3 + CR() * 2.5, along = (CR() - 0.5) * 3; tx = door.x + rt.x * side + Math.sin(P.hd) * along; tz = door.z + rt.z * side + Math.cos(P.hd) * along; }
+  else { const d = st.def, sp = standSpot(st, Math.floor(R() * 5)); tx = sp.x + d.hx * rr(-3, 3); tz = sp.z + d.hz * rr(-3, 3); }
+  newPed('alight', door.x, door.z, { st: 'alight', tx, tz, shirt: seat.shirt, skin: seat.skin, hd: P.hd, t: 0, scale: seat.scale });
+}
+function landCoin(c) {
+  const tot = c.tip + c.easy;
+  SC.fares += c.got; SC.tips += tot; SC.pass++;
+  if (tot > SC.bestTip) SC.bestTip = tot;
+  HOOK.float('+' + (c.got + tot), false); HOOK.snd('coin'); HOOK.sparkle && HOOK.sparkle();
+  logEv('coin', { amount: c.got, tip: tot });
+  if (c.tip > 0) HOOK.toast(t('tipAdd', c.tip) + ' · ' + cpick(t('thx')), 'good');
+  if (c.easy > 0) HOOK.toast(t('easyStop', c.easy), 'good');
+}
+function updateChain(dt) {
+  const ch = player.chain;
+  for (let i = ch.length - 1; i >= 0; i--) { const c = ch[i]; c.t += dt; if (c.t >= c.dur) { ch.splice(i, 1); landCoin(c); } }
+}
+/** the player left (door forced shut, or drove off) before the chain ended: the fares still arrive, the tips are lost */
+function forfeitChain() {
+  const ch = player.chain.splice(0);
+  for (const c of ch) {
+    const lost = c.tip + c.easy; c.tip = 0; c.easy = 0; landCoin(c);
+    if (lost > 0) {
+      SC.tipsLost += lost; SC.tipsLostN++; SC.cost.tipsLost = (SC.cost.tipsLost || 0) + lost;
+      logEv('tipLost', { amount: lost }); HOOK.float('-' + lost, true); HOOK.toast(t('tipLost', lost), 'bad'); HOOK.snd('bad');
+    }
+  }
+}
+
+// ---- "anywhere" riders: they may get off at any legal curb spot within ANY_RANGE metres (path distance) of their stop
+function anywhereRiders() {
+  const P = player, L = SIM.route.L, out = [];
+  for (const sEat of P.seats) {
+    if (!sEat.any) continue;
+    let d = fwdDist(L, P.routeS, SIM.stops[sEat.dest].def.s); if (d > L / 2) d -= L;
+    if (Math.abs(d) <= ANY_RANGE) out.push({ seat: sEat, early: Math.max(0, d) });
+  }
+  return out;
+}
+function distToRect(x, z, cx, cz, hx, hz) { return Math.hypot(Math.max(Math.abs(x - cx) - hx, 0), Math.max(Math.abs(z - cz) - hz, 0)); }
+const _cp = { x: 0, z: 0, hx: 0, hz: 1, i: 0 };
+/** can riders get off where the dolmuş stands? { ok, why, honk } when refused, { ok, bad } when allowed (bad = close to a crossing or junction) */
+function curbCheck() {
+  const P = player, fx = Math.sin(P.hd), fz = Math.cos(P.hd), road = roadAt(P.x, P.z, 0.5);
+  if (!road) return { ok: false, why: 'curb' };
+  if ((road.id === 'v0' || road.id === 'v2') && P.z > 49 && P.z < 81) return { ok: false, why: 'bridge' };
+  if (road.id === 'main' && Math.abs(P.z) < 3.4) return { ok: false, why: 'lane', honk: true };      // tram tracks
+  const pr = projectOnPath(SIM.route, P.x, P.z, P.routeS, 40); pathAt(SIM.route, pr.s, _cp);
+  const lat = (P.x - _cp.x) * -_cp.hz + (P.z - _cp.z) * _cp.hx;                                       // + = right of the lane centre
+  if (pr.d > 3.2 || lat < -1.3) return { ok: false, why: 'lane', honk: true };                          // standing in the oncoming lane
+  let nearZ = 1e9, nearJ = 1e9;
+  for (const o of [-2.4, 0, 2.4]) {
+    const x = P.x + fx * o, z = P.z + fz * o;
+    for (const zc of ZEBRAS) nearZ = Math.min(nearZ, distToRect(x, z, zc.x, zc.z, zc.dir === 'z' ? 1.2 : zc.half, zc.dir === 'z' ? zc.half : 1.2));
+    for (const c of CROSS) nearJ = Math.min(nearJ, distToRect(x, z, c.x, c.z, c.V.h, c.H.h));
+  }
+  if (nearZ < 1.6) return { ok: false, why: 'zebra' };
+  if (nearJ < 1.5) return { ok: false, why: 'junction', honk: true };
+  for (const ap of APPROACHES) {                                                                      // queue zone in front of a signal
+    if (fx * ap.dx + fz * ap.dz < 0.5) continue;
+    const al = ap.axis === 'x' ? (ap.lx - P.x) * ap.dx : (ap.lz - P.z) * ap.dz;
+    const lat2 = ap.axis === 'x' ? P.z > ap.lz0 - 2 && P.z < ap.lz1 + 2 : P.x > ap.lx0 - 2 && P.x < ap.lx1 + 2;
+    if (al > -1 && al < 22 && lat2) return { ok: false, why: 'signal', honk: true };
+  }
+  return { ok: true, bad: nearZ < 9 || nearJ < 10 };
+}
+function curbRefuse(chk) {
+  HOOK.toast(t('anyNo_' + chk.why), 'bad'); HOOK.snd('bad');
+  if (chk.honk && HOOK.honk) HOOK.honk();
+  logEv('anyRefused', { why: chk.why });
 }
 
 // ---------------------------------------------------------------- player vehicle
 function resetPlayer(lv) {
   const P = SIM.route, s0 = (SIM.stops[0].def.s - 34 + P.L) % P.L;
   pathAt(P, s0, _tp);
-  Object.assign(player, { x: _tp.x, z: _tp.z, hd: Math.atan2(_tp.hx, _tp.hz), vx: 0, vz: 0, steer: 0, speed: 0, vf: 0, vl: 0, dent: 0, seats: [], boarding: 0, stopReq: false, hornOn: false, hitT: 0, redT: 0, thr: 0, skid: 0, load: 0 });
+  Object.assign(player, { x: _tp.x, z: _tp.z, hd: Math.atan2(_tp.hx, _tp.hz), vx: 0, vz: 0, steer: 0, speed: 0, vf: 0, vl: 0, dent: 0, seats: [], boarding: 0, stopReq: false, hornOn: false, hitT: 0, redT: 0, thr: 0, skid: 0, load: 0, chain: [], anyDrop: false });
   player.door.state = 'closed'; player.door.t = 0; player.camHd = player.hd; player.routeS = s0; player.y = yAt(player.x, player.z);
 }
 function updatePlayer(dt) {
@@ -2103,7 +2337,7 @@ function updatePlayer(dt) {
     if (thr > 0.5 && Math.abs(vf) > 0.5) P.stopReq = false; // driver changes their mind
     else { thr = 0; brk = 0; }
   }
-  if (ds === 'opening' || ds === 'open' || ds === 'closing') { if (Math.abs(vf) > 2.2) closeDoor(); }
+  if (ds === 'opening' || ds === 'open' || ds === 'closing') { if (Math.abs(vf) > 2.2) closeDoor(true); }
   // steering
   P.steer += (input.steer - P.steer) * clamp(dt * 7.5, 0, 1);
   const maxAng = lerp(0.62, 0.15, clamp(Math.abs(vf) / 17, 0, 1));
@@ -2165,17 +2399,28 @@ function updatePlayer(dt) {
   if (input.horn !== P.hornOn) { P.hornOn = input.horn; if (P.hornOn) HOOK.snd('hornOn'); else HOOK.snd('hornOff'); }
   if (P.hitT > 0) P.hitT -= dt;
 }
-function closeDoor() { if (player.door.state === 'open' || player.door.state === 'opening') { player.door.state = 'closing'; HOOK.snd('door', 'close'); } }
+/** closing waits until the last coin of the fare chain has landed; force = the player shut the door or drove off, which forfeits the tips still on the way */
+function closeDoor(force = false) {
+  const P = player;
+  if (P.door.state !== 'open' && P.door.state !== 'opening') return;
+  if (P.chain.length) { if (!force) return; forfeitChain(); }
+  P.anyDrop = false; P.door.state = 'closing'; HOOK.snd('door', 'close');
+}
 function doorPress() {
   const P = player;
-  if (P.door.state === 'open' || P.door.state === 'opening') { closeDoor(); P.stopReq = false; return; }
+  if (P.door.state === 'open' || P.door.state === 'opening') { closeDoor(true); P.stopReq = false; P.anyDrop = false; return; }
   if (P.door.state === 'closing') return;
-  if (P.stopReq) { P.stopReq = false; return; }
+  if (P.stopReq) { P.stopReq = false; P.anyDrop = false; return; }
   if (!hasBusiness()) {
+    if (anywhereRiders().length) {                       // nobody to serve at a stop, but a rider is happy to get off at a safe curb here
+      const chk = curbCheck();
+      if (chk.ok) { P.stopReq = true; P.anyDrop = true; } else curbRefuse(chk);
+      return;
+    }
     const b = nearestBusiness();
     HOOK.toast((b.wait.length || b.hail.length) && P.seats.length + P.boarding >= SEATS ? t('toastFull') : t('toastNoBiz'), 'info'); return;
   }
-  P.stopReq = true;
+  P.stopReq = true; P.anyDrop = false;
 }
 let lastDentSnd = 0;
 function addDent(amount, kind) {
@@ -2258,9 +2503,18 @@ function serviceDoor(dt) {
   if (P.door.state !== 'open') return;
   P.actT -= dt;
   if (P.actT > 0) return;
-  const b = nearestBusiness(14);
+  const b = nearestBusiness(14), gap = 0.3 + 0.25 * P.load;   // a fuller van unloads slower
   // alight first
-  if (b.drop.length) { alight(b.drop[0], b.stop.idx); P.actT = 0.3; P.idle = 0; return; }
+  if (b.drop.length) { alight(b.drop[0], b.stop.idx); P.actT = gap; P.idle = 0; return; }
+  if (P.anyDrop) {
+    const ar = anywhereRiders();
+    if (ar.length) {
+      const chk = curbCheck();
+      if (!chk.ok) { curbRefuse(chk); P.anyDrop = false; closeDoor(); return; }
+      alight(ar[0].seat, ar[0].seat.dest, { any: true, bad: chk.bad, early: ar[0].early }); P.actT = gap; P.idle = 0; return;
+    }
+    P.anyDrop = false;
+  }
   if (P.seats.length + P.boarding < SEATS) {
     const cand = [];
     for (const p of b.wait) cand.push(p);
@@ -2271,7 +2525,7 @@ function serviceDoor(dt) {
     if (!P.fullToast || SIM.t - P.fullToast > 6) { P.fullToast = SIM.t; HOOK.toast(t('toastFull'), 'info'); }
   }
   P.idle = (P.idle || 0) + dt;
-  if (P.boarding === 0 && P.idle > 0.6) { P.idle = 0; closeDoor(); }
+  if (P.boarding === 0 && !P.chain.length && P.idle > 0.6) { P.idle = 0; closeDoor(); }
 }
 
 // ---------------------------------------------------------------- per-step passenger bookkeeping and events
@@ -2331,6 +2585,7 @@ function updateWeatherAndEvents(dt) {
 
 function initLevel(lv, idx) {
   R = mulberry(SEED + lv.id * 131 + (lv.attempt || 0) * 17);
+  CR = mulberry(SEED * 7 + lv.id * 31 + (lv.attempt || 0) * 5 + 11);
   SIM.lv = lv; SIM.lvIdx = idx; SIM.t = 0; SIM.over = false; SIM.overKind = ''; SIM.rain = 0; SIM.jam = false; SIM.nextId = 1;
   SIM.route = PATHS[lv.route]; makeStops(lv);
   SC = newScore(); SIM.score = SC;
@@ -2343,6 +2598,8 @@ function initLevel(lv, idx) {
   SIM.nextHail = 8; SIM.nextVip = lv.vip.slice(); SIM.hour = lv.h0;
   for (const st of SIM.stops) { const n = R() < 0.7 ? (R() < 0.4 ? 2 : 1) : 0; for (let i = 0; i < n; i++) spawnPax(st); }
   spawnHailer();
+  // the coached first stop of level 1 always has someone waiting (own rng, so the gameplay stream stays untouched)
+  if (lv.id === 1 && !SIM.stops[0].wait.length) { const Rk = R; R = mulberry(991); spawnPax(SIM.stops[0]); R = Rk; }
   SIM.running = true;
   input.throttle = input.brake = 0; input.steer = 0; input.door = false; input.horn = false;
 }
@@ -2365,6 +2622,7 @@ function stepSim(dt) {
   player.routeS = pr.d > 22 ? projectOnPath(SIM.route, player.x, player.z).s : pr.s;
   updatePeds(dt);
   serviceDoor(dt);
+  updateChain(dt);
   updateStops(dt);
   if (player.dent >= 100) { endShift('wreck'); return; }
   if (SIM.t >= SHIFT) endShift('time');
@@ -2372,6 +2630,7 @@ function stepSim(dt) {
 function endShift(kind) {
   if (SIM.over) return;
   SIM.over = true; SIM.running = false; SIM.overKind = kind;
+  for (const c of player.chain.splice(0)) landCoin(c);   // coins still in the air count
   const net = netScore(), lv = SIM.lv;
   let stars = 0;
   if (kind !== 'wreck') { if (net >= lv.target) stars = 1; if (net >= lv.t2) stars = 2; if (net >= lv.t3) stars = 3; }
@@ -2557,6 +2816,13 @@ function pedGeos() {
   a.boxB(0, -0.5, 0, 0.1, 0.52, 0.1, 0xffffff);
   return [b.build(), h.build(), a.build()];
 }
+function umbrellaGeo() {
+  const m = new Mesher(false, 0);
+  m.cyl(0, 1.15, 0, 0.018, 0.018, 0.85, 5, 0x2a2a30);
+  m.cyl(0, 1.92, 0, 0.62, 0.03, 0.26, 9, 0xffffff);
+  return m.build();
+}
+const UMB_COLS = [0xe5484d, 0x2b8cc4, 0xf2a33a, 0x3fae6a, 0x7a4fb5, 0xd1568b, 0x2d3b55];
 function pigeonGeo() {
   const m = new Mesher(false, 0);
   m.sphere(0, 0.22, 0, 0.14, 0.12, 0.2, 6, 4, 0x8f97a3); m.sphere(0, 0.36, 0.16, 0.07, 0.07, 0.07, 5, 3, 0x6e7686); m.box(0, 0.35, 0.24, 0.02, 0.02, 0.06, 0xe8b04a);
@@ -2587,7 +2853,7 @@ function softTex() {
 
 // ---------------- scene objects (created by buildScene)
 const OBJ = {};
-let rain = null, fx = null, pips = null, tick = 0;
+let rain = null, fx = null, pips = null, tick = 0, puddleMat = null;
 const _o = new THREE.Object3D(), _c = new THREE.Color(), _m4 = new THREE.Matrix4();
 const MAXP = 150;
 function buildScene() {
@@ -2645,6 +2911,10 @@ void main(){ vec3 c = vY>0.0 ? mix(uHor,uTop,pow(vY,0.55)) : uHor*0.8;
     vertexShader: 'attribute vec4 color; varying vec4 vC; void main(){ vC=color; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); }',
     fragmentShader: 'uniform float uOp; varying vec4 vC; void main(){ gl_FragColor=vec4(vC.rgb*vC.a*uOp,1.0); }',
   })); OBJ.beam.renderOrder = 6; OBJ.beam.frustumCulled = false; OBJ.beam.position.y = 0.35; OBJ.pl.add(OBJ.beam);
+  { // wiper arm hinged at the foot of the windscreen, swings while it rains
+    const wm = new Mesher(false, 0); wm.quadTo([0, -0.025, 0], [0.95, -0.025, 0], [0.95, 0.025, 0], [0, 0.025, 0], 0x111318, 0, 0, 1);
+    OBJ.wiper = new THREE.Mesh(wm.build(), matLam); OBJ.wiper.position.set(0.8, 1.3, 2.33); OBJ.wiper.rotation.x = -0.35; OBJ.wiper.visible = false; OBJ.pl.add(OBJ.wiper);
+  }
   const wg = wheelGeo(0.4, 0.3); OBJ.wheels = [];
   for (const [sx, z] of [[1, 1.65], [-1, 1.65], [1, -1.6], [-1, -1.6]]) {
     const piv = new THREE.Group(); piv.position.set(sx * 1.0, 0.4, z); const w = new THREE.Mesh(wg, matLam); w.castShadow = true; piv.add(w); OBJ.pl.add(piv); OBJ.wheels.push({ piv, w, front: z > 0 });
@@ -2666,6 +2936,10 @@ void main(){ vec3 c = vY>0.0 ? mix(uHor,uTop,pow(vY,0.55)) : uHor*0.8;
   const [pb, ph, pa] = pedGeos();
   OBJ.pedB = inst(pb, tintMat, MAXP, true); OBJ.pedH = inst(ph, tintMat, MAXP, false); OBJ.pedA = inst(pa, tintMat, MAXP, false);
   OBJ.pig = inst(pigeonGeo(), matLam, 20, false);
+  OBJ.umb = inst(umbrellaGeo(), tintMat, MAXP, false);   // umbrellas: only drawn while it rains
+  // wet roads: puddles that fade in with the rain
+  puddleMat = new THREE.MeshBasicMaterial({ color: 0xffffff, vertexColors: true, transparent: true, opacity: 0, depthWrite: false, side: THREE.DoubleSide, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 });
+  OBJ.puddles = new THREE.Mesh(WORLD.puddleGeo, puddleMat); OBJ.puddles.frustumCulled = false; OBJ.puddles.renderOrder = 2; OBJ.puddles.visible = false; scene.add(OBJ.puddles);
   // markers
   const ringMat = new THREE.MeshLambertMaterial({ color: 0xffffff, emissive: 0x333333, transparent: true, opacity: 0.85, depthWrite: false, side: THREE.DoubleSide });
   OBJ.rings = inst(ringGeo(), ringMat, 20, false); OBJ.rings.renderOrder = 4;
@@ -2676,9 +2950,11 @@ void main(){ vec3 c = vY>0.0 ? mix(uHor,uTop,pow(vY,0.55)) : uHor*0.8;
   OBJ.lamps = inst(new THREE.SphereGeometry(0.3, 6, 4), emissiveMat(0xcfd3da), lampN, false);
   OBJ.lamps.count = lampN; WORLD.lamps.forEach((l, i) => { _o.position.set(l[0], l[1], l[2]); _o.rotation.set(0, 0, 0); _o.scale.set(1, 0.5, 1); _o.updateMatrix(); OBJ.lamps.setMatrixAt(i, _o.matrix); });
   const poolTex = softTex();
-  OBJ.pools = inst(new THREE.PlaneGeometry(11, 11).rotateX(-Math.PI / 2), new THREE.MeshLambertMaterial({ color: 0x000000, emissive: 0xffd9a0, emissiveMap: poolTex, map: poolTex, transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending }), lampN, false);
-  OBJ.pools.count = lampN; OBJ.pools.renderOrder = 3;
-  WORLD.lamps.forEach((l, i) => { _o.position.set(l[0], hillH(l[0], l[2]) + 0.2, l[2]); _o.scale.set(1, 1, 1); _o.updateMatrix(); OBJ.pools.setMatrixAt(i, _o.matrix); });
+  // light pools at night: street lamps, a glow around every stop shelter, and shop fronts
+  const poolList = [...WORLD.lamps.map(l => [l[0], l[2], 1]), ...WORLD.shelterInst.map(o => [o.x, o.z, 0.95]), ...WORLD.shopPools.map(q => [q[0], q[1], 0.5])], poolN = poolList.length;
+  OBJ.pools = inst(new THREE.PlaneGeometry(11, 11).rotateX(-Math.PI / 2), new THREE.MeshLambertMaterial({ color: 0x000000, emissive: 0xffd9a0, emissiveMap: poolTex, map: poolTex, transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending }), poolN, false);
+  OBJ.pools.count = poolN; OBJ.pools.renderOrder = 3;
+  poolList.forEach((q, i) => { _o.position.set(q[0], hillH(q[0], q[1]) + 0.2, q[1]); _o.scale.set(q[2], 1, q[2]); _o.updateMatrix(); OBJ.pools.setMatrixAt(i, _o.matrix); });
   const nl = WORLD.sigHeads.length * 3;
   OBJ.sig = inst(new THREE.SphereGeometry(0.17, 6, 4), new THREE.MeshLambertMaterial({ color: 0xffffff, emissive: 0x303030 }), nl, false); OBJ.sig.count = nl;
   let li = 0; for (const h of WORLD.sigHeads) for (const l of h.lamps) { _o.position.set(l.x, l.y, l.z); _o.scale.set(1, 1, 0.5); _o.updateMatrix(); OBJ.sig.setMatrixAt(li++, _o.matrix); }
@@ -2697,7 +2973,7 @@ let lastSkyHour = -99, lastSkyRain = -9;
 function updateSky(hour, rainA) {
   const L = sstep(5.0, 6.6, hour) * sstep(21.0, 18.8, hour);
   const dayT = clamp((hour - 6.0) / 13.5, 0, 1), elev = Math.sin(Math.PI * dayT), warm = clamp(1 - elev * 2.2, 0, 1) * L;
-  const night = 1 - L;
+  const night = 1 - L; SKY.L = L;
   const sunDir = _c; // reuse temp as vector holder not needed
   let dx, dy, dz;
   if (L > 0.02) { dx = -Math.cos(Math.PI * dayT); dy = Math.max(0.12, elev * 0.95 + 0.08); dz = 0.38; }
@@ -2931,8 +3207,8 @@ function syncRender(dt) {
   } else OBJ.tram.count = 0;
 
   // ---- people
-  let np = 0, pn = 0;
-  const pa = pips.alpha, pc = pips.col, pp = pips.pos, ps = pips.size;
+  let np = 0, pn = 0, nu = 0;
+  const rainU = SIM.rain > 0.45, pa = pips.alpha, pc = pips.col, pp = pips.pos, ps = pips.size;
   for (const p of SIM.peds) {
     if (np >= MAXP) break;
     const moving = p.spd > 0.1, bob = moving ? Math.abs(Math.sin(p.ph)) * 0.05 : 0, sc = p.scale || 1;
@@ -2942,6 +3218,7 @@ function syncRender(dt) {
     _e.set(fall, p.hd, 0, 'YXZ'); _q.setFromEuler(_e);
     _m4.compose(_v, _q, _s);
     OBJ.pedB.setMatrixAt(np, _m4); OBJ.pedH.setMatrixAt(np, _m4);
+    if (rainU && p.hit <= 0) { setInst(OBJ.umb, nu, p.x, y, p.z, p.hd, 0, sc); OBJ.umb.setColorAt(nu, _c.setHex(UMB_COLS[p.id % UMB_COLS.length])); nu++; }
     OBJ.pedB.setColorAt(np, _c.setHex(p.shirt)); OBJ.pedH.setColorAt(np, _c.setHex(p.skin)); OBJ.pedA.setColorAt(np, _c.setHex(p.shirt));
     let ang;
     if (p.wave) { _e.set(0, 0, 2.55 + 0.45 * Math.sin(tick * 9 + p.id), 'XYZ'); }
@@ -2952,7 +3229,7 @@ function syncRender(dt) {
     np++;
     if ((p.kind === 'pax' || p.kind === 'hail') && p.st === 'wait' && pn < 40) {
       const fr = clamp(p.pat / p.patMax, 0, 1);
-      pp[pn * 3] = p.x; pp[pn * 3 + 1] = y + 1.95 * sc; pp[pn * 3 + 2] = p.z;
+      pp[pn * 3] = p.x; pp[pn * 3 + 1] = y + (rainU ? 2.6 : 1.95) * sc; pp[pn * 3 + 2] = p.z;
       _c.setHex(fr > 0.5 ? 0x5ee08a : fr > 0.25 ? 0xFACC15 : 0xff5a4a); pc[pn * 3] = _c.r; pc[pn * 3 + 1] = _c.g; pc[pn * 3 + 2] = _c.b;
       ps[pn] = p.vip ? 13 : 8 + (fr < 0.25 ? 2 * Math.abs(Math.sin(tick * 8)) : 0); pa[pn] = 0.95; pn++;
     }
@@ -2960,6 +3237,10 @@ function syncRender(dt) {
   for (let i = pn; i < 40; i++) pa[i] = 0;
   const pg = pips.geo.attributes; pg.position.needsUpdate = pg.aSize.needsUpdate = pg.aAlpha.needsUpdate = pg.aCol.needsUpdate = true;
   OBJ.pedB.count = OBJ.pedH.count = OBJ.pedA.count = np;
+  OBJ.umb.count = nu; OBJ.umb.instanceMatrix.needsUpdate = true; if (OBJ.umb.instanceColor) OBJ.umb.instanceColor.needsUpdate = true;
+  // wet roads and the wiper
+  OBJ.puddles.visible = SIM.rain > 0.08; puddleMat.opacity = clamp(SIM.rain, 0, 1) * 0.55; puddleMat.color.setScalar(0.4 + 0.6 * (SKY.L === undefined ? 1 : SKY.L));
+  OBJ.wiper.visible = SIM.rain > 0.3; if (OBJ.wiper.visible) OBJ.wiper.rotation.z = Math.PI - 1.15 * (0.5 + 0.5 * Math.sin(tick * 5.5));
   for (const m of [OBJ.pedB, OBJ.pedH, OBJ.pedA]) { m.instanceMatrix.needsUpdate = true; if (m.instanceColor) m.instanceColor.needsUpdate = true; }
   // pigeons
   let nb2 = 0;
@@ -2984,7 +3265,7 @@ function syncRender(dt) {
   for (const st of SIM.stops) {
     const hasVip = st.wait.some(p => p.vip);
     if (wantDest.has(st.idx)) mark(st.def.x, st.def.z, DEST_COL, 1, true);
-    else if (st.wait.length && free) mark(st.def.x, st.def.z, hasVip ? VIP_COL : PICK_COL, hasVip ? 1.15 : 1, true);
+    else if (st.wait.length && free) mark(st.def.x, st.def.z, hasVip ? VIP_COL : PICK_COL, (hasVip ? 1.15 : 1) * (COACH.on && st.idx === 0 ? 1.28 + 0.1 * Math.sin(tick * 8) : 1), true);
     else mark(st.def.x, st.def.z, IDLE_COL, 0.7, false);
   }
   if (free) for (const h of SIM.hailers) mark(h.x, h.z, PICK_COL, 0.55, true);
@@ -3135,6 +3416,12 @@ function drawMinimap() {
     g.strokeStyle = 'rgba(250,204,21,.8)'; g.lineWidth = 3.2; g.setLineDash([9, 6]); g.beginPath();
     for (let i = 0; i <= P.N; i += 3) { const j = i % P.N; if (i === 0) g.moveTo(mmx(P.X[j]), mmz(P.Z[j])); else g.lineTo(mmx(P.X[j]), mmz(P.Z[j])); }
     g.stroke(); g.setLineDash([]);
+    const anyDest = new Set(player.seats.filter(s => s.any).map(s => s.dest));   // "anywhere" riders: the destination is a stretch of road, not a point
+    if (anyDest.size) {
+      g.save(); g.strokeStyle = 'rgba(94,224,138,.6)'; g.lineWidth = 7; g.lineCap = 'round'; g.lineJoin = 'round';
+      for (const di of anyDest) { const c0 = SIM.stops[di].def.s; g.beginPath(); for (let k = -ANY_RANGE; k <= ANY_RANGE; k += 5) { pathAt(P, c0 + k, _tp); if (k === -ANY_RANGE) g.moveTo(mmx(_tp.x), mmz(_tp.z)); else g.lineTo(mmx(_tp.x), mmz(_tp.z)); } g.stroke(); }
+      g.restore();
+    }
     const wantDest = new Set(player.seats.map(s => s.dest)), guide = SIM.guide;
     g.font = '700 12px "Trebuchet MS",sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
     for (const st of SIM.stops) {
@@ -3144,7 +3431,7 @@ function drawMinimap() {
       if (guide && guide.stop === st) { g.strokeStyle = '#fff'; g.lineWidth = 2; g.beginPath(); g.arc(0, 0, 12 + 2 * Math.sin(tick * 6), 0, TAU); g.stroke(); }
       g.fillStyle = '#12161f'; g.beginPath(); g.arc(0, 0, 8.5, 0, TAU); g.fill();
       g.strokeStyle = col; g.lineWidth = 2.6; g.stroke();
-      g.fillStyle = col; g.fillText(String(st.idx + 1), 0, 0.5);
+      g.fillStyle = col; g.fillText(String(st.idx + 1) + (anyDest.has(st.idx) ? '?' : ''), 0, 0.5);
       if (wait) { g.fillStyle = vip ? '#ffe066' : '#fff'; g.beginPath(); g.arc(9, -9, 3.4 + Math.min(st.wait.length, 4) * 0.35, 0, TAU); g.fill(); }
       g.restore();
     }
@@ -3182,12 +3469,13 @@ function guideTarget() {
 
 // ---------------------------------------------------------------- UI, game flow
 let loadN = 0, loadTotal = 8;
+const COACH = { on: false }, coinEls = [];
 const G = { state: 'loading', mode: 'campaign', lvIdx: 0, wave: 1, total: 0, stars: [], endlessTotal: 0, retries: 0, log: [], done: false, settingsFrom: 'title', errors: [], events: [] };
 const el = {};
-['sTitle', 'sIntro', 'sPause', 'sSettings', 'sEnd', 'hud', 'bPlay', 'playTxt', 'bCont', 'bEndless', 'bestLine', 'inTitle', 'inDesc', 'inList', 'inTarget', 'enTitle', 'enSub', 'enStars', 'enStats', 'enRec', 'nextTxt', 'bNext', 'bRetry',
+['sTitle', 'sPause', 'sSettings', 'sEnd', 'hud', 'bPlay', 'playTxt', 'bCont', 'bEndless', 'bestLine', 'lvCard', 'cdTitle', 'cdDesc', 'cdList', 'cdTarget', 'countdown', 'cdNum', 'cdSub', 'mascot', 'mascotImg', 'enTips', 'enTitle', 'enSub', 'enStars', 'enStats', 'enRec', 'nextTxt', 'bNext', 'bRetry',
   'stLevel', 'stClock', 'stFare', 'fareBar', 'stSeats', 'dentBar', 'toasts', 'floaters', 'bubbles', 'seatsStrip', 'spVal', 'spArc', 'guideBox', 'guideArrow', 'guideTxt', 'hint', 'hurt', 'dbg', 'touch', 'steer', 'pGas', 'pBrake', 'tDoor', 'tHorn',
   'rMaster', 'rMusic', 'rSfx', 'oMaster', 'oMusic', 'oSfx', 'bTR', 'bEN', 'bQLow', 'bQHigh', 'bMapH', 'bMapN', 'bSound', 'langTxt'].forEach(id => { el[id] = document.getElementById(id); });
-const SCREENS = ['sTitle', 'sIntro', 'sPause', 'sSettings', 'sEnd'];
+const SCREENS = ['sTitle', 'sPause', 'sSettings', 'sEnd'];
 function showScreen(id) { for (const s of SCREENS) el[s].classList.toggle('show', s === id); if (id) { const b = el[id].querySelector('.btn.primary:not([disabled])') || el[id].querySelector('.btn'); if (b && id !== 'sTitle') setTimeout(() => b.focus({ preventScroll: true }), 30); } }
 
 function applyLang() {
@@ -3202,7 +3490,7 @@ function applyLang() {
   if (G.state === 'title' || G.state === 'loading') refreshTitle();
   if (G.state === 'loading') el.playTxt.textContent = t('loading', loadN, loadTotal);
 }
-function setLang(l) { LANG = settings.lang = l; saveSettings(); applyLang(); if (G.state === 'intro') fillIntro(); if (G.state === 'end') fillEnd(G.lastResult); }
+function setLang(l) { LANG = settings.lang = l; saveSettings(); applyLang(); if (G.state === 'countdown' || G.state === 'play' || G.state === 'paused') fillCard(); if (G.state === 'end') fillEnd(G.lastResult); }
 function refreshTitle() {
   el.bCont.classList.toggle('hidden', !runSave);
   const stars = best.stars.reduce((a, b) => a + b, 0);
@@ -3261,21 +3549,31 @@ function curLevel() {
   const lv = endlessLevel(G.wave); lv.t2 = Math.round(lv.target * 1.4); lv.t3 = Math.round(lv.target * 1.85); return lv;
 }
 function levelName(lv) { return lv.endless ? t('lvE', lv.wave) : t('lv' + lv.id); }
-function fillIntro() {
+/** the level card: a dismissable corner card (new-feature list); it never blocks the shift */
+function fillCard() {
   const lv = curLevel();
-  el.inTitle.textContent = lv.endless ? levelName(lv) : t('level') + ' ' + lv.id + ': ' + levelName(lv);
-  el.inDesc.textContent = t(lv.endless ? 'dE' : 'd' + lv.id);
-  el.inList.innerHTML = '';
-  const feats = lv.endless ? ['f_traffic', 'f_rain', 'f_vip', 'f_stops:10'] : lv.feat;
-  for (const f of feats) { const [k, a] = f.split(':'); const li = document.createElement('li'); li.textContent = t(k, a); el.inList.appendChild(li); }
-  const star = n => '<svg class="ic fill" style="width:16px;height:16px;vertical-align:-2px;color:#FACC15"><use href="#i-star"/></svg>'.repeat(n);
-  el.inTarget.innerHTML = '<span>' + star(1) + ' ' + t('tgt') + '</span><span>' + fmt(lv.target) + ' ' + t('tl') + '</span><span>' + star(2) + '</span><span>' + fmt(lv.t2) + ' ' + t('tl') + '</span><span>' + star(3) + '</span><span>' + fmt(lv.t3) + ' ' + t('tl') + '</span>';
+  el.cdTitle.textContent = lv.endless ? levelName(lv) : t('level') + ' ' + lv.id + ': ' + levelName(lv);
+  el.cdDesc.textContent = t(lv.endless ? 'dE' : 'd' + lv.id);
+  el.cdList.innerHTML = '';
+  const feats = lv.endless ? ['f_traffic', 'f_rain', 'f_vip', 'f_any', 'f_stops:10'] : lv.feat;
+  for (const f of feats) { const [k, a] = f.split(':'); const li = document.createElement('li'); li.textContent = t(k, a); el.cdList.appendChild(li); }
+  const star = n => '<svg class="ic fill" style="width:14px;height:14px;vertical-align:-2px;color:#FACC15"><use href="#i-star"/></svg>'.repeat(n);
+  el.cdTarget.innerHTML = [[1, lv.target], [2, lv.t2], [3, lv.t3]].map(([n, v]) => '<span>' + star(n) + ' ' + fmt(v) + ' ' + t('tl') + '</span>').join('');
 }
+const showCard = on => el.lvCard.classList.toggle('show', !!on);
+function showCountdown(n) {
+  const lv = SIM.lv;
+  el.countdown.classList.add('show'); el.cdNum.textContent = n;
+  el.cdSub.textContent = lv ? (lv.endless ? levelName(lv) : t('level') + ' ' + lv.id + ': ' + levelName(lv)) : '';
+  el.cdNum.style.animation = 'none'; void el.cdNum.offsetWidth; el.cdNum.style.animation = '';
+  G.cdShown = n;
+}
+function hideCountdown() { el.countdown.classList.remove('show'); G.cdShown = 0; }
 function setHud(show) { el.hud.classList.toggle('hidden', !show); if (show) updateBarH(); }
 function showcase() {
   G.state = 'title'; camState.mode = 'orbit';
   initLevel(LEVELS[0], 0); SIM.hour = 8.6; lastSkyHour = -99;
-  setHud(false); showScreen('sTitle'); refreshTitle();
+  setHud(false); showCard(false); hideCountdown(); showScreen('sTitle'); refreshTitle();
 }
 function startCampaign(fromSave) {
   AUD.init(); G.mode = 'campaign'; G.retries = 0;
@@ -3283,15 +3581,21 @@ function startCampaign(fromSave) {
   enterIntro();
 }
 function startEndless() { AUD.init(); G.mode = 'endless'; G.wave = 1; G.endlessTotal = 0; enterIntro(); }
+/** sets the shift up and starts the 3-2-1 countdown (there is no blocking intro screen any more) */
 function enterIntro() {
-  G.state = 'intro'; camState.mode = 'play';
+  G.state = 'countdown'; camState.mode = 'play';
   const lv = curLevel(); lv.attempt = G.retries; initLevel(lv, G.lvIdx); SIM.running = false;
-  camSnap(); fillIntro(); setHud(true); updateHudStatic(); showScreen('sIntro'); lastSkyHour = -99;
+  camSnap(); fillCard(); showCard(lv.endless || lv.id >= 2); G.cardT = 0;
+  setHud(true); updateHudStatic(); showScreen(null); lastSkyHour = -99;
+  G.cd = 3; showCountdown(3);
 }
 function camSnap() { const P = player, fx = Math.sin(P.hd), fz = Math.cos(P.hd); camState.x = P.x - fx * 11; camState.y = P.y + 5.6; camState.z = P.z - fz * 11; camState.dist = 11; P.camHd = P.hd; }
 function beginShift() {
   if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+  hideCountdown(); G.cd = 0;
   G.state = 'play'; SIM.running = true; showScreen(null); camState.mode = 'play'; AUD.resume();
+  COACH.on = G.mode === 'campaign' && !!SIM.lv && SIM.lv.id === 1;   // level 1: the first stop is coached
+  G.cardT = el.lvCard.classList.contains('show') ? 9 : 0;           // the level card fades out after 9 s of driving
   toast(t('toastStart'), 'info'); el.bubbles.innerHTML = ''; bubbles.length = 0;
 }
 function pauseGame() { if (G.state !== 'play') return; G.state = 'paused'; showScreen('sPause'); input.horn = false; AUD.hornStop(); }
@@ -3320,7 +3624,7 @@ HOOK.levelEnd = res => {
     else if (res.kind !== 'wreck') G.endlessTotal += Math.max(0, Math.round(res.net));
     if (res.stars === 0 || res.kind === 'wreck') { if (G.endlessTotal > best.endless) { best.endless = G.endlessTotal; rec = true; } writeSave(); }
   }
-  G.log.push({ mode: G.mode, level: lv.id, kind: res.kind, stars: res.stars, net: Math.round(res.net), fares: res.score.fares, tips: res.score.tips, pen: res.score.pen, pass: res.score.pass, dent: Math.round(res.dent), hits: res.score.hits, reds: res.score.reds, brakes: res.score.brakes, skips: res.score.skips, gaveUp: res.score.gaveUp, ped: res.score.ped });
+  G.log.push({ mode: G.mode, level: lv.id, kind: res.kind, stars: res.stars, net: Math.round(res.net), fares: res.score.fares, tips: res.score.tips, pen: res.score.pen, pass: res.score.pass, dent: Math.round(res.dent), hits: res.score.hits, reds: res.score.reds, brakes: res.score.brakes, skips: res.score.skips, gaveUp: res.score.gaveUp, ped: res.score.ped, anyDrops: res.score.anyDrops, tipsLost: res.score.tipsLost });
   G.record = rec; fillEnd(res); showScreen('sEnd'); input.horn = false; AUD.hornStop();
   if (res.stars > 0) setTimeout(() => AUD.star(), 300);
 };
@@ -3340,6 +3644,14 @@ function fillEnd(res) {
   if (!camp) rows.push([t('sTotal'), fmt(G.endlessTotal) + ' ' + t('tl'), '']);
   else rows.push([t('sTotal'), fmt(G.total) + ' ' + t('tl'), '']);
   el.enStats.innerHTML = rows.map(r => '<span>' + r[0] + '</span><span class="' + r[2] + '">' + r[1] + '</span>').join('');
+  // what cost the most, in plain words, plus the best tip and the number of "anywhere" drop-offs
+  const costs = Object.entries(sc.cost || {}).filter(e => e[1] > 0).sort((a, b) => b[1] - a[1]).slice(0, 2), tl = [];
+  if (costs.length) for (const [k, v] of costs) tl.push([t('tip_' + k, fmt(v)), 0]); else tl.push([t('tipClean'), 1]);
+  if (sc.bestTip > 0) tl.push([t('bestTipLine', fmt(sc.bestTip)), 1]);
+  if (lv.id >= 2) tl.push([t('anyDropsLine', sc.anyDrops), 1]);
+  el.enTips.innerHTML = tl.map(([txt, ok]) => '<li class="' + (ok ? 'ok' : '') + '">' + txt + '</li>').join('');
+  // the white Turkish Van kitten naps on the back seat; awake and cheering on 3 stars (not loaded with ?noassets)
+  if (ASSETS.enabled) { el.mascot.classList.remove('hidden'); el.mascotImg.onerror = () => el.mascot.classList.add('hidden'); el.mascotImg.src = 'assets/mascot/' + (res.stars >= 3 ? 'kedi-kutlama.png' : 'kedi-uyuyor.png'); } else el.mascot.classList.add('hidden');
   el.enRec.classList.toggle('hidden', !G.record); el.enRec.textContent = t('newRecord');
   el.bNext.classList.toggle('hidden', !nextKey); if (nextKey) el.nextTxt.textContent = t(nextKey);
   el.bRetry.querySelector('span').textContent = t(!camp && (res.stars === 0 || res.kind === 'wreck') ? 'playAgain' : 'retry');
@@ -3380,6 +3692,20 @@ function updateHudStatic() {
 function buildSeatStrip() {
   el.seatsStrip.innerHTML = '';
   for (let i = 0; i < SEATS; i++) { const d = document.createElement('div'); d.className = 'seat'; d.innerHTML = '<span></span><i></i>'; el.seatsStrip.appendChild(d); }
+  const dv = document.createElement('div'); dv.className = 'seat drv'; dv.innerHTML = '<svg class="ic"><use href="#i-wheel"/></svg>'; el.seatsStrip.appendChild(dv);   // the coins of the fare chain end here
+  coinEls.length = 0;
+}
+const chipCenter = i => { const c = el.seatsStrip.children[i]; return c ? { x: c.offsetLeft + c.offsetWidth / 2, y: c.offsetTop + c.offsetHeight / 2 } : { x: 0, y: 0 }; };
+/** each frame: place the coins of the fare chain; they hop from seat chip to seat chip toward the driver */
+function updateCoins() {
+  const ch = player.chain;
+  while (coinEls.length < ch.length) { const d = document.createElement('i'); d.className = 'coin'; el.seatsStrip.appendChild(d); coinEls.push(d); }
+  for (let i = 0; i < coinEls.length; i++) {
+    const d = coinEls[i], c = ch[i];
+    if (!c) { if (d.style.display !== 'none') d.style.display = 'none'; continue; }
+    const hops = c.path.length - 1, f = clamp(c.t / c.dur, 0, 0.999) * hops, h = Math.floor(f), fr = f - h, a = chipCenter(c.path[h]), b = chipCenter(c.path[h + 1]);
+    d.style.display = 'block'; d.style.left = (a.x + (b.x - a.x) * fr) + 'px'; d.style.top = (a.y + (b.y - a.y) * fr - Math.sin(fr * Math.PI) * 12) + 'px';
+  }
 }
 function updateHUD(dt) {
   hudT -= dt; const P = player; if (!SC) return;
@@ -3401,18 +3727,22 @@ function updateHUD(dt) {
     if (!d) continue;
     const num = d.children[0], bar = d.children[1];
     if (se) {
-      d.classList.add('on'); d.style.background = '#' + (se.vip ? 0xFACC15 : se.shirt).toString(16).padStart(6, '0'); num.textContent = String(se.dest + 1);
+      d.classList.add('on'); d.style.background = '#' + (se.vip ? 0xFACC15 : se.shirt).toString(16).padStart(6, '0'); num.textContent = String(se.dest + 1) + (se.any ? '?' : '');
       const fr = clamp(se.ridePat / se.ridePatMax, 0, 1); bar.style.background = fr > 0.5 ? '#5ee08a' : fr > 0.25 ? '#FACC15' : '#ff5a4a'; bar.style.right = (3 + (1 - fr) * 20) + 'px';
     } else { d.classList.remove('on'); d.style.background = ''; num.textContent = ''; bar.style.right = '100%'; }
   }
   // guide
+  if (G.cardT > 0 && G.state === 'play') { G.cardT -= 0.1; if (G.cardT <= 0) showCard(false); }
+  if (COACH.on && (P.seats.length || P.boarding || SC.pass || SIM.t > 90)) COACH.on = false;
   const g = guideTarget(); SIM.guide = g;
+  const coachNow = !!(COACH.on && g && g.stop && g.stop.idx === 0 && g.kind !== 'cruise');
+  el.guideBox.classList.toggle('coach', coachNow);
   if (g && G.state === 'play') {
     el.guideBox.style.display = 'flex';
     const dx = g.x - P.x, dz = g.z - P.z, fx = Math.sin(P.camHd), fz = Math.cos(P.camHd), ang = Math.atan2(dx * -fz + dz * fx, dx * fx + dz * fz);
     el.guideArrow.style.transform = 'rotate(' + ang + 'rad)';
     const name = g.stop ? stopName(g.stop.key) : (LANG === 'tr' ? 'El sallayan yolcu' : 'Waving passenger');
-    el.guideTxt.innerHTML = name + '<small>' + t(g.kind === 'drop' ? 'guideDrop' : g.kind === 'pick' ? 'guidePick' : 'guideCruise') + ' · ' + t('guideM', Math.round(hyp(dx, dz))) + '</small>';
+    el.guideTxt.innerHTML = name + '<small>' + (coachNow ? t('coach') : t(g.kind === 'drop' ? 'guideDrop' : g.kind === 'pick' ? 'guidePick' : 'guideCruise') + ' · ' + t('guideM', Math.round(hyp(dx, dz)))) + '</small>';
   } else el.guideBox.style.display = 'none';
 }
 
@@ -3441,7 +3771,7 @@ function readInput() {
 window.addEventListener('keydown', e => {
   if (e.repeat && e.code !== 'ArrowLeft' && e.code !== 'ArrowRight') { if (['Space', 'ArrowUp', 'ArrowDown'].includes(e.code)) e.preventDefault(); return; }
   const tgt = e.target && e.target.tagName;
-  if (e.code === 'Space') { if (G.state === 'play') { e.preventDefault(); doorPress(); } else if (tgt !== 'BUTTON' && G.state === 'intro') { e.preventDefault(); beginShift(); } return; }
+  if (e.code === 'Space') { if (G.state === 'play') { e.preventDefault(); doorPress(); } else if (G.state === 'countdown') { e.preventDefault(); beginShift(); } return; }
   if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code) && G.state === 'play') e.preventDefault();
   keys[e.code] = true;
   if (e.code === 'KeyP' || e.code === 'Escape') {
@@ -3449,7 +3779,7 @@ window.addEventListener('keydown', e => {
     else if (el.sSettings.classList.contains('show')) closeSettings();
   }
   else if (e.code === 'KeyM') toggleMusic(); else if (e.code === 'KeyX') toggleSfx(); else if (e.code === 'KeyL') setLang(LANG === 'tr' ? 'en' : 'tr'); else if (e.code === 'KeyN') { setMapMode(settings.mapRot === false); toast(t(settings.mapRot === false ? 'mapNorth' : 'mapHead'), 'info'); }
-  else if (e.code === 'Enter' && G.state === 'intro' && tgt !== 'BUTTON') beginShift();
+  else if (e.code === 'Enter' && G.state === 'countdown' && tgt !== 'BUTTON') beginShift();
   AUD.init(); AUD.resume();
 });
 window.addEventListener('keyup', e => { keys[e.code] = false; });
@@ -3478,7 +3808,7 @@ if (FLAG.touch) enableTouch();
 const on = (id, fn) => document.getElementById(id).addEventListener('click', e => { AUD.init(); AUD.click(); fn(e); });
 on('bPlay', () => startCampaign(false)); on('bCont', () => startCampaign(true)); on('bEndless', () => startEndless());
 on('bSettingsT', () => openSettings('title')); on('bLangT', () => setLang(LANG === 'tr' ? 'en' : 'tr'));
-on('bStart', () => beginShift()); on('bIntroBack', () => toMenu());
+on('bCardX', () => showCard(false));
 on('bPause', () => { if (G.state === 'play') pauseGame(); else if (G.state === 'paused') resumeGame(); });
 on('bSound', () => { settings.mute = !settings.mute; saveSettings(); AUD.applyGains(); syncSettingsUI(); });
 on('bLang', () => setLang(LANG === 'tr' ? 'en' : 'tr'));
@@ -3488,7 +3818,7 @@ on('bSetBack', () => closeSettings());
 on('bTR', () => { setLang('tr'); syncSettingsUI(); }); on('bEN', () => { setLang('en'); syncSettingsUI(); });
 on('bQLow', () => { settings.quality = 'low'; saveSettings(); applyQuality(); syncSettingsUI(); }); on('bQHigh', () => { settings.quality = 'high'; saveSettings(); applyQuality(); syncSettingsUI(); });
 on('bFull', () => toggleFullscreen());
-function setMapMode(rot) { settings.mapRot = rot; saveSettings(); syncSettingsUI(); if (G.state === 'play' || G.state === 'paused' || G.state === 'intro') drawMinimap(); }
+function setMapMode(rot) { settings.mapRot = rot; saveSettings(); syncSettingsUI(); if (G.state === 'play' || G.state === 'paused' || G.state === 'countdown') drawMinimap(); }
 on('bMapH', () => setMapMode(true)); on('bMapN', () => setMapMode(false));
 document.getElementById('minimap').addEventListener('click', () => { AUD.init(); AUD.click(); setMapMode(settings.mapRot === false); toast(t(settings.mapRot === false ? 'mapNorth' : 'mapHead'), 'info'); });
 on('bNext', () => nextAction()); on('bRetry', () => retryCurrent()); on('bMenuE', () => toMenu());
@@ -3527,7 +3857,7 @@ function botTick(dt) {
   const act = (th, fn) => { if (BOT.uiT > th) { BOT.uiT = 0; fn(); } };
   if (G.done) return;
   if (G.state === 'title') { act(0.8, () => startCampaign(false)); return; }
-  if (G.state === 'intro') { act(0.8, beginShift); return; }
+  if (G.state === 'countdown') { beginShift(); return; }
   if (G.state === 'paused') { resumeGame(); return; }
   if (G.state === 'end') {
     act(1.2, () => {
@@ -3574,6 +3904,7 @@ function frame(now) {
   if (G.state === 'loading') return;
   fpsS += (1 / Math.max(dt, 1e-3) - fpsS) * 0.05;
   if (FLAG.auto) botTick(dt); else readInput();
+  if (G.state === 'countdown') { G.cd -= dt; const n = Math.ceil(G.cd); if (n > 0 && n !== G.cdShown) showCountdown(n); if (G.cd <= 0) beginShift(); }
   if (G.state === 'play' || G.state === 'title') {
     acc += dt; let n = 0;
     while (acc >= FIXED && n < 4) { stepSim(FIXED); acc -= FIXED; n++; }
@@ -3583,8 +3914,8 @@ function frame(now) {
   AUD.update(Math.abs(player.vf), active ? player.thr : 0, player.load, SIM.rain, 0, active, player.skid);
   if (active) { ambT -= dt; if (ambT <= 0) { ambT = 6 + Math.random() * 9; AUD.honk(280 + Math.random() * 120, 0.25, 0.035); if (Math.random() < 0.15) AUD.ferry(); } }
   syncRender(G.state === 'paused' ? 0 : dt);
-  if (G.state !== 'title') { updateHUD(dt); updateBubbles(dt); } else updateBubbles(dt);
-  if (G.state === 'play' || G.state === 'paused' || G.state === 'intro') { if ((frameN++ & 1) === 0) drawMinimap(); }
+  if (G.state !== 'title') { updateHUD(dt); updateBubbles(dt); updateCoins(); } else updateBubbles(dt);
+  if (G.state === 'play' || G.state === 'paused' || G.state === 'countdown') { if ((frameN++ & 1) === 0) drawMinimap(); }
   renderer.render(scene, camera);
   if (FLAG.debug) debugOverlay();
 }
@@ -3611,7 +3942,7 @@ window.dolmusSim = function (seconds) {
   return window.dolmus;
 };
 window.dolmus = {
-  G, SIM, player, input, AUD, STR, WORLD, ASSETS, DBG, camClear, camState, staticHits, obAll, scene, renderer, camera,
+  G, SIM, player, input, AUD, STR, WORLD, ASSETS, DBG, camClear, camState, staticHits, obAll, scene, renderer, camera, COACH, voiceRecent, curbCheck, anywhereRiders, doorPress, closeDoor, forfeitChain,
   get state() { return G.state; }, get level() { return SIM.lv && SIM.lv.id; }, get time() { return SIM.t; },
   get net() { return SC ? netScore() : 0; }, get score() { return SC; }, get seats() { return player.seats.length; }, get dent() { return player.dent; },
   get speed() { return player.speed; }, get log() { return G.log; }, get done() { return G.done; }, get errors() { return G.errors; },
@@ -3632,7 +3963,7 @@ async function boot() {
   for (const s of stages) await step(() => buildWorldGeometry(s));
   await step(() => { buildScene(); applyQuality(); });
   await step(() => { buildMinimapBase(); });
-  await step(() => { for (const k of ['carB', 'busB', 'pedB', 'pedH', 'pedA', 'rings', 'beams']) { OBJ[k].setColorAt(0, _c.setHex(0xffffff)); } for (let i = 0; i < WORLD.sigHeads.length * 3; i++) OBJ.sig.setColorAt(i, _c.setHex(0x333333)); });
+  await step(() => { for (const k of ['carB', 'busB', 'pedB', 'pedH', 'pedA', 'rings', 'beams', 'umb']) { OBJ[k].setColorAt(0, _c.setHex(0xffffff)); } for (let i = 0; i < WORLD.sigHeads.length * 3; i++) OBJ.sig.setColorAt(i, _c.setHex(0x333333)); });
   G.state = 'title'; el.bPlay.disabled = false; window.__dolmusReady = true; if (!lsGet(KEY_SET)) saveSettings();
   showcase(); applyLang();
   if (FLAG.auto || SIM_PRE > 0) {
