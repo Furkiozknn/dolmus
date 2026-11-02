@@ -42,8 +42,8 @@
   pigeons scatter at the horn.
 - **Balanced by a bot.** The `?auto` bot drives with the same controls and rules as a player and finished all 8 levels;
   the star thresholds were calibrated against it.
-- **Light on a laptop GPU.** About 60 fps (the vsync cap) on an Intel UHD 630 laptop at 1280x720 with 42 draw calls on
-  the High tier, and a `?low` tier for phones ([measurements](docs/assets.md)).
+- **Light on a laptop GPU.** About 60 fps (the vsync cap) on an Intel UHD 620 laptop at 1280x720 with 52 to 65 draw
+  calls on the High tier (measured for the redesign, see below), and a `?low` tier for phones.
 - **One file, made in code.** One `index.html` with Three.js r170 from a CDN; the base game is procedural, with an
   optional CC0 asset pass loaded on top.
 
@@ -138,7 +138,7 @@ The live state is on `window.dolmus` (state, level, time, net, score, seats, den
     <td width="33%"><img src="docs/06-shift-summary.png" alt="Shift summary"><br><sub>Shift summary</sub></td>
   </tr>
   <tr>
-    <td><img src="docs/03-rain-van.png" alt="Rain and the double-parked van"><br><sub>Rain and the double-parked van</sub></td>
+    <td><img src="docs/03-rain-van.png" alt="Rain on the road to the pier"><br><sub>Rain and wet roads</sub></td>
     <td><img src="docs/04-night.png" alt="Night shift"><br><sub>Night shift</sub></td>
     <td><img src="docs/assets-after-close.png" alt="The dolmuş at a stop with the asset pass"><br><sub>At a stop (asset pass)</sub></td>
   </tr>
@@ -174,9 +174,10 @@ The live state is on `window.dolmus` (state, level, time, net, score, seats, den
 ## Balance
 
 The simulation runs at a fixed 60 Hz step and does not need the renderer, so `?auto&sim=4000` plays the whole campaign
-without rendering. With assets, with `?noassets` and with `?low` it gives the same result: levels 1 to 8 finished, with
-stars / net lira 1: 2/306, 2: 1/254, 3: 2/282, 4: 3/402, 5: 2/272, 6: 2/344, 7: 3/459 and 8: 3/478 (after one retry),
-and no JS errors ([verification run](docs/assets.md#verification-run)).
+without rendering. With assets, with `?noassets` and with `?low` it gives the same result: all 8 levels reached the
+shift end, with stars / net lira 1: 2/327, 2: 2/356, 3: 2/327, 4: 2/332, 5: 3/312, 6: 2/352, 7: 2/437 and 8: 1/265, and no
+JS errors (re-measured on 2026-11-02 for the redesign; `main` before the redesign gives exactly the same numbers). The
+older figures in [docs/assets.md](docs/assets.md#verification-run) predate the v2 changes.
 
 ## Running locally
 
@@ -231,6 +232,52 @@ Upgraded by Claude Sonnet 5.5 with Claude Code from [prompts/dolmus-v2.md](promp
 - A shift summary that names the two costliest mistakes with a one-line tip, the best tip and the anywhere drops.
 - District identity (Balat, Galata / Karaköy, Kadıköy pier), shop awnings, umbrellas and puddles in rain, lit windows
   and stop-shelter glow at night, and the white Turkish Van kitten on the summary card.
+
+## Redesign (2026-11)
+
+**Art direction:** a taxi-dashboard city. Palette: dolmuş yellow `#F2C200`, asphalt `#2B2D31`, Istanbul brick `#A0522D`,
+tram red `#C62828` and neon teal `#00BFA6` at night. The UI is an instrument cluster: roof-sign headings, a speedometer
+dial, an amber LCD fare meter, a blue direction sign and a paper fare receipt as the end screen.
+
+<p align="center"><img src="docs/redesign-before-after.png" alt="Same camera, before (left) and after (right) the redesign, day"><br>
+<img src="docs/redesign-before-after-night.png" alt="Same camera, before (left) and after (right), night shift with wet roads"><br>
+<sub>Same camera, before (left) and after (right).</sub></p>
+
+What changed (looks, motion and UI only; physics, controls, levels, scoring, saves, flags and the bot are untouched):
+
+- **Façades.** Every window has a frame, sill, lintel and mullions; shutters, flower boxes, balconies with railings,
+  air conditioners, cumba bay windows, belt courses, cornices, plinths and corner quoins; roofs get chimneys, water tanks,
+  antennas and dishes. Shop fronts get door surrounds, stall risers, produce crates, café tables and blade signs. On the
+  High tier a world-space masonry texture shows brick courses on brick-coloured walls and stucco mottling elsewhere.
+  All of it uses its own random stream and its own meshes (one per 64 m chunk, culled by view and by distance), so the
+  city layout and the colliders are exactly the old ones.
+- **Night and neon.** About 120 neon blade signs (a canvas-drawn word atlas) with additive glow halos, a rare flicker and
+  tinted light pools on the pavement; warm halos on the street lamps; the stars (which never showed before) are visible.
+- **Wet roads.** In rain, and on the night shift, the asphalt darkens and mirrors a sky gradient at grazing angles, shows
+  light columns at night, gets mirror streaks of lamps and neon placed per frame, rain splashes and persistent puddles.
+- **Pedestrians.** Legs and arms are separate instanced limbs with opposite swing, torso lean, bounce and idle sway; the
+  hailing wave and the trouser colours are new.
+- **UI.** Dashboard strip with a taxi roof-sign brand, amber LCD fare meter with star-threshold rail, dial with ticks and a
+  pointer, passenger bench chips with headrests, blue direction sign, keycap hints, checker-band cards with sign-plate
+  headings, a cream fare receipt for the shift summary, restyled settings, pause and touch controls. Phone portrait and
+  landscape layouts were re-checked.
+
+Measured in headless Chrome on the Intel UHD (0x9B41) of the dev laptop at 1280x720, High tier, page rAF over 2.5 s:
+
+| Scene | draw calls before → after | triangles before → after |
+|---|---|---|
+| Day, chase camera | 41 → 52 | 209k → 278k |
+| Rain, chase camera | 49 → 60 | 225k → 293k |
+| Night, chase camera | 50 → 62 | 236k → 305k |
+| Night, street camera | 50 → 65 | 237k → 323k |
+
+After the redesign the page rAF stayed at the 60 fps vsync cap in all four scenes (60.4 to 60.8); before it read 52 to 54
+in the day scene and about 60 in the others, so the extra geometry did not cost frames here (readings on a shared laptop
+are noisy). Draw calls stay well under the 150 budget.
+
+The `?auto` bot (`?auto&debug&sim=4000`) finished all 8 shifts with zero JS errors with assets, with `?noassets` and with
+`?low`, with the same results as `main` (see Balance). Not verified: real phones and other browsers (only desktop Chrome
+was used, phone sizes were emulated), Firefox and Safari rendering, long sessions.
 
 ## Türkçe
 
