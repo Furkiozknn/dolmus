@@ -1147,8 +1147,8 @@ function vnoise(x, z) {
   const u = fx * fx * (3 - 2 * fx), v = fz * fz * (3 - 2 * fz);
   return lerp(lerp(h(ix, iz), h(ix + 1, iz), u), lerp(h(ix, iz + 1), h(ix + 1, iz + 1), u), v);
 }
-const PAL_WALL = [0xf3e3c3, 0xf0b99a, 0xe89a8a, 0xa8d5c0, 0x9cc4e4, 0xf6dd8c, 0xd9835f, 0x8ea4bd, 0xf1ece4, 0xe7c9a9, 0xc9d8a7, 0xd8b4d0];
-const PAL_ROOF = [0xc1583c, 0x6b7280, 0x8a5a44, 0xb5503a, 0x7a6a8a];
+const PAL_WALL = [0xe9d6ae, 0xdca36a, 0xa0522d, 0xc46a45, 0xeedfc0, 0xb9c9ab, 0x86a9bf, 0xe8b49a, 0xf1e6d2, 0xb5623f, 0xd4b483, 0x9a4a2b];   // plaster, ochre and Istanbul brick
+const PAL_ROOF = [0xb8482e, 0x5c6370, 0x8a4a34, 0xc65a38, 0x6a5a7a];
 const PAL_AWN = [[0xe5484d, 0xfff3e0], [0x2b8cc4, 0xfff3e0], [0x3fae6a, 0xfff3e0], [0xf2a33a, 0xfff3e0], [0x7a4fb5, 0xfff3e0]];
 const SIGN_TXT = ['BAKKAL', 'FIRIN', 'ÇAY EVİ', 'ECZANE', 'KEBAP', 'SİMİT', 'KUAFÖR', 'MANAV', 'ÇİÇEK', 'LOKANTA', 'KAHVE', 'DÖNER', 'TATLI', 'BALIK', 'TERZİ', 'KIRTASİYE', 'CAFE', 'MARKET', 'GİYİM', 'KUYUMCU', 'DOLMUŞ', 'DURAK', 'İSKELE', 'TRAMVAY', 'CAMİ', 'OTEL'];
 const SIGN_BG = [0xb23a48, 0xd98a2b, 0x2d6a4f, 0x1f7a8c, 0x8a3b12, 0xc97b1b, 0x5a3e85, 0x4c9a2a, 0xc2477a, 0x7a2e2e, 0x4a3426, 0xa0301f, 0xd1568b, 0x1d5b8f, 0x445b73, 0x2b6f6b, 0x6b4aa0, 0x2f7f5a, 0x9a4f96, 0x8b6b1b, 0xFACC15, 0x1f5fae, 0x0f7a8a, 0xc9302c, 0x2f6b4f, 0x1d3f6b];
@@ -1352,7 +1352,7 @@ function buildRoads() {
     const bridge = (t) => !r.horiz && (r.id === 'v0' || r.id === 'v2') && t > 49 && t < 81;
     for (let t = r.t0; t < r.t1 - 1e-6; t += step) {
       const ta = t, tb = Math.min(t + step, r.t1);
-      for (const [l0, l1] of [[-r.h, 0], [0, r.h]]) mRoad.quadTo(P(ta, l0), P(tb, l0), P(tb, l1), P(ta, l1), 0x4b505c, 0, 1, 0);
+      for (const [l0, l1] of [[-r.h, 0], [0, r.h]]) mRoad.quadTo(P(ta, l0), P(tb, l0), P(tb, l1), P(ta, l1), 0x2e3036, 0, 1, 0);
     }
     // markings
     const mk = (ta, tb, l0, l1, col) => mRoad.quadTo(P(ta, l0, 0.06), P(tb, l0, 0.06), P(tb, l1, 0.06), P(ta, l1, 0.06), col, 0, 1, 0);
@@ -1372,7 +1372,7 @@ function buildRoads() {
         if (bridge(tm)) continue;
         if (r.t0 !== lo && tm < lo) continue; if (r.t1 !== hi && tm > hi) continue;
         const l0 = side * r.h, l1 = side * (r.h + PAVE), ph = 0.14;
-        const c = ((Math.floor(ta / 3) & 1) ? 0xcfc7b9 : 0xd9d1c3);
+        const c = ((Math.floor(ta / 3) & 1) ? 0xc4b9a6 : 0xcec3af);
         mRoad.quadTo(P(ta, l0, ph), P(tb, l0, ph), P(tb, l1, ph), P(ta, l1, ph), c, 0, 1, 0);
         mRoad.quadTo(P(ta, l0, 0.04), P(tb, l0, 0.04), P(tb, l0, ph), P(ta, l0, ph), 0xa79f92, -side * (r.horiz ? 0 : 1), 0, -side * (r.horiz ? 1 : 0));
       }
@@ -1401,7 +1401,7 @@ function buildRoads() {
   const PZ = { x0: -35, x1: 35, z0: -81, z1: -13 };
   for (let x = PZ.x0; x < PZ.x1; x += 3.5) for (let z = PZ.z0; z < PZ.z1; z += 3.5) {
     const xa = x, xb = Math.min(x + 3.5, PZ.x1), za = z, zb = Math.min(z + 3.5, PZ.z1);
-    const c = ((Math.floor((x - PZ.x0) / 3.5) + Math.floor((z - PZ.z0) / 3.5)) & 1) ? 0xd9c9a8 : 0xe4d6b8;
+    const c = ((Math.floor((x - PZ.x0) / 3.5) + Math.floor((z - PZ.z0) / 3.5)) & 1) ? 0xc9ab80 : 0xd9c29a;
     const Pq = (a, b) => [a, yAt(a, b) + 0.07, b];
     mRoad.quadTo(Pq(xa, za), Pq(xb, za), Pq(xb, zb), Pq(xa, zb), c, 0, 1, 0);
   }
@@ -1520,8 +1520,8 @@ const BLOCKS = [
 ];
 // per-district identity: Balat = tall narrow colourful houses, Galata / Karaköy = stone and cream, Kadıköy pier = pastel low-rise
 const DIST = {
-  balat: { wall: [0xe8836f, 0xf2c14e, 0x6fb3a5, 0xd9677e, 0x7fa6d6, 0xe9a35c, 0xb98ad1, 0xf08a4b], roof: [0xb5503a, 0x7a6a8a, 0x8a5a44, 0x4f6b8a], floors: [4, 4, 5, 5, 6], wMin: 5.2, wMax: 8, gable: 0.85 },
-  galata: { wall: [0xdcd0b8, 0xe8dec9, 0xcdbf9f, 0xebe3d1, 0xc2b79d, 0xd6c7a8], roof: [0x8a8f99, 0x6b7280, 0x9a8a78], floors: [4, 5, 5, 6], wMin: 9, wMax: 14, gable: 0.18 },
+  balat: { wall: [0xe8836f, 0xf2c14e, 0x5fb3a5, 0xd9677e, 0x7fa6d6, 0xe9a35c, 0xa0522d, 0xc46a45, 0xb98ad1, 0xf08a4b], roof: [0xb5503a, 0x7a6a8a, 0x8a5a44, 0x4f6b8a], floors: [4, 4, 5, 5, 6], wMin: 5.2, wMax: 8, gable: 0.85 },
+  galata: { wall: [0xdcd0b8, 0xd8c3a0, 0xcdbf9f, 0xa0522d, 0xc2b79d, 0xd6a878, 0xb5623f], roof: [0x8a8f99, 0x6b7280, 0x9a8a78], floors: [4, 5, 5, 6], wMin: 9, wMax: 14, gable: 0.18 },
   kadikoy: { wall: [0xf7d6d0, 0xd6ecd9, 0xd3e3f6, 0xfbeec2, 0xe7d6f3, 0xf9e0c4], roof: [0xd9835f, 0xc1583c, 0x9bb7d4], floors: [2, 2, 3], wMin: 7, wMax: 12, gable: 0.75 },
 };
 function districtAt(x, z) {
@@ -2743,7 +2743,7 @@ function wheelGeo(r, w) {
   const g = m.build(); g.rotateZ(Math.PI / 2); return g;
 }
 function dolmusGeo() {
-  const m = new Mesher(false, 0.025), d = new Mesher(false, 0.02), Y = 0xFACC15, Y2 = 0xffdc4a;
+  const m = new Mesher(false, 0.025), d = new Mesher(false, 0.02), Y = 0xF2C200, Y2 = 0xffd21f;
   m.boxB(0, 0.38, 0, 2.1, 1.0, 5.2, Y);
   m.boxB(0, 1.38, -0.15, 2.0, 0.85, 4.75, Y2);
   m.boxB(0, 2.22, -0.15, 1.9, 0.12, 4.65, 0xfff0b0);
@@ -2805,13 +2805,13 @@ function vanGeo() {
   m.box(0, 1.85, 2.55, 1.7, 0.7, 0.05, 0x27324a, 0, -0.4); m.box(1.02, 1.7, 2.1, 0.04, 0.5, 0.9, 0x27324a); m.box(-1.02, 1.7, 2.1, 0.04, 0.5, 0.9, 0x27324a);
   m.boxB(0, 1.0, -2.67, 1.8, 1.0, 0.04, 0xd6d9df);
   m.box(0.75, 0.72, 2.84, 0.4, 0.2, 0.06, 0xfff4c0); m.box(-0.75, 0.72, 2.84, 0.4, 0.2, 0.06, 0xfff4c0);
-  m.box(0, 2.6, -0.5, 2.12, 0.18, 4.32, 0x1d5b8f); m.box(1.06, 1.35, -0.5, 0.04, 0.6, 3.6, 0xd9343f);
+  m.box(0, 2.6, -0.5, 2.12, 0.18, 4.32, 0x1d5b8f); m.box(1.06, 1.35, -0.5, 0.04, 0.6, 3.6, 0xC62828);
   for (const sx of [-1.0, 1.0]) for (const z of [-1.7, 1.8]) { const cy = new Mesher(false, 0); cy.cyl(0, -0.15, 0, 0.4, 0.4, 0.3, 8, 0x16181d, true, 1, 0, true); const g = cy.build(); g.rotateZ(Math.PI / 2); g.translate(sx, 0.4, z); m.p.push(...g.attributes.position.array); m.c.push(...g.attributes.color.array); }
   return m.build();
 }
 function tramGeo() {
   const m = new Mesher(false, 0.02);
-  m.boxB(0, 0.55, 0, 2.5, 2.4, 10.6, 0xf4efe6); m.boxB(0, 0.55, 0, 2.54, 0.7, 10.64, 0xd9343f); m.boxB(0, 3.0, 0, 2.3, 0.18, 10.2, 0x8a8f99);
+  m.boxB(0, 0.55, 0, 2.5, 2.4, 10.6, 0xf4efe6); m.boxB(0, 0.55, 0, 2.54, 0.7, 10.64, 0xC62828); m.boxB(0, 3.0, 0, 2.3, 0.18, 10.2, 0x8a8f99);
   for (const sx of [-1, 1]) for (let z = -4.6; z <= 4.7; z += 1.55) m.box(sx * 1.27, 2.0, z, 0.05, 0.9, 1.15, 0x27324a);
   m.box(0, 1.9, 5.32, 2.1, 1.1, 0.05, 0x27324a); m.box(0, 1.9, -5.32, 2.1, 1.1, 0.05, 0x27324a);
   m.box(0.8, 0.9, 5.33, 0.35, 0.2, 0.05, 0xfff4c0); m.box(-0.8, 0.9, 5.33, 0.35, 0.2, 0.05, 0xfff4c0);
@@ -2991,12 +2991,12 @@ function updateSky(hour, rainA) {
   const dl = Math.hypot(dx, dy, dz); dx /= dl; dy /= dl; dz /= dl;
   SIM.sunDir = [dx, dy, dz];
   const gray = 1 - 0.5 * rainA;
-  sun.color.setHex(0x8ea6e8).lerp(_c.setHex(0xfff4e0), L).lerp(_c.setHex(0xff9a55), warm * 0.8);
-  sun.intensity = lerp(0.8, 1.9 + 0.9 * elev, L) * (1 - 0.55 * rainA);
-  hemi.color.setHex(0x5a6ab0).lerp(_c.setHex(0xe3ecf6), L); hemi.groundColor.setHex(0x1b1f2e).lerp(_c.setHex(0x8a7a62), L);
-  hemi.intensity = lerp(0.95, 1.25, L) * (1 + 0.15 * rainA);
-  SKY.top.setHex(0x0a1030).lerp(_c.setHex(0x5ea9ea), L).lerp(_c.setHex(0x7a6fb0), warm * 0.15).lerp(_c.setHex(0x7c8794), rainA * 0.8);
-  SKY.hor.setHex(0x1c2448).lerp(_c.setHex(0xcbe6f7), L).lerp(_c.setHex(0xff9a6a), warm * 0.38).lerp(_c.setHex(0x9ba6b1), rainA * 0.8 * Math.max(L, 0.25));
+  sun.color.setHex(0x8ea6e8).lerp(_c.setHex(0xffe9c4), L).lerp(_c.setHex(0xff8f4a), warm * 0.85);
+  sun.intensity = lerp(0.8, 2.1 + 1.0 * elev, L) * (1 - 0.55 * rainA);
+  hemi.color.setHex(0x5a6ab0).lerp(_c.setHex(0xdbe6f2), L); hemi.groundColor.setHex(0x1b1f2e).lerp(_c.setHex(0x9a7f64), L);
+  hemi.intensity = lerp(0.95, 1.02, L) * (1 + 0.2 * rainA);
+  SKY.top.setHex(0x0a1030).lerp(_c.setHex(0x4a98e2), L).lerp(_c.setHex(0x7a6fb0), warm * 0.15).lerp(_c.setHex(0x7c8794), rainA * 0.8);
+  SKY.hor.setHex(0x1c2448).lerp(_c.setHex(0xd6e5ee), L).lerp(_c.setHex(0xff9a6a), warm * 0.38).lerp(_c.setHex(0x9ba6b1), rainA * 0.8 * Math.max(L, 0.25));
   skyU.uTop.value.copy(SKY.top); skyU.uHor.value.copy(SKY.hor);
   scene.fog.color.copy(SKY.hor); scene.fog.near = lerp(80, 35, rainA); scene.fog.far = lerp(430, 230, rainA);
   seaMesh.material.color.setHex(0x1d4a6e).lerp(_c.setHex(0x4aa3c9), L).lerp(_c.setHex(0x6b8da3), rainA * 0.5);
