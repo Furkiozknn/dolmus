@@ -3018,12 +3018,16 @@ function tramGeo() {
   m.boxB(0, 0.2, 3.4, 2.2, 0.4, 1.8, 0x30343d); m.boxB(0, 0.2, -3.4, 2.2, 0.4, 1.8, 0x30343d);
   return m.build();
 }
+// pedestrians: torso + head are one instance each; the two legs and the two arms are instanced limbs hinged at the hip / shoulder,
+// so the walk cycle swings them in opposition (2 instances per person). Limb colours: legs = trousers, arms = sleeves.
+const PANTS = [0x2b2f3a, 0x3a4252, 0x4a3a2e, 0x1f2a38, 0x5a5a62, 0x6b5a46, 0x33404f];
 function pedGeos() {
-  const b = new Mesher(false, 0), h = new Mesher(false, 0), a = new Mesher(false, 0);
-  b.cyl(0, 0, 0, 0.19, 0.17, 0.58, 7, 0x2b2f3a); b.cyl(0, 0.55, 0, 0.25, 0.2, 0.6, 7, 0xffffff); b.cyl(0, 1.12, 0, 0.1, 0.1, 0.1, 6, 0xe0b090);
+  const b = new Mesher(false, 0), h = new Mesher(false, 0), a = new Mesher(false, 0), l = new Mesher(false, 0);
+  b.cyl(0, 0.5, 0, 0.215, 0.215, 0.12, 7, 0x8a8a8a); b.cyl(0, 0.58, 0, 0.25, 0.2, 0.56, 7, 0xffffff); b.cyl(0, 1.12, 0, 0.1, 0.1, 0.1, 6, 0xe0b090);
   h.sphere(0, 1.33, 0, 0.19, 0.2, 0.19, 7, 5, 0xffffff); h.sphere(0, 1.37, -0.02, 0.2, 0.18, 0.2, 7, 4, 0x2a2018, 0, Math.PI * 0.55);
-  a.boxB(0, -0.5, 0, 0.1, 0.52, 0.1, 0xffffff);
-  return [b.build(), h.build(), a.build()];
+  a.boxB(0, -0.5, 0, 0.1, 0.52, 0.1, 0xffffff); a.boxB(0, -0.58, 0, 0.11, 0.1, 0.11, 0xd8b090);
+  l.boxB(0, -0.6, 0, 0.14, 0.6, 0.15, 0xffffff); l.boxB(0, -0.62, 0.04, 0.15, 0.1, 0.25, 0x30302f);
+  return [b.build(), h.build(), a.build(), l.build()];
 }
 function umbrellaGeo() {
   const m = new Mesher(false, 0);
@@ -3062,13 +3066,14 @@ function softTex() {
 
 // ---------------- scene objects (created by buildScene)
 const OBJ = {};
-let rain = null, fx = null, pips = null, tick = 0, puddleMat = null;
+let rain = null, fx = null, pips = null, tick = 0, puddleMat = null, wetLevel = 0, NEONB = 0.5, splashT = 0;
 const _o = new THREE.Object3D(), _c = new THREE.Color(), _m4 = new THREE.Matrix4();
 const MAXP = 150;
 function buildScene() {
   signTex = makeSignTexture();
   matSign = new THREE.MeshLambertMaterial({ color: 0x000000, emissive: 0xffffff, emissiveMap: signTex, map: signTex });
   const add = (geo, mat, o = {}) => { const m = new THREE.Mesh(geo, mat); m.castShadow = !!o.cast; m.receiveShadow = !!o.recv; m.frustumCulled = o.cull !== false && false; scene.add(m); return m; };
+  patchDetail(matRoad, false);
   OBJ.ground = add(WORLD.groundGeo, matRoad, { recv: true });
   WALLU.tWall.value = makeWallTexture(); patchWall(matWall);
   OBJ.static = add(WORLD.staticGeo, matWall, { cast: true, recv: true });
@@ -3145,8 +3150,8 @@ void main(){ vec3 c = vY>0.0 ? mix(uHor,uTop,pow(vY,0.55)) : uHor*0.8;
   OBJ.van = inst(vanGeo(), matLam, 1); OBJ.tram = inst(tramGeo(), matLam, 2);
   OBJ.hazard = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.2, 0.1), emissiveMat(0xffa000)); OBJ.hazard.visible = false; scene.add(OBJ.hazard);
   // people
-  const [pb, ph, pa] = pedGeos();
-  OBJ.pedB = inst(pb, tintMat, MAXP, true); OBJ.pedH = inst(ph, tintMat, MAXP, false); OBJ.pedA = inst(pa, tintMat, MAXP, false);
+  const [pb, ph, pa, pl] = pedGeos();
+  OBJ.pedB = inst(pb, tintMat, MAXP, true); OBJ.pedH = inst(ph, tintMat, MAXP, false); OBJ.pedA = inst(pa, tintMat, MAXP * 2, false); OBJ.pedLeg = inst(pl, tintMat, MAXP * 2, false);
   OBJ.pig = inst(pigeonGeo(), matLam, 20, false);
   OBJ.umb = inst(umbrellaGeo(), tintMat, MAXP, false);   // umbrellas: only drawn while it rains
   // wet roads: puddles that fade in with the rain
@@ -3167,14 +3172,28 @@ void main(){ vec3 c = vY>0.0 ? mix(uHor,uTop,pow(vY,0.55)) : uHor*0.8;
   OBJ.pools = inst(new THREE.PlaneGeometry(11, 11).rotateX(-Math.PI / 2), new THREE.MeshLambertMaterial({ color: 0x000000, emissive: 0xffd9a0, emissiveMap: poolTex, map: poolTex, transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending }), poolN, false);
   OBJ.pools.count = poolN; OBJ.pools.renderOrder = 3;
   poolList.forEach((q, i) => { _o.position.set(q[0], hillH(q[0], q[1]) + 0.2, q[1]); _o.scale.set(q[2], 1, q[2]); _o.updateMatrix(); OBJ.pools.setMatrixAt(i, _o.matrix); });
+  // tinted light pools under the neon signs + streaks of light on wet asphalt (mirror images of lamps and signs, placed each frame)
+  const noN = Math.max(1, WORLD.neonPool.length);
+  OBJ.neonPools = inst(new THREE.PlaneGeometry(9, 9).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ map: poolTex, transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending }), noN, false);
+  OBJ.neonPools.count = WORLD.neonPool.length; OBJ.neonPools.renderOrder = 3;
+  WORLD.neonPool.forEach((q, i) => { _o.position.set(q[0], hillH(q[0], q[1]) + 0.22, q[1]); _o.rotation.set(0, 0, 0); _o.scale.set(1, 1, 1); _o.updateMatrix(); OBJ.neonPools.setMatrixAt(i, _o.matrix); OBJ.neonPools.setColorAt(i, _c.setHex(q[2])); });
+  if (!OBJ.neonPools.instanceColor) OBJ.neonPools.setColorAt(0, _c.setHex(0xffffff));
+  {
+    const cv = document.createElement('canvas'); cv.width = 32; cv.height = 128; const g = cv.getContext('2d'), img = g.createImageData(32, 128);
+    for (let y = 0; y < 128; y++) for (let x = 0; x < 32; x++) { const a = Math.exp(-(((y - 63.5) / 38) ** 2)) * Math.exp(-(((x - 15.5) / 5.5) ** 2)), i = (y * 32 + x) * 4; img.data[i] = img.data[i + 1] = img.data[i + 2] = 255 * a; img.data[i + 3] = 255; }
+    g.putImageData(img, 0, 0);
+    OBJ.refl = inst(new THREE.PlaneGeometry(1, 1).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(cv), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, opacity: 0 }), 170, false);
+    OBJ.refl.renderOrder = 3; OBJ.refl.visible = false; OBJ.refl.setColorAt(0, _c.setHex(0xffffff));
+  }
   const nl = WORLD.sigHeads.length * 3;
   OBJ.sig = inst(new THREE.SphereGeometry(0.17, 6, 4), new THREE.MeshLambertMaterial({ color: 0xffffff, emissive: 0x303030 }), nl, false); OBJ.sig.count = nl;
   let li = 0; for (const h of WORLD.sigHeads) for (const l of h.lamps) { _o.position.set(l.x, l.y, l.z); _o.scale.set(1, 1, 0.5); _o.updateMatrix(); OBJ.sig.setMatrixAt(li++, _o.matrix); }
   // fx
   fx = new Particles(lowQ() ? 220 : 420, true, false); scene.add(fx.obj);
   { // neon glow halos: additive sprites at every neon sign, visible only at night
-    const n = WORLD.neonGlow.length; glowPts = new Particles(Math.max(1, n), true, true); glowPts.obj.renderOrder = 7;
+    const n = WORLD.neonGlow.length + WORLD.lamps.length; glowPts = new Particles(Math.max(1, n), true, true); glowPts.obj.renderOrder = 7;
     WORLD.neonGlow.forEach(q => glowPts.spawn(q[0], q[1], q[2], 0, 0, 0, 1e9, 3.4, 3.4, q[3], 0.5));
+    WORLD.lamps.forEach(l => glowPts.spawn(l[0], l[1] + 0.1, l[2], 0, 0, 0, 1e9, 2.4, 2.4, 0xffd9a0, 0.42));
     glowPts.obj.material.uniforms.uOpacity.value = 0; scene.add(glowPts.obj);
   }
   rain = new Particles(lowQ() ? 420 : 900, true, false); scene.add(rain.obj);
@@ -3214,7 +3233,8 @@ function updateSky(hour, rainA) {
   matWinL.emissive.setHex(0xffd479).lerp(_c.setHex(0x9fc6e0), L);
   OBJ.lamps.material.emissive.setHex(0xfff0c0).lerp(_c.setHex(0xcfd3da), L);
   OBJ.pools.material.opacity = clamp(night * 1.2 - 0.1, 0, 0.55);
-  matNeon.color.setScalar(0.5 + 0.5 * night); glowPts.obj.material.uniforms.uOpacity.value = clamp(night * 1.4 - 0.15, 0, 1);
+  NEONB = 0.5 + 0.5 * night; glowPts.obj.material.uniforms.uOpacity.value = clamp(night * 1.4 - 0.15, 0, 1); OBJ.neonPools.material.opacity = clamp(night * 1.2 - 0.1, 0, 0.6);
+  WET.uSkyH.value.copy(SKY.hor); WET.uSkyT.value.copy(SKY.top); WET.uNight.value = night;
   OBJ.beam.material.uniforms.uOp.value = clamp(night * 1.4 - 0.1, 0, 0.8);
   OBJ.headL.material.emissive.setHex(0xfff8d0).multiplyScalar(0.8 + 0.4 * night);
   OBJ.road && (matRoad.color.setScalar(1 - 0.22 * rainA)); if (OBJ.matGround) OBJ.matGround.color.setScalar(1 - 0.22 * rainA);
@@ -3291,21 +3311,34 @@ function placeProps(shel, carts, parkedOk) {
 }
 // ---- detail textures: grey-scale JPGs projected from above in world space (no UVs needed), picked per vertex colour class.
 // Road class: dark asphalt-coloured vertices. Pavement class: light, low-saturation vertices (pavement, plaza, quay). Ground: grass.
-const DETAIL = { u: { tAsph: { value: null }, tPave: { value: null }, tGrass: { value: null }, uAvg: { value: new THREE.Vector3(0.5, 0.5, 0.5) }, uAmt: { value: new THREE.Vector3(0.7, 0.6, 0.5) } } };
+const DETAIL = { u: { tAsph: { value: null }, tPave: { value: null }, tGrass: { value: null }, uAvg: { value: new THREE.Vector3(0.5, 0.5, 0.5) }, uAmt: { value: new THREE.Vector3(0.7, 0.6, 0.5) }, uTexOn: { value: 0 } } };
+// wet roads: rain darkens the asphalt and a fake mirror (sky gradient, horizon silhouette, light columns at night) fades in at grazing angles
+const WET = { uWet: { value: 0 }, uSkyH: { value: new THREE.Color(0xd6e5ee) }, uSkyT: { value: new THREE.Color(0x4a98e2) }, uNight: { value: 0 } };
 function patchDetail(mat, ground) {
   mat.onBeforeCompile = sh => {
-    if (lowQ()) return;   // Low tier keeps the plain flat-shaded shader
-    Object.assign(sh.uniforms, DETAIL.u);
+    const tex = !lowQ();   // the Low tier skips the detail textures but keeps the wet look
+    Object.assign(sh.uniforms, DETAIL.u, WET);
     sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nvarying vec3 vWP;').replace('#include <begin_vertex>', '#include <begin_vertex>\nvWP = (modelMatrix * vec4(transformed, 1.0)).xyz;');
     const body = ground
-      ? `vec2 p = vWP.xz; float g = 0.5 * (texture2D(tGrass, p * 0.19).r + texture2D(tGrass, p * 0.61 + 0.5).r) / uAvg.z; diffuseColor.rgb *= 1.0 + (g - 1.0) * uAmt.z;`
+      ? (tex ? `vec2 p = vWP.xz; float g = 0.5 * (texture2D(tGrass, p * 0.19).r + texture2D(tGrass, p * 0.61 + 0.5).r) / uAvg.z; diffuseColor.rgb *= 1.0 + (g - 1.0) * uAmt.z * uTexOn;` : '')
       : `float lum = dot(vColor, vec3(0.2126, 0.7152, 0.0722)), sat = vColor.r - vColor.b;
          float wA = 1.0 - smoothstep(0.12, 0.2, lum), wP = smoothstep(0.42, 0.5, lum) * (1.0 - smoothstep(0.76, 0.84, lum)) * (1.0 - smoothstep(0.45, 0.6, sat));
-         vec2 p = vWP.xz;
+         ${tex ? `vec2 p = vWP.xz;
          float a = 0.5 * (texture2D(tAsph, p * 0.16).r + texture2D(tAsph, p * 0.5 + 0.37).r) / uAvg.x, c = 0.5 * (texture2D(tPave, p * 0.22).r + texture2D(tPave, p * 0.71 + 0.11).r) / uAvg.y;
-         diffuseColor.rgb *= 1.0 + wA * (a - 1.0) * uAmt.x + wP * (c - 1.0) * uAmt.y;`;
-    sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nvarying vec3 vWP; uniform sampler2D tAsph, tPave, tGrass; uniform vec3 uAvg, uAmt;')
-      .replace('#include <color_fragment>', '#include <color_fragment>\n{ ' + body + ' }');
+         diffuseColor.rgb *= 1.0 + (wA * (a - 1.0) * uAmt.x + wP * (c - 1.0) * uAmt.y) * uTexOn;` : ''}
+         gWet = uWet * (wA + 0.3 * wP); diffuseColor.rgb *= 1.0 - 0.4 * gWet;`;
+    const refl = ground ? '' : `if (gWet > 0.001) {
+      vec3 Vd = normalize(cameraPosition - vWP); float fr = pow(1.0 - clamp(Vd.y, 0.0, 1.0), 2.2);
+      vec3 Rd = reflect(-Vd, vec3(0.0, 1.0, 0.0)); float e = clamp(Rd.y, 0.0, 1.0);
+      vec3 sky = mix(uSkyH, uSkyT, pow(e, 0.6)); sky = mix(sky, uSkyH * 0.5, (1.0 - smoothstep(0.02, 0.3, e)) * 0.75);
+      float ang = atan(Rd.z, Rd.x) * 11.0, hh = fract(sin(floor(ang) * 91.7 + 12.3) * 43758.5);
+      float streak = smoothstep(0.4, 0.0, abs(fract(ang) - 0.5)) * step(0.6, hh) * (1.0 - smoothstep(0.0, 0.5, e)) * uNight;
+      vec3 lights = mix(vec3(1.0, 0.78, 0.45), vec3(0.0, 0.75, 0.65), step(0.5, fract(hh * 7.0))) * streak;
+      outgoingLight += gWet * fr * (sky * 0.5 + lights * 1.1);
+    }`;
+    sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nvarying vec3 vWP; uniform sampler2D tAsph, tPave, tGrass; uniform vec3 uAvg, uAmt, uSkyH, uSkyT; uniform float uTexOn, uWet, uNight; float gWet = 0.0;')
+      .replace('#include <color_fragment>', '#include <color_fragment>\n{ ' + body + ' }')
+      .replace('#include <opaque_fragment>', refl + '\n#include <opaque_fragment>');
   };
   mat.customProgramCacheKey = () => (lowQ() ? 'l' : 'h') + (ground ? 'g' : 'r');
   mat.needsUpdate = true;
@@ -3321,7 +3354,7 @@ async function loadTextures() {
   const avg = DETAIL.u.uAvg.value;
   texs.forEach(([k, t], i) => { DETAIL.u[k].value = t; avg.setComponent(i, texAvg(t)); });
   OBJ.matGround = matRoad.clone(); OBJ.ground.material = OBJ.matGround;
-  patchDetail(matRoad, false); patchDetail(OBJ.matGround, true);
+  patchDetail(matRoad, false); patchDetail(OBJ.matGround, true); DETAIL.u.uTexOn.value = 1;
   ASSETS.tex = true; lastSkyHour = -99;
 }
 // ---- sky: Poly Haven "Kloofendal 48d partly cloudy (pure sky)" 1k, as an LDR sky strip. Clouds on the dome + reflections on the vehicles (High tier)
@@ -3374,7 +3407,7 @@ async function loadAssetsInner() {
 
 // ---------------------------------------------------------------- per-frame render sync
 _o.rotation.order = 'YXZ';
-const _q = new THREE.Quaternion(), _q2 = new THREE.Quaternion(), _v = new THREE.Vector3(), _v2 = new THREE.Vector3(), _s = new THREE.Vector3(), _m5 = new THREE.Matrix4(), _e = new THREE.Euler();
+const _m6 = new THREE.Matrix4(), _q3 = new THREE.Quaternion(), _q = new THREE.Quaternion(), _q2 = new THREE.Quaternion(), _v = new THREE.Vector3(), _v2 = new THREE.Vector3(), _s = new THREE.Vector3(), _m5 = new THREE.Matrix4(), _e = new THREE.Euler();
 const sigCache = [];
 let exT = 0, smokeT = 0, vendT = 0;
 const camState = { x: 0, y: 8, z: 0, shake: 0, mode: 'play', orbit: 0, dist: 11 };
@@ -3431,21 +3464,25 @@ function syncRender(dt) {
   const rainU = SIM.rain > 0.45, pa = pips.alpha, pc = pips.col, pp = pips.pos, ps = pips.size;
   for (const p of SIM.peds) {
     if (np >= MAXP) break;
-    const moving = p.spd > 0.1, bob = moving ? Math.abs(Math.sin(p.ph)) * 0.05 : 0, sc = p.scale || 1;
+    const moving = p.spd > 0.1, sc = p.scale || 1;
+    p.wk = (p.wk || 0) + ((moving ? 1 : 0) - (p.wk || 0)) * Math.min(1, dt * 9);         // 0 = standing, 1 = full stride
+    const wk = p.wk, sw = Math.sin(p.ph) * 0.8 * wk, bob = Math.abs(Math.cos(p.ph)) * 0.05 * wk, idle = (1 - wk) * Math.sin(tick * 1.4 + p.id * 1.7);
     const y = yAt(p.x, p.z) + (pedOnRoad(p.x, p.z) ? 0.04 : 0.14) + bob;
     _v.set(p.x, y, p.z); _s.set(sc, sc, sc);
     const fall = p.hit > 0 ? -1.35 : 0;
-    _e.set(fall, p.hd, 0, 'YXZ'); _q.setFromEuler(_e);
-    _m4.compose(_v, _q, _s);
+    _e.set(fall + 0.07 * wk + 0.012 * idle, p.hd, 0.05 * Math.sin(p.ph) * wk + 0.02 * idle, 'YXZ'); _q.setFromEuler(_e); _m4.compose(_v, _q, _s);
+    _e.set(fall, p.hd, 0, 'YXZ'); _q2.setFromEuler(_e); _m6.compose(_v, _q2, _s);
     OBJ.pedB.setMatrixAt(np, _m4); OBJ.pedH.setMatrixAt(np, _m4);
     if (rainU && p.hit <= 0) { setInst(OBJ.umb, nu, p.x, y, p.z, p.hd, 0, sc); OBJ.umb.setColorAt(nu, _c.setHex(UMB_COLS[p.id % UMB_COLS.length])); nu++; }
-    OBJ.pedB.setColorAt(np, _c.setHex(p.shirt)); OBJ.pedH.setColorAt(np, _c.setHex(p.skin)); OBJ.pedA.setColorAt(np, _c.setHex(p.shirt));
-    let ang;
-    if (p.wave) { _e.set(0, 0, 2.55 + 0.45 * Math.sin(tick * 9 + p.id), 'XYZ'); }
-    else if (moving) { _e.set(Math.sin(p.ph) * 0.7, 0, 0.08, 'XYZ'); } else _e.set(0, 0, 0.06, 'XYZ');
-    _q2.setFromEuler(_e); _v2.set(0.3, 1.08, 0); _s.set(1, 1, 1);
-    _m5.compose(_v2, _q2, _s); _m5.premultiply(_m4);
-    OBJ.pedA.setMatrixAt(np, _m5);
+    OBJ.pedB.setColorAt(np, _c.setHex(p.shirt)); OBJ.pedH.setColorAt(np, _c.setHex(p.skin));
+    // legs hinged at the hip, arms at the shoulder; right arm waves when the person is hailing the dolmus
+    const pm = (mesh, i, lx, ly, rx, rz, base) => { _e.set(rx, 0, rz, 'XYZ'); _q3.setFromEuler(_e); _v2.set(lx, ly, 0); _s.set(1, 1, 1); _m5.compose(_v2, _q3, _s); _m5.premultiply(base); mesh.setMatrixAt(i, _m5); };
+    pm(OBJ.pedLeg, np * 2, -0.1, 0.6, sw, 0, _m6); pm(OBJ.pedLeg, np * 2 + 1, 0.1, 0.6, -sw, 0, _m6);
+    const pants = PANTS[p.id % PANTS.length]; OBJ.pedLeg.setColorAt(np * 2, _c.setHex(pants)); OBJ.pedLeg.setColorAt(np * 2 + 1, _c.setHex(pants));
+    pm(OBJ.pedA, np * 2, -0.3, 1.08, -sw * 0.8 + 0.05 * idle, -0.07, _m4);
+    if (p.wave) pm(OBJ.pedA, np * 2 + 1, 0.3, 1.08, 0, 2.55 + 0.45 * Math.sin(tick * 9 + p.id), _m4);
+    else pm(OBJ.pedA, np * 2 + 1, 0.3, 1.08, sw * 0.8 - 0.05 * idle, 0.07, _m4);
+    OBJ.pedA.setColorAt(np * 2, _c.setHex(p.shirt)); OBJ.pedA.setColorAt(np * 2 + 1, _c.setHex(p.shirt));
     np++;
     if ((p.kind === 'pax' || p.kind === 'hail') && p.st === 'wait' && pn < 40) {
       const fr = clamp(p.pat / p.patMax, 0, 1);
@@ -3456,12 +3493,13 @@ function syncRender(dt) {
   }
   for (let i = pn; i < 40; i++) pa[i] = 0;
   const pg = pips.geo.attributes; pg.position.needsUpdate = pg.aSize.needsUpdate = pg.aAlpha.needsUpdate = pg.aCol.needsUpdate = true;
-  OBJ.pedB.count = OBJ.pedH.count = OBJ.pedA.count = np;
+  OBJ.pedB.count = OBJ.pedH.count = np; OBJ.pedA.count = OBJ.pedLeg.count = np * 2;
   OBJ.umb.count = nu; OBJ.umb.instanceMatrix.needsUpdate = true; if (OBJ.umb.instanceColor) OBJ.umb.instanceColor.needsUpdate = true;
   // wet roads and the wiper
-  OBJ.puddles.visible = SIM.rain > 0.08; puddleMat.opacity = clamp(SIM.rain, 0, 1) * 0.55; puddleMat.color.setScalar(0.4 + 0.6 * (SKY.L === undefined ? 1 : SKY.L));
+  { const want = Math.max(SIM.rain, SIM.lv && SIM.lv.id === 8 ? 0.6 : 0); wetLevel += clamp(want - wetLevel, -dt / 45, dt / 4); WET.uWet.value = clamp(wetLevel, 0, 1); }
+  OBJ.puddles.visible = wetLevel > 0.08; puddleMat.opacity = clamp(wetLevel, 0, 1) * 0.55; puddleMat.color.setScalar(0.4 + 0.6 * (SKY.L === undefined ? 1 : SKY.L));
   OBJ.wiper.visible = SIM.rain > 0.3; if (OBJ.wiper.visible) OBJ.wiper.rotation.z = Math.PI - 1.15 * (0.5 + 0.5 * Math.sin(tick * 5.5));
-  for (const m of [OBJ.pedB, OBJ.pedH, OBJ.pedA]) { m.instanceMatrix.needsUpdate = true; if (m.instanceColor) m.instanceColor.needsUpdate = true; }
+  for (const m of [OBJ.pedB, OBJ.pedH, OBJ.pedA, OBJ.pedLeg]) { m.instanceMatrix.needsUpdate = true; if (m.instanceColor) m.instanceColor.needsUpdate = true; }
   // pigeons
   let nb2 = 0;
   for (const b of SIM.pigeons) {
@@ -3532,6 +3570,13 @@ function syncRender(dt) {
     rain.geo.attributes.position.needsUpdate = true; rain.geo.attributes.aAlpha.needsUpdate = false;
   }
   updateCamera(dt);
+  matNeon.color.setScalar(NEONB * ((Math.sin(tick * 7.3) * Math.sin(tick * 3.1 + 1) > 0.94) ? 0.6 : 1));   // an occasional neon flicker
+  updateReflections();
+  splashT -= dt;
+  if (SIM.rain > 0.2 && splashT <= 0 && SIM.running) {   // rain splashes on the road ahead of the dolmus
+    splashT = 0.03 * fxN;
+    for (let k = 0; k < 3; k++) { const a = Math.random(), x = P.x + fx0 * (4 + a * 16) + (Math.random() - 0.5) * 18, z = P.z + fz0 * (4 + a * 16) + (Math.random() - 0.5) * 18; if (roadAt(x, z, -0.4)) fx.spawn(x, yAt(x, z) + 0.1, z, 0, 0.35, 0, 0.3, 0.06, 0.5, 0xdfeaf8, 0.5, 0); }
+  }
   // sun follows the player (snapped to avoid shimmering)
   const sd = SIM.sunDir || [0.4, 0.8, 0.3], sx = Math.round(camera.position.x / 4) * 4, sz = Math.round(camera.position.z / 4) * 4;
   sun.target.position.set(P.x, 0, P.z); sun.position.set(P.x + sd[0] * 120, sd[1] * 120, P.z + sd[2] * 120);
@@ -3540,6 +3585,26 @@ function syncRender(dt) {
     sunDisc.position.set(camera.position.x + sd[0] * 850, sd[1] * 850, camera.position.z + sd[2] * 850);
   moonDisc.position.set(camera.position.x + 0.4 * 850, 0.75 * 850, camera.position.z - 0.4 * 850);
   stars.obj.position.copy(camera.position);
+}
+
+/** wet asphalt: mirror images of lamps and neon signs. A light at height h seen from the camera at height hc is reflected where the ray to its image meets the road: hc/(hc+h) of the way to it. */
+function updateReflections() {
+  const night = 1 - (SKY.L === undefined ? 1 : SKY.L), vis = wetLevel > 0.12 && night > 0.25;
+  OBJ.refl.visible = vis; if (!vis) return;
+  const cx = camera.position.x, cz = camera.position.z, hc = Math.max(1.5, camera.position.y - yAt(cx, cz));
+  OBJ.refl.material.opacity = clamp(night * 1.3 - 0.2, 0, 1) * clamp(wetLevel * 1.4, 0, 1) * 0.5;
+  let n = 0;
+  const put = (x, z, hex, h) => {
+    if (n >= 170) return;
+    const dx = x - cx, dz = z - cz, d = hyp(dx, dz); if (d < 9 || d > 85) return;
+    const f = hc / (hc + h), px = cx + dx * f, pz = cz + dz * f;
+    if (!roadAt(px, pz, -0.4)) return;
+    _o.position.set(px, yAt(px, pz) + 0.1, pz); _o.rotation.set(0, Math.atan2(dx, dz), 0); _o.scale.set(0.4 + 0.008 * d, 1, 1.4 + d * 0.07); _o.updateMatrix();
+    OBJ.refl.setMatrixAt(n, _o.matrix); OBJ.refl.setColorAt(n, _c.setHex(hex)); n++;
+  };
+  for (const q of WORLD.reflSrc) put(q[0], q[1], q[2], q[3]);
+  for (const l of WORLD.lamps) put(l[0], l[2], 0xffd9a0, l[1]);
+  OBJ.refl.count = n; OBJ.refl.instanceMatrix.needsUpdate = true; if (OBJ.refl.instanceColor) OBJ.refl.instanceColor.needsUpdate = true;
 }
 
 // ---------------------------------------------------------------- camera
@@ -4183,7 +4248,7 @@ async function boot() {
   for (const s of stages) await step(() => buildWorldGeometry(s));
   await step(() => { buildScene(); applyQuality(); });
   await step(() => { buildMinimapBase(); });
-  await step(() => { for (const k of ['carB', 'busB', 'pedB', 'pedH', 'pedA', 'rings', 'beams', 'umb']) { OBJ[k].setColorAt(0, _c.setHex(0xffffff)); } for (let i = 0; i < WORLD.sigHeads.length * 3; i++) OBJ.sig.setColorAt(i, _c.setHex(0x333333)); });
+  await step(() => { for (const k of ['carB', 'busB', 'pedB', 'pedH', 'pedA', 'pedLeg', 'rings', 'beams', 'umb']) { OBJ[k].setColorAt(0, _c.setHex(0xffffff)); } for (let i = 0; i < WORLD.sigHeads.length * 3; i++) OBJ.sig.setColorAt(i, _c.setHex(0x333333)); });
   G.state = 'title'; el.bPlay.disabled = false; window.__dolmusReady = true; if (!lsGet(KEY_SET)) saveSettings();
   showcase(); applyLang();
   if (FLAG.auto || SIM_PRE > 0) {
