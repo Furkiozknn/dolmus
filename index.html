@@ -1183,9 +1183,11 @@ function windowsFacade(Fx, Fz, nx, nz, Lf, yBase, yTop, firstFloor) {
       const du = -Lf / 2 + (i + 0.5) * cw;
       const lit = WR() < 0.42;
       facadeQuad(lit ? mWinL : mWinD, Fx, Fz, nx, nz, du, 1.05, y0, y0 + 1.45, 0xffffff, 0.04);
+      if (DECOR) xscope(() => windowDecor(Fx, Fz, nx, nz, du, y0, f, CURB.front));
       if (WR() < 0.35) { // balcony / sill
         const cx = Fx + ux * du + nx * 0.35, cz = Fz + uz * du + nz * 0.35;
         mStatic.boxB(cx, y0 - 0.12, cz, Math.abs(ux) > 0.5 ? 1.5 : 0.8, 0.14, Math.abs(ux) > 0.5 ? 0.8 : 1.5, 0xd8d0c4);
+        if (DECOR && f >= 1 && CURB.front) xscope(() => { if (XR() < 0.5) balconyDecor(Fx, Fz, nx, nz, du, y0); });
       }
     }
   }
@@ -1210,6 +1212,194 @@ function shopFront(Fx, Fz, nx, nz, Lf, yG, cellOv) {
     facadeQuad(mSign, Fx, Fz, nx, nz, du, Math.min(uw - 0.5, 3.4), yG + 2.8, yG + 3.4, 0xffffff, 0.06, signUV(cell));
   }
 }
+// ---------------- redesign: facade decoration. Own random stream (XR) and own meshes: it never touches WR / DR / R, so the
+// city layout, the colliders and the gameplay streams stay exactly as they were. One merged mesh per city block (frustum culled).
+let XR = mulberry(4711);
+const xr = (a, b) => a + XR() * (b - a);
+const xpick = a => a[Math.floor(XR() * a.length)];
+let DECOR = null, CURB = null;          // decor mesher of the block being built, style of the building being built
+const DEC_CH = new Map();   // 64 m chunks of decor geometry
+function decorChunk(x, z) { const k = Math.floor(x / 64) + ',' + Math.floor(z / 64); let m = DEC_CH.get(k); if (!m) { m = new Mesher(false, 0.05); DEC_CH.set(k, m); } return m; }
+const mNeon = new Mesher(true, 0);
+const TRIM_COLS = [0xf4efe4, 0xe9dfc9, 0xd9cfbd, 0x8a7a66];
+const SHUT_COLS = [0x3f6b4f, 0x6b4a32, 0x3b5f86, 0x8a3b2a, 0x2f5f5a];
+const FRAME_COLS = [0xf4efe4, 0xf4efe4, 0x4b3a2e, 0x2f3b4a];
+const NEON_COLS = [0x00BFA6, 0xff3d81, 0xffb02e, 0x4ad7ff, 0xff5a4a, 0x7dff9e];
+const NEON_TXT = ['ÇAY', 'KEBAP', 'OTEL', 'KAHVE', 'PİDE', 'CAFE', 'BAR', 'ÇİÇEK', 'DÖNER', 'TATLI', 'ECZANE', 'BALIK', 'LOKANTA', 'KUAFÖR', 'SİMİT', 'OPEN'];
+const FRUIT_COLS = [0xe5484d, 0xf2a33a, 0x7cc25e, 0xf2d24a, 0xc2477a];
+WORLD.neonGlow = []; WORLD.reflSrc = []; WORLD.neonPool = [];
+function xscope(fn) { const s = WR; WR = XR; try { fn(); } finally { WR = s; } }
+function makeNeonTexture() {
+  const cv = document.createElement('canvas'); cv.width = 1024; cv.height = 512; const g = cv.getContext('2d');
+  g.fillStyle = '#0b0e14'; g.fillRect(0, 0, 1024, 512);
+  NEON_TXT.forEach((txt, i) => {
+    const c = i % 4, r = Math.floor(i / 4), x = c * 256, y = r * 128, col = '#' + NEON_COLS[i % NEON_COLS.length].toString(16).padStart(6, '0');
+    g.fillStyle = '#10141c'; g.fillRect(x + 4, y + 4, 248, 120);
+    g.strokeStyle = col; g.lineWidth = 4; g.shadowColor = col; g.shadowBlur = 14; g.strokeRect(x + 12, y + 12, 232, 104);
+    g.fillStyle = '#ffffff'; g.font = '900 ' + (txt.length > 6 ? 42 : 54) + 'px "Bahnschrift","Arial Narrow","Trebuchet MS",Arial,sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
+    g.lineWidth = 6; g.strokeStyle = col; g.strokeText(txt, x + 128, y + 66); g.shadowBlur = 6; g.fillText(txt, x + 128, y + 66); g.shadowBlur = 0;
+  });
+  const tex = new THREE.CanvasTexture(cv); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 4; tex.generateMipmaps = true; tex.minFilter = THREE.LinearMipmapLinearFilter;
+  return tex;
+}
+const neonUV = i => { const c = i % 4, r = Math.floor(i / 4); return [c / 4 + 0.004, 1 - (r + 1) / 4 + 0.004, (c + 1) / 4 - 0.004, 1 - r / 4 - 0.004]; };
+/** flat quad of width w x height h facing (Nx,Nz); the viewer in front of it sees the texture the right way round */
+function quadFace(M, cx, cy, cz, Nx, Nz, w, h, col, uv) {
+  const Rx = Nz, Rz = -Nx, hw = w / 2, hh = h / 2;
+  M.quad([cx - Rx * hw, cy - hh, cz - Rz * hw], [cx + Rx * hw, cy - hh, cz + Rz * hw], [cx + Rx * hw, cy + hh, cz + Rz * hw], [cx - Rx * hw, cy + hh, cz - Rz * hw], col, uv);
+}
+/** box measured on a facade: from o0 to o1 off the wall, w wide (along the wall, centred at du), y0..y1 */
+function fbox(M, Fx, Fz, nx, nz, du, o0, o1, w, y0, y1, col) {
+  const ux = nz, uz = -nx, o = o1 - o0, oc = (o0 + o1) / 2, ax = Math.abs(nx) > 0.5;
+  M.boxB(Fx + ux * du + nx * oc, y0, Fz + uz * du + nz * oc, ax ? o : w, y1 - y0, ax ? w : o, col);
+}
+/** thin trim: only the faces a player can see (front and top, optionally the underside) */
+function fslab(M, Fx, Fz, nx, nz, du, o0, o1, w, y0, y1, col, under = false) {
+  const ux = nz, uz = -nx, P = (d, o, y) => [Fx + ux * (du + d) + nx * o, y, Fz + uz * (du + d) + nz * o];
+  facadeQuad(M, Fx, Fz, nx, nz, du, w, y0, y1, col, o1);
+  M.quadTo(P(-w / 2, o0, y1), P(w / 2, o0, y1), P(w / 2, o1, y1), P(-w / 2, o1, y1), col, 0, 1, 0);
+  if (under) M.quadTo(P(-w / 2, o0, y0), P(w / 2, o0, y0), P(w / 2, o1, y0), P(-w / 2, o1, y0), col, 0, -1, 0);
+}
+function neonAt(x, y, z, hex, pool) {
+  if (WORLD.neonGlow.length < 260) WORLD.neonGlow.push([x, y, z, hex]);
+  WORLD.reflSrc.push([x, z, hex, y]);
+  if (pool) WORLD.neonPool.push([pool[0], pool[1], hex]);
+}
+function windowDecor(Fx, Fz, nx, nz, du, y0, f, front) {
+  const M = DECOR, B = CURB;
+  facadeQuad(M, Fx, Fz, nx, nz, du, 1.3, y0 - 0.12, y0 + 1.58, B.frame, 0.03);
+  fslab(M, Fx, Fz, nx, nz, du, 0, 0.2, 1.5, y0 - 0.2, y0 - 0.06, B.trim);              // sill
+  if (!front) return;
+  if (B.lintel || f > 0) facadeQuad(M, Fx, Fz, nx, nz, du, 1.42, y0 + 1.5, y0 + 1.68, B.trim, 0.07);   // lintel
+  facadeQuad(M, Fx, Fz, nx, nz, du, 0.05, y0, y0 + 1.45, B.frame, 0.065);                     // mullion
+  facadeQuad(M, Fx, Fz, nx, nz, du, 1.05, y0 + 0.88, y0 + 0.93, B.frame, 0.065);             // transom
+  const r = XR();
+  if (r < B.shutP) {                                                                           // wooden shutters
+    facadeQuad(M, Fx, Fz, nx, nz, du - 0.8, 0.44, y0 - 0.02, y0 + 1.5, B.shutter, 0.08);
+    facadeQuad(M, Fx, Fz, nx, nz, du + 0.8, 0.44, y0 - 0.02, y0 + 1.5, B.shutter, 0.08);
+  } else if (r < B.shutP + B.flowerP) {                                                         // flower box
+    fslab(M, Fx, Fz, nx, nz, du, 0.02, 0.3, 1.1, y0 - 0.42, y0 - 0.2, 0x6b4a32);
+    fslab(M, Fx, Fz, nx, nz, du, 0.04, 0.28, 1.0, y0 - 0.2, y0 - 0.02, xpick([0x4caf50, 0xe5484d, 0xf2a33a, 0xe86aa0, 0x8f5fd1]));
+  } else if (r < B.shutP + B.flowerP + 0.1 && f >= 1) {                                         // air conditioner
+    fbox(M, Fx, Fz, nx, nz, du + 0.1, 0, 0.42, 0.8, y0 + 1.78, y0 + 2.3, 0xdadee4);
+    facadeQuad(M, Fx, Fz, nx, nz, du + 0.1, 0.6, y0 + 1.9, y0 + 2.18, 0x8c929c, 0.45);
+  }
+}
+function balconyDecor(Fx, Fz, nx, nz, du, y0) {
+  const M = DECOR, o1 = 0.78, dark = CURB.rail;
+  fslab(M, Fx, Fz, nx, nz, du, o1 - 0.05, o1 + 0.01, 1.54, y0 + 0.72, y0 + 0.78, dark);        // top rail
+  fslab(M, Fx, Fz, nx, nz, du - 0.74, 0.0, o1, 0.05, y0 + 0.72, y0 + 0.78, dark); fslab(M, Fx, Fz, nx, nz, du + 0.74, 0.0, o1, 0.05, y0 + 0.72, y0 + 0.78, dark);
+  for (const d of [-0.58, -0.2, 0.2, 0.58]) facadeQuad(M, Fx, Fz, nx, nz, du + d, 0.035, y0 + 0.0, y0 + 0.72, dark, o1);
+  if (XR() < 0.3) { /* laundry on the rail */ facadeQuad(M, Fx, Fz, nx, nz, du, 0.9, y0 + 0.2, y0 + 0.68, xpick([0xe5484d, 0x2b8cc4, 0xf6dd8c, 0xffffff]), o1 + 0.01); }
+}
+function bayWindow(Fx, Fz, nx, nz, du, yb, wall, trim) {      // cumba: an upper-floor box that juts out over the street
+  const M = DECOR, w = 2.3, o = 0.95;
+  fbox(M, Fx, Fz, nx, nz, du, 0, o, w, yb, yb + 2.9, wall);
+  fbox(M, Fx, Fz, nx, nz, du, 0, o + 0.18, w + 0.3, yb + 2.9, yb + 3.08, trim);
+  fbox(M, Fx, Fz, nx, nz, du, 0, o - 0.2, w - 0.5, yb - 0.4, yb, trim);
+  const lit = XR() < 0.45, G = lit ? mWinL : mWinD;
+  for (const d of [-0.7, 0, 0.7]) { facadeQuad(M, Fx, Fz, nx, nz, du + d, 0.58, yb + 0.7, yb + 2.4, CURB.frame, o + 0.02); facadeQuad(G, Fx, Fz, nx, nz, du + d, 0.46, yb + 0.8, yb + 2.3, 0xffffff, o + 0.035); }
+  const ux = nz, uz = -nx;
+  for (const s of [-1, 1]) { // side lights
+    const cx = Fx + ux * (du + s * (w / 2 + 0.01)) + nx * (o / 2), cz = Fz + uz * (du + s * (w / 2 + 0.01)) + nz * (o / 2);
+    G.quadTo([cx - nx * 0.3, yb + 0.8, cz - nz * 0.3], [cx + nx * 0.3, yb + 0.8, cz + nz * 0.3], [cx + nx * 0.3, yb + 2.3, cz + nz * 0.3], [cx - nx * 0.3, yb + 2.3, cz - nz * 0.3], 0xffffff, s * ux, 0, s * uz);
+  }
+}
+function neonBlade(Fx, Fz, nx, nz, du, yc, cell, hex) {
+  const ux = nz, uz = -nx, ox = Fx + ux * du, oz = Fz + uz * du, bx = ox + nx * 1.05, bz = oz + nz * 1.05;
+  fbox(DECOR, Fx, Fz, nx, nz, du, 0, 1.8, 0.06, yc + 0.34, yc + 0.4, 0x2a2f38);               // bracket arm
+  fbox(DECOR, Fx, Fz, nx, nz, du, 0.28, 1.82, 0.05, yc - 0.37, yc + 0.37, 0x161a22);           // sign board
+  const uv = neonUV(cell);
+  quadFace(mNeon, bx + ux * 0.03, yc, bz + uz * 0.03, ux, uz, 1.5, 0.72, 0xffffff, uv);
+  quadFace(mNeon, bx - ux * 0.03, yc, bz - uz * 0.03, -ux, -uz, 1.5, 0.72, 0xffffff, uv);
+  neonAt(bx, yc, bz, hex, [Fx + ux * du + nx * 3.0, Fz + uz * du + nz * 3.0]);
+}
+function shopDecor(Fx, Fz, nx, nz, Lf, yG) {
+  const units = clamp(Math.round(Lf / 4.6), 1, 3), uw = Lf / units, M = DECOR, B = CURB;
+  for (let k = 0; k < units; k++) {
+    const du = -Lf / 2 + (k + 0.5) * uw;
+    facadeQuad(M, Fx, Fz, nx, nz, du + uw * 0.3, 1.3, yG, yG + 2.3, B.frame, 0.045);               // door surround
+    fslab(M, Fx, Fz, nx, nz, du, 0, 0.1, uw - 0.4, yG + 0.0, yG + 0.35, 0x6e665a);                          // stall riser
+    fslab(M, Fx, Fz, nx, nz, du, 0, 0.14, uw - 0.4, yG + 2.19, yG + 2.35, 0x2f3238, true);                  // shutter box
+    const r = XR();
+    if (r < 0.4) {                                                                                           // produce crates
+      for (let c = 0; c < 3; c++) {
+        const d = du + (c - 1) * 0.8, ox = 0.1, o1 = 0.8;
+        fbox(M, Fx, Fz, nx, nz, d, ox, o1, 0.7, yG, yG + 0.5, 0x8a5a3a);
+        fbox(M, Fx, Fz, nx, nz, d, ox + 0.04, o1 - 0.04, 0.62, yG + 0.5, yG + 0.62, xpick(FRUIT_COLS));
+      }
+    } else if (r < 0.62) {                                                                                   // cafe table and two stools
+      const ux = nz, uz = -nx, tx = Fx + ux * du + nx * 1.7, tz = Fz + uz * du + nz * 1.7, y = hillH(tx, tz) + 0.14;
+      M.cyl(tx, y, tz, 0.4, 0.4, 0.06, 8, 0xf4efe4, true); M.cyl(tx, y, tz, 0.05, 0.05, 0.7, 5, 0x3d4350);
+      M.cyl(tx, y + 0.7, tz, 0.42, 0.42, 0.06, 8, xpick([0xe5484d, 0x2b8cc4, 0x3fae6a, 0xf2a33a]), true);
+      for (const s of [-1, 1]) M.cyl(tx + ux * s * 0.7, y, tz + uz * s * 0.7, 0.2, 0.17, 0.42, 6, 0x6b4a32, true);
+    }
+    if (XR() < 0.6) neonBlade(Fx, Fz, nx, nz, du + uw * 0.28, yG + 4.15 + xr(0, 0.3), Math.floor(XR() * 16), NEON_COLS[Math.floor(XR() * NEON_COLS.length)]);
+  }
+}
+function roofDecor(cx, cz, sx, sz, top, gable, gh) {
+  const M = DECOR, r = XR();
+  if (gable) {
+    if (r < 0.5) { const alongX = sx >= sz, px = cx + (alongX ? xr(-sx * 0.3, sx * 0.3) : 0), pz = cz + (alongX ? 0 : xr(-sz * 0.3, sz * 0.3)); M.boxB(px, top + gh * 0.45, pz, 0.7, gh * 0.55 + 1.2, 0.7, 0xa04a30); M.boxB(px, top + gh + 1.15, pz, 0.9, 0.18, 0.9, 0x6b6e76); }
+    return;
+  }
+  const y = top + 0.45, ax = sx / 2 - 1.3, az = sz / 2 - 1.3;
+  if (ax < 0.5 || az < 0.5) return;
+  if (r < 0.34) { const px = cx + xr(-ax, ax), pz = cz + xr(-az, az); M.cyl(px, y, pz, 0.8, 0.8, 1.2, 8, xpick([0x7a8794, 0x8a5a44, 0x4c6a8a])); M.cyl(px, y + 1.2, pz, 0.8, 0.05, 0.35, 8, 0x4a4f58); }
+  else if (r < 0.6) { const px = cx + xr(-ax, ax), pz = cz + xr(-az, az); M.cyl(px, y, pz, 0.04, 0.04, 3.4, 5, 0x3d4350); for (const h of [1.8, 2.5, 3.1]) M.boxB(px, y + h, pz, 0.04, 0.04, 1.1 - h * 0.18, 0x3d4350); }
+  else if (r < 0.82) { const px = cx + xr(-ax, ax), pz = cz + xr(-az, az); M.sphere(px, y + 0.5, pz, 0.55, 0.28, 0.55, 7, 3, 0xe8ecf0, 0, Math.PI / 2); M.cyl(px, y, pz, 0.04, 0.04, 0.55, 5, 0x3d4350); }
+  if (XR() < 0.4) { const px = cx + xr(-ax, ax), pz = cz + xr(-az, az); M.boxB(px, y, pz, 1.0, 0.7, 0.7, 0xdadee4); M.boxB(px + 0.1, y + 0.7, pz, 0.6, 0.1, 0.6, 0x8c929c); }
+}
+function buildingDecor(x0, z0, x1, z1, nx, nz, top, floors, D) {
+  const cx = (x0 + x1) / 2, cz = (z0 + z1) / 2, sx = x1 - x0, sz = z1 - z0, M = DECOR, B = CURB;
+  const Lf = Math.abs(nx) > 0.5 ? sz : sx, Fx = cx + nx * sx / 2, Fz = cz + nz * sz / 2, yG = hillH(Fx, Fz);
+  // belt courses between the floors, a heavier cornice under the roof, stone plinth and corner quoins
+  for (let f = 1; f < floors; f++) fslab(M, Fx, Fz, nx, nz, 0, 0, 0.14, Lf, yG + f * 3.3 + 0.18, yG + f * 3.3 + 0.34, B.trim);
+  fslab(M, Fx, Fz, nx, nz, 0, 0, 0.42, Lf + 0.2, top - 0.38, top, B.trim, true); fslab(M, Fx, Fz, nx, nz, 0, 0, 0.24, Lf, top - 0.62, top - 0.38, B.corn);
+  fslab(M, Fx, Fz, nx, nz, 0, 0, 0.09, Lf, yG - 0.4, yG + 0.7, 0x756b5c);
+  for (const s of [-1, 1]) fslab(M, Fx, Fz, nx, nz, s * (Lf / 2 - 0.25), 0, 0.1, 0.5, yG, top - 0.62, B.trim);
+  // cumba bay windows on the upper floors
+  if (floors >= 4 && Lf > 6.5 && (D === DIST.balat || D === DIST.galata || XR() < 0.3)) {
+    const n = Lf > 10 ? 2 : 1;
+    for (let i = 0; i < n; i++) { const f = 2 + Math.floor(XR() * (floors - 2.2)), du = n === 1 ? xr(-Lf * 0.2, Lf * 0.2) : (i ? 1 : -1) * Lf * 0.25; if (f < floors) bayWindow(Fx, Fz, nx, nz, du, yG + f * 3.3 + 0.35, B.bay, B.trim); }
+  }
+}
+
+// ---------------- redesign: masonry detail on every wall (world-space tri-planar, one 256 px tile): brick courses on brick-coloured
+// surfaces, stucco mottling everywhere. No UVs needed, so the merged vertex-coloured meshes keep working.
+const WALLU = { tWall: { value: null } };
+function makeWallTexture() {
+  const S = 256, cv = document.createElement('canvas'); cv.width = cv.height = S; const g = cv.getContext('2d'), img = g.createImageData(S, S), d = img.data, rnd = mulberry(9001);
+  const bh = S / 24, bw = S / 8, tone = []; for (let r = 0; r < 24; r++) { tone[r] = []; for (let c = 0; c < 9; c++) tone[r][c] = 0.9 + rnd() * 0.14; }
+  const waves = []; for (let i = 0; i < 7; i++) waves.push([1 + Math.floor(rnd() * 5), 1 + Math.floor(rnd() * 5), rnd() * TAU, 0.015 + rnd() * 0.02]);
+  for (let y = 0; y < S; y++) for (let x = 0; x < S; x++) {
+    const r = Math.floor(y / bh), off = (r & 1) * bw / 2, xx = (x + off) % S, c = Math.floor(xx / bw);
+    const mortar = (y % bh) < 1.5 || (xx % bw) < 1.5;
+    const brick = mortar ? 0.7 : tone[r][c] * (0.97 + rnd() * 0.05);
+    let n = 1; for (const [a, b, ph, am] of waves) n += am * Math.sin(TAU * (a * x + b * y) / S + ph);
+    const i = (y * S + x) * 4; d[i] = Math.min(255, brick * 255); d[i + 1] = Math.min(255, (n * 0.98 + (rnd() - 0.5) * 0.05) * 255); d[i + 2] = 255; d[i + 3] = 255;
+  }
+  g.putImageData(img, 0, 0);
+  const tex = new THREE.CanvasTexture(cv); tex.wrapS = tex.wrapT = THREE.RepeatWrapping; tex.colorSpace = THREE.NoColorSpace; tex.anisotropy = 4; tex.generateMipmaps = true; tex.minFilter = THREE.LinearMipmapLinearFilter;
+  return tex;
+}
+function patchWall(mat) {
+  mat.onBeforeCompile = sh => {
+    if (lowQ()) return;   // the Low tier keeps the plain flat-shaded walls
+    sh.uniforms.tWall = WALLU.tWall;
+    sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nvarying vec3 vWP;').replace('#include <begin_vertex>', '#include <begin_vertex>\nvWP = (modelMatrix * vec4(transformed, 1.0)).xyz;');
+    sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nvarying vec3 vWP; uniform sampler2D tWall;')
+      .replace('#include <color_fragment>', `#include <color_fragment>
+{ vec3 wn = normalize(cross(dFdx(vWP), dFdy(vWP)));
+  vec2 wuv = abs(wn.y) > 0.6 ? vWP.xz : (abs(wn.x) > abs(wn.z) ? vWP.zy : vWP.xy);
+  vec3 tw = texture2D(tWall, wuv / 1.92).rgb;
+  float brickM = smoothstep(2.6, 3.4, vColor.r / (vColor.g + 0.02));
+  float leaf = step(vColor.r + 0.02, vColor.g);
+  diffuseColor.rgb *= mix(1.0, tw.r, brickM * 0.9) * mix(1.0, tw.g, mix(0.9, 0.45, leaf)); }`);
+  };
+  mat.customProgramCacheKey = () => 'wall' + (lowQ() ? 'l' : 'h');
+}
+
 function building(x0, z0, x1, z1, nx, nz, shop, opts = {}) {
   const cx = (x0 + x1) / 2, cz = (z0 + z1) / 2, sx = x1 - x0, sz = z1 - z0;
   const gs = [hillH(x0, z0), hillH(x1, z0), hillH(x0, z1), hillH(x1, z1), hillH(cx, cz)];
@@ -1218,13 +1408,18 @@ function building(x0, z0, x1, z1, nx, nz, shop, opts = {}) {
   const floors = opts.floors || (D ? dp(D.floors) : wpick([2, 3, 3, 4, 4, 5])), h = floors * 3.3 + 0.6;
   const wall = opts.wall || (D ? dp(D.wall) : wpick(PAL_WALL)), top = gmax + h;
   mStatic.boxB(cx, gmin - 0.9, cz, sx, top - gmin + 0.9, sz, wall);
-  if (WR() < (D ? D.gable : 0.58)) mStatic.gable(cx, cz, sx, sz, top, wr(1.8, 3), D && D.roof ? dp(D.roof) : wpick(PAL_ROOF), wall);
+  let isGable = false;
+  if (WR() < (D ? D.gable : 0.58)) { mStatic.gable(cx, cz, sx, sz, top, wr(1.8, 3), D && D.roof ? dp(D.roof) : wpick(PAL_ROOF), wall); isGable = true; }
   else {
     mStatic.boxB(cx, top, cz, sx + 0.3, 0.45, sz + 0.3, 0xe9e2d6);
     if (WR() < 0.6) mStatic.boxB(cx + wr(-sx / 4, sx / 4), top + 0.45, cz + wr(-sz / 4, sz / 4), wr(1.4, 2.4), wr(1, 1.8), wr(1.4, 2.4), wpick([0x8f98a3, 0xb0703c, 0xd6d1c7]));
   }
   obBox(x0, z0, x1, z1);
   WORLD.buildingCount++;
+  DECOR = decorChunk(cx, cz);
+  XR = mulberry(Math.imul(Math.floor(x0 * 37.1 + 1000), 73856093) ^ Math.imul(Math.floor(z0 * 41.3 + 1000), 19349663));
+  CURB = { frame: xpick(FRAME_COLS), trim: xpick(TRIM_COLS), shutter: xpick(SHUT_COLS), rail: xpick([0x2a2f38, 0x3d4350, 0x4b3a2e]), shutP: D === DIST.balat ? 0.45 : 0.2, flowerP: 0.16, lintel: XR() < 0.5, bay: wall, corn: new THREE.Color(wall).multiplyScalar(0.8).getHex(), front: true };
+  if (DECOR) xscope(() => roofDecor(cx, cz, sx, sz, top, isGable, 2.4));
   if (opts.plain) return;
   // facades: front + two lateral sides
   const sides = [[nx, nz], [nz, -nx], [-nz, nx]];
@@ -1232,8 +1427,10 @@ function building(x0, z0, x1, z1, nx, nz, shop, opts = {}) {
     const Fx = cx + mx * sx / 2, Fz = cz + mz * sz / 2, Lf = Math.abs(mx) > 0.5 ? sz : sx;
     const isFront = k === 0 && shop;
     const yG = hillH(Fx, Fz);
+    CURB.front = k === 0;
     windowsFacade(Fx, Fz, mx, mz, Lf, yG, top, isFront ? 1 : 0);
     if (isFront) shopFront(Fx, Fz, mx, mz, Lf, yG);
+    if (k === 0 && DECOR) xscope(() => { buildingDecor(x0, z0, x1, z1, mx, mz, top, floors, D); if (isFront) shopDecor(Fx, Fz, mx, mz, Lf, yG); });
     else if (k === 0) { // house door
       facadeQuad(mStatic, Fx, Fz, mx, mz, wr(-Lf / 4, Lf / 4), 1.1, yG, yG + 2.1, 0x6b4a32, 0.06);
     }
@@ -1352,7 +1549,7 @@ function buildRoads() {
     const bridge = (t) => !r.horiz && (r.id === 'v0' || r.id === 'v2') && t > 49 && t < 81;
     for (let t = r.t0; t < r.t1 - 1e-6; t += step) {
       const ta = t, tb = Math.min(t + step, r.t1);
-      for (const [l0, l1] of [[-r.h, 0], [0, r.h]]) mRoad.quadTo(P(ta, l0), P(tb, l0), P(tb, l1), P(ta, l1), 0x2e3036, 0, 1, 0);
+      for (const [l0, l1] of [[-r.h, 0], [0, r.h]]) mRoad.quadTo(P(ta, l0), P(tb, l0), P(tb, l1), P(ta, l1), 0x373a41, 0, 1, 0);
     }
     // markings
     const mk = (ta, tb, l0, l1, col) => mRoad.quadTo(P(ta, l0, 0.06), P(tb, l0, 0.06), P(tb, l1, 0.06), P(ta, l1, 0.06), col, 0, 1, 0);
@@ -1758,7 +1955,7 @@ function buildWorldGeometry(stage) {
     case 2: BLOCKS.forEach(buildBlock); break;
     case 3: WR = mulberry(777); buildBridgesAndWalls(); for (const s of WORLD.shelters) shelterAt(s.x, s.z, s.hx, s.hz); stopStalls(); buildProps(); break;
     case 4:
-      WORLD.staticGeo = mStatic.build(); WORLD.propGeo = mProp.build(); WORLD.parkGeo = mPark.build(); WORLD.roadGeo = mRoad.build(); WORLD.winLGeo = mWinL.build(); WORLD.winDGeo = mWinD.build(); WORLD.signGeo = mSign.build(); WORLD.ferryGeo = buildFerry(); WORLD.puddleGeo = buildPuddles();
+      WORLD.staticGeo = mStatic.build(); WORLD.propGeo = mProp.build(); WORLD.parkGeo = mPark.build(); WORLD.roadGeo = mRoad.build(); WORLD.winLGeo = mWinL.build(); WORLD.winDGeo = mWinD.build(); WORLD.signGeo = mSign.build(); WORLD.decorGeos = [...DEC_CH.values()].map(m => m.build()); WORLD.neonGeo = mNeon.build(); WORLD.ferryGeo = buildFerry(); WORLD.puddleGeo = buildPuddles();
       break;
   }
 }
@@ -2732,6 +2929,8 @@ const matRoad = new THREE.MeshLambertMaterial({ vertexColors: true, flatShading:
 const matDol = new THREE.MeshLambertMaterial({ vertexColors: true, flatShading: true, emissive: 0x5a4600 });
 const emissiveMat = (hex, o = {}) => new THREE.MeshLambertMaterial(Object.assign({ color: 0x000000, emissive: hex }, o));
 const matWinL = emissiveMat(0x9fc6e0), matWinD = emissiveMat(0x6f93b3);
+const matWall = new THREE.MeshLambertMaterial({ vertexColors: true, flatShading: true });
+let matNeon = null, glowPts = null;
 let signTex = null, matSign = null;
 const SKY = { top: new THREE.Color(), hor: new THREE.Color(), tmp: new THREE.Color(), tmp2: new THREE.Color() };
 let skyU, skyMesh, sunDisc, moonDisc, stars, cloudGroup, seaMesh, ferryMesh;
@@ -2871,7 +3070,10 @@ function buildScene() {
   matSign = new THREE.MeshLambertMaterial({ color: 0x000000, emissive: 0xffffff, emissiveMap: signTex, map: signTex });
   const add = (geo, mat, o = {}) => { const m = new THREE.Mesh(geo, mat); m.castShadow = !!o.cast; m.receiveShadow = !!o.recv; m.frustumCulled = o.cull !== false && false; scene.add(m); return m; };
   OBJ.ground = add(WORLD.groundGeo, matRoad, { recv: true });
-  OBJ.static = add(WORLD.staticGeo, matLam, { cast: true, recv: true });
+  WALLU.tWall.value = makeWallTexture(); patchWall(matWall);
+  OBJ.static = add(WORLD.staticGeo, matWall, { cast: true, recv: true });
+  OBJ.decor = WORLD.decorGeos.map(g => { const m = new THREE.Mesh(g, matWall); m.receiveShadow = true; scene.add(m); return m; });
+  matNeon = new THREE.MeshBasicMaterial({ map: makeNeonTexture(), color: 0x808080 }); OBJ.neon = add(WORLD.neonGeo, matNeon);
   OBJ.props = add(WORLD.propGeo, matLam, { cast: true, recv: true }); OBJ.parkedProc = add(WORLD.parkGeo, matLam, { cast: true, recv: true });
   OBJ.road = add(WORLD.roadGeo, matRoad, { recv: true });
   OBJ.winL = add(WORLD.winLGeo, matWinL); OBJ.winD = add(WORLD.winDGeo, matWinD);
@@ -2903,7 +3105,7 @@ void main(){ vec3 c = vY>0.0 ? mix(uHor,uTop,pow(vY,0.55)) : uHor*0.8;
   // stars
   stars = new Particles(260, false, false); stars.obj.material.uniforms.uOpacity.value = 0; scene.add(stars.obj);
   for (let i = 0; i < 260; i++) { const a = R() * TAU, e = 0.12 + R() * 1.4, r = 950; stars.spawn(Math.cos(a) * Math.cos(e) * r, Math.sin(e) * r, Math.sin(a) * Math.cos(e) * r, 0, 0, 0, 1e9, 1.8 + R() * 1.6, 1.8, 0xffffff, 0.5 + R() * 0.5); }
-  stars.update(0); stars.obj.renderOrder = -9;
+  stars.update(0); for (let i = 0; i < 260; i++) stars.alpha[i] = stars.a0[i]; stars.obj.renderOrder = -9;   // update(0) leaves age 0 = alpha 0: set the twinkle alphas by hand
   // ferry
   ferryMesh = new THREE.Mesh(WORLD.ferryGeo, matLam); ferryMesh.position.set(69.5, SEA_Y, 150); ferryMesh.rotation.y = Math.PI; ferryMesh.castShadow = true; scene.add(ferryMesh);
 
@@ -2970,6 +3172,11 @@ void main(){ vec3 c = vY>0.0 ? mix(uHor,uTop,pow(vY,0.55)) : uHor*0.8;
   let li = 0; for (const h of WORLD.sigHeads) for (const l of h.lamps) { _o.position.set(l.x, l.y, l.z); _o.scale.set(1, 1, 0.5); _o.updateMatrix(); OBJ.sig.setMatrixAt(li++, _o.matrix); }
   // fx
   fx = new Particles(lowQ() ? 220 : 420, true, false); scene.add(fx.obj);
+  { // neon glow halos: additive sprites at every neon sign, visible only at night
+    const n = WORLD.neonGlow.length; glowPts = new Particles(Math.max(1, n), true, true); glowPts.obj.renderOrder = 7;
+    WORLD.neonGlow.forEach(q => glowPts.spawn(q[0], q[1], q[2], 0, 0, 0, 1e9, 3.4, 3.4, q[3], 0.5));
+    glowPts.obj.material.uniforms.uOpacity.value = 0; scene.add(glowPts.obj);
+  }
   rain = new Particles(lowQ() ? 420 : 900, true, false); scene.add(rain.obj);
   rain.obj.material.uniforms.uOpacity.value = 0;
   for (let i = 0; i < rain.max; i++) rain.spawn(0, -100, 0, 0, 0, 0, 1e9, 0.075, 0.075, 0xe6f1ff, 0.85);
@@ -3007,6 +3214,7 @@ function updateSky(hour, rainA) {
   matWinL.emissive.setHex(0xffd479).lerp(_c.setHex(0x9fc6e0), L);
   OBJ.lamps.material.emissive.setHex(0xfff0c0).lerp(_c.setHex(0xcfd3da), L);
   OBJ.pools.material.opacity = clamp(night * 1.2 - 0.1, 0, 0.55);
+  matNeon.color.setScalar(0.5 + 0.5 * night); glowPts.obj.material.uniforms.uOpacity.value = clamp(night * 1.4 - 0.15, 0, 1);
   OBJ.beam.material.uniforms.uOp.value = clamp(night * 1.4 - 0.1, 0, 0.8);
   OBJ.headL.material.emissive.setHex(0xfff8d0).multiplyScalar(0.8 + 0.4 * night);
   OBJ.road && (matRoad.color.setScalar(1 - 0.22 * rainA)); if (OBJ.matGround) OBJ.matGround.color.setScalar(1 - 0.22 * rainA);
@@ -3179,6 +3387,8 @@ function syncRender(dt) {
   tick += dt;
   const P = player, hour = SIM.hour;
   if (Math.abs(hour - lastSkyHour) > 0.01 || Math.abs(SIM.rain - lastSkyRain) > 0.02) updateSky(hour, SIM.rain);
+  // decor chunks and neon boards are not drawn beyond 230 m (the fog hides them anyway)
+  for (const m of OBJ.decor) { const bs = m.geometry.boundingSphere; m.visible = hyp(bs.center.x - camera.position.x, bs.center.z - camera.position.z) < 230 + bs.radius; }
   // ---- player
   OBJ.pl.position.set(P.x, P.y, P.z); OBJ.pl.rotation.order = 'YXZ'; OBJ.pl.rotation.set(-P.pitch, P.hd, P.roll);
   for (const w of OBJ.wheels) { w.w.rotation.x = P.wheel; if (w.front) w.piv.rotation.y = -P.steer * 0.5; }
