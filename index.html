@@ -528,7 +528,7 @@ const STR = {
     f_van: 'Çift park eden teslimat kamyoneti', f_side: 'Dar sokaklar, kaldırıma park', f_vip: 'VIP yolcu', f_jam: 'Trafik sıkışıklığı olayı', f_night: 'Gece sürüşü',
     f_pier: 'Vapur iskelesi durağı', f_stops: '{0} durak', f_bus: 'Otobüs durakta bekler',
     tgt: 'Hedef', star1: '1 yıldız', star2: '2 yıldız', star3: '3 yıldız',
-    toastStart: 'Vardiya başladı! Sarı halkalara git.', toastNoBiz: 'Burada kimse yok.', toastFull: 'Dolmuş dolu!',
+    toastAutoLow: 'Akıcı oynanış için kalite Düşük’e alındı (Ayarlar’dan değiştirilebilir).', toastStart: 'Vardiya başladı! Sarı halkalara git.', toastNoBiz: 'Burada kimse yok.', toastFull: 'Dolmuş dolu!',
     penRed: 'Kırmızı ışık! -{0} TL', penHit: 'Çarpışma! -{0} TL', penBrake: 'Sert fren, yolcular şikayetçi -{0} TL', penSkip: 'El sallayan yolcuyu geçtin -{0} TL',
     penLeft: 'Yolcu sabretmedi -{0} TL', penPed: 'Yayaya çarptın! -{0} TL', missed: 'Durağı kaçırdın!', vipAboard: 'VIP yolcu bindi! Hızlı git.',
     vipSpawn: 'VIP yolcu bekliyor: {0}', jamOn: 'Ana caddede trafik kilitlendi!', jamOff: 'Trafik açıldı.', rainOn: 'Yağmur başladı: yol kaygan.', rainOff: 'Yağmur dindi.',
@@ -595,7 +595,7 @@ const STR = {
     f_van: 'Double-parked delivery van', f_side: 'Narrow streets, pavement parking', f_vip: 'VIP passenger', f_jam: 'Traffic jam event', f_night: 'Night driving',
     f_pier: 'Ferry pier stop', f_stops: '{0} stops', f_bus: 'Buses wait at their stops',
     tgt: 'Target', star1: '1 star', star2: '2 stars', star3: '3 stars',
-    toastStart: 'Shift started! Head for the yellow rings.', toastNoBiz: 'Nobody to serve here.', toastFull: 'The dolmuş is full!',
+    toastAutoLow: 'Quality set to Low for smoother play (change it in Settings).', toastStart: 'Shift started! Head for the yellow rings.', toastNoBiz: 'Nobody to serve here.', toastFull: 'The dolmuş is full!',
     penRed: 'Red light! -{0} TL', penHit: 'Collision! -{0} TL', penBrake: 'Hard braking, complaints -{0} TL', penSkip: 'You skipped a waving passenger -{0} TL',
     penLeft: 'A passenger gave up -{0} TL', penPed: 'You hit a pedestrian! -{0} TL', missed: 'You missed the stop!', vipAboard: 'VIP aboard! Drive fast.',
     vipSpawn: 'VIP waiting at {0}', jamOn: 'Traffic jam on the main street!', jamOff: 'Traffic is moving again.', rainOn: 'Rain started: slippery road.', rainOff: 'The rain eased.',
@@ -649,7 +649,7 @@ const fmt = n => Math.round(n).toLocaleString(LANG === 'tr' ? 'tr-TR' : 'en-US')
 // ---------------------------------------------------------------- settings / save (all in try/catch)
 const KEY_SET = 'arena.dolmus.settings', KEY_SAVE = 'arena.dolmus.save';
 const isPhone = /Android|iPhone|iPad|iPod|Mobi/i.test(navigator.userAgent) || (matchMedia && matchMedia('(pointer:coarse)').matches && Math.min(screen.width, screen.height) < 800);
-const settings = { master: 0.8, music: 0.6, sfx: 0.8, lang: String(navigator.language || '').toLowerCase().startsWith('tr') ? 'tr' : 'en', quality: isPhone ? 'low' : 'high', mapRot: true };
+const settings = { master: 0.8, music: 0.6, sfx: 0.8, lang: String(navigator.language || '').toLowerCase().startsWith('tr') ? 'tr' : 'en', quality: isPhone ? 'low' : 'high', qualityManual: false, mapRot: true };
 function lsGet(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } }
 function lsSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* ignore */ } }
 (function loadSettings() {
@@ -2956,7 +2956,8 @@ const canvas = $('#gl');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance', alpha: false });
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(55, 1, 0.5, 1400);
-const lowQ = () => settings.quality === 'low' || FLAG.low;
+let autoLow = false;   // session-only: set once by the fps watchdog, never saved
+const lowQ = () => settings.quality === 'low' || FLAG.low || autoLow;
 function applyQuality() {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, lowQ() ? 1 : 1.5));
   renderer.shadowMap.enabled = !lowQ();
@@ -3876,7 +3877,7 @@ function applyLang() {
   el.langTxt.textContent = LANG === 'tr' ? 'TR · EN' : 'EN · TR';
   el.hint.innerHTML = t('hintSpace');
   el.bTR.classList.toggle('sel', LANG === 'tr'); el.bEN.classList.toggle('sel', LANG === 'en');
-  el.bQLow.classList.toggle('sel', settings.quality === 'low'); el.bQHigh.classList.toggle('sel', settings.quality === 'high');
+  el.bQLow.classList.toggle('sel', lowQ()); el.bQHigh.classList.toggle('sel', !lowQ());
   document.title = 'Dolmuş';
   if (G.state === 'title' || G.state === 'loading') refreshTitle();
   if (G.state === 'loading') el.playTxt.textContent = t('loading', loadN, loadTotal);
@@ -4061,7 +4062,7 @@ function syncSettingsUI() {
   el.rMaster.value = Math.round(settings.master * 100); el.rMusic.value = Math.round(settings.music * 100); el.rSfx.value = Math.round(settings.sfx * 100);
   el.oMaster.textContent = el.rMaster.value + '%'; el.oMusic.textContent = el.rMusic.value + '%'; el.oSfx.textContent = el.rSfx.value + '%';
   el.bTR.classList.toggle('sel', LANG === 'tr'); el.bEN.classList.toggle('sel', LANG === 'en');
-  el.bQLow.classList.toggle('sel', settings.quality === 'low'); el.bQHigh.classList.toggle('sel', settings.quality === 'high');
+  el.bQLow.classList.toggle('sel', lowQ()); el.bQHigh.classList.toggle('sel', !lowQ());
   el.bMapH.classList.toggle('sel', settings.mapRot !== false); el.bMapN.classList.toggle('sel', settings.mapRot === false);
   const ic = settings.mute || (!settings.sfxOn && !settings.musicOn) ? '#i-sfx-off' : '#i-sfx';
   el.bSound.querySelector('use').setAttribute('href', ic);
@@ -4180,7 +4181,7 @@ document.addEventListener('visibilitychange', () => { if (document.hidden && G.s
 window.addEventListener('pointerdown', () => { AUD.init(); AUD.resume(); }, { once: false });
 function enableTouch() { document.body.classList.add('touch'); applyLang(); resize(); }
 window.addEventListener('touchstart', () => enableTouch(), { once: true, passive: true });
-if (FLAG.touch) enableTouch();
+if (FLAG.touch || (matchMedia && matchMedia('(pointer:coarse)').matches)) enableTouch();   // touch devices get the touch controls (and no keyboard hint) before the first tap
 (function touchUI() {
   const st = el.steer, knob = st.firstElementChild;
   const setS = clientX => { const r = st.getBoundingClientRect(), u = clamp((clientX - r.left - r.width / 2) / (r.width / 2 - 26), -1, 1); touchSteer = Math.abs(u) < 0.06 ? 0 : u; knob.style.marginLeft = (u * (r.width / 2 - 26) - 26) + 'px'; };
@@ -4208,7 +4209,7 @@ on('bResume', () => resumeGame()); on('bRestart', () => { G.retries++; enterIntr
 on('bSettingsP', () => openSettings('pause')); on('bMenuP', () => toMenu());
 on('bSetBack', () => closeSettings());
 on('bTR', () => { setLang('tr'); syncSettingsUI(); }); on('bEN', () => { setLang('en'); syncSettingsUI(); });
-on('bQLow', () => { settings.quality = 'low'; saveSettings(); applyQuality(); syncSettingsUI(); }); on('bQHigh', () => { settings.quality = 'high'; saveSettings(); applyQuality(); syncSettingsUI(); });
+on('bQLow', () => { settings.quality = 'low'; settings.qualityManual = true; autoLow = false; saveSettings(); applyQuality(); syncSettingsUI(); }); on('bQHigh', () => { settings.quality = 'high'; settings.qualityManual = true; autoLow = false; saveSettings(); applyQuality(); syncSettingsUI(); });
 on('bFull', () => toggleFullscreen());
 function setMapMode(rot) { settings.mapRot = rot; saveSettings(); syncSettingsUI(); if (G.state === 'play' || G.state === 'paused' || G.state === 'countdown') drawMinimap(); }
 on('bMapH', () => setMapMode(true)); on('bMapN', () => setMapMode(false));
@@ -4288,6 +4289,22 @@ function botTick(dt) {
 
 // ---------------------------------------------------------------- main loop
 let lastT = performance.now(), acc = 0, fpsS = 60, ambT = 6, frameN = 0;
+// quality watchdog: on High, average the real frame rate over ~4 s of play (after a 1 s warm-up); below 45 fps drop to Low once per session and say so.
+// A quality the player picked by hand (settings.qualityManual) is never overridden.
+const QW = { done: false, t: 0, n: 0, t0: 0 };
+function qualityWatch(now, dt) {
+  if (QW.done || G.state !== 'play') return;
+  if (lowQ() || settings.qualityManual || document.hidden) { QW.done = true; return; }
+  QW.t += dt;
+  if (QW.t < 1) return;
+  if (!QW.t0) { QW.t0 = now; QW.n = 0; return; }
+  QW.n++;
+  if (now - QW.t0 < 4000) return;
+  QW.done = true;
+  const fps = QW.n / ((now - QW.t0) / 1000);
+  G.qwFps = fps;
+  if (fps < 45) { autoLow = true; applyQuality(); syncSettingsUI(); toast(t('toastAutoLow'), 'info'); }
+}
 const FIXED = 1 / 60;
 function frame(now) {
   requestAnimationFrame(frame);
@@ -4295,6 +4312,7 @@ function frame(now) {
   if (document.hidden) return;
   if (G.state === 'loading') return;
   fpsS += (1 / Math.max(dt, 1e-3) - fpsS) * 0.05;
+  qualityWatch(now, dt);
   if (FLAG.auto) botTick(dt); else readInput();
   if (G.state === 'countdown') { G.cd -= dt; const n = Math.ceil(G.cd); if (n > 0 && n !== G.cdShown) showCountdown(n); if (G.cd <= 0) beginShift(); }
   if (G.state === 'play' || G.state === 'title') {
