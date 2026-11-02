@@ -21,7 +21,7 @@
 <p align="center"><b>Play online: <a href="https://furkiozknn.github.io/dolmus/">https://furkiozknn.github.io/dolmus/</a></b> (desktop and phone, no install)</p>
 
 <!-- portals:start -->
-<p align="center">Also on: <a href="https://furkiozknn.itch.io/dolmus">itch.io</a></p>
+<p align="center">Also on: <a href="https://furkiozknn.itch.io/dolmus">itch.io</a> &middot; <a href="https://playgama.ai/play/i4q3xdqljprlly">Playgama</a></p>
 <!-- portals:end -->
 
 ## Highlights
