@@ -10,3 +10,4 @@ Thumbs.db
 
 # model build previews: the .glb copies live in assets/models/
 assets/out/*.glb
+graphify-out/
