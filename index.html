@@ -2097,7 +2097,16 @@ const player = {
   routeS: 0, nearStop: -1, actT: 0, wheel: 0, lastPen: 0, redT: 0, camHd: 0, chain: [], anyDrop: false,
 };
 const input = { throttle: 0, brake: 0, steer: 0, door: false, horn: false };
-const AG = [];   // dynamic collision circles
+const AG = [];   // dynamic collision circles (reused in place to avoid per-frame GC allocations)
+let agN = 0;
+function pushAgent(x, z, r, kind, owner) {
+  let a = AG[agN];
+  if (!a) { a = { x, z, r, kind, owner }; AG[agN] = a; }
+  else { a.x = x; a.z = z; a.r = r; a.kind = kind; a.owner = owner; }
+  agN++;
+}
+const PLAYER_CIRCLES = [-1.7, 0, 1.7];
+const CAR_GAP_LOOKS = [1.2, 2.5, 3.6, 5, 7.5, 12, 17, 24];
 let AG_BY_CELL = null;
 
 // ---------------------------------------------------------------- AI vehicles
@@ -2129,7 +2138,7 @@ function carGap(c) {
   }
   // dynamic agents ahead along the path
   const lead = c.len / 2;
-  for (const k of [1.2, 2.5, 3.6, 5, 7.5, 12, 17, 24]) {
+  for (const k of CAR_GAP_LOOKS) {
     if (k - 1.0 >= gap) break;
     pathAt(P, c.s + lead + k, _tp);
     for (let i = 0; i < AG.length; i++) {
@@ -2409,13 +2418,14 @@ function updatePigeons(dt) {
 
 // ---------------------------------------------------------------- agent circles (for collisions / AI)
 function buildAgents() {
-  AG.length = 0;
-  for (const c of SIM.cars) for (const o of c.def.circles) AG.push({ x: c.x + c.hx * o, z: c.z + c.hz * o, r: c.def.r, kind: 'car', owner: c });
+  agN = 0;
+  for (const c of SIM.cars) for (const o of c.def.circles) pushAgent(c.x + c.hx * o, c.z + c.hz * o, c.def.r, 'car', c);
   const tr = SIM.tram;
-  if (tr) for (let o = -tr.len / 2 + 1.3; o <= tr.len / 2 - 1.2; o += 2.6) AG.push({ x: tr.x + tr.dir * o, z: tr.z, r: 1.4, kind: 'tram', owner: tr });
+  if (tr) for (let o = -tr.len / 2 + 1.3; o <= tr.len / 2 - 1.2; o += 2.6) pushAgent(tr.x + tr.dir * o, tr.z, 1.4, 'tram', tr);
   const fx = Math.sin(player.hd), fz = Math.cos(player.hd);
-  for (const o of [-1.7, 0, 1.7]) AG.push({ x: player.x + fx * o, z: player.z + fz * o, r: 1.12, kind: 'player', owner: player });
-  for (const p of SIM.peds) if (p.kind === 'cross' && p.st === 'go') AG.push({ x: p.x, z: p.z, r: 0.45, kind: 'ped', owner: p });
+  for (const o of PLAYER_CIRCLES) pushAgent(player.x + fx * o, player.z + fz * o, 1.12, 'player', player);
+  for (const p of SIM.peds) if (p.kind === 'cross' && p.st === 'go') pushAgent(p.x, p.z, 0.45, 'ped', p);
+  AG.length = agN;
 }
 
 // ---------------------------------------------------------------- scoring, stops and passengers
@@ -2743,7 +2753,7 @@ function addDent(amount, kind) {
 function collidePlayer(dt) {
   const P = player, fx = Math.sin(P.hd), fz = Math.cos(P.hd);
   let impactMax = 0;
-  for (const off of [-1.7, 0, 1.7]) {
+  for (const off of PLAYER_CIRCLES) {
     const cx = P.x + fx * off, cz = P.z + fz * off;
     const hits = staticHits(cx, cz, 1.12);
     for (const h of hits) {
@@ -2758,7 +2768,7 @@ function collidePlayer(dt) {
   // vs AI vehicles and the tram
   for (const a of AG) {
     if (a.kind === 'player' || a.kind === 'ped') continue;
-    for (const off of [-1.7, 0, 1.7]) {
+    for (const off of PLAYER_CIRCLES) {
       const cx = P.x + fx * off, cz = P.z + fz * off, dx = cx - a.x, dz = cz - a.z, m = 1.12 + a.r, d2 = dx * dx + dz * dz;
       if (d2 >= m * m) continue;
       const d = Math.sqrt(d2) || 0.01, nx = dx / d, nz = dz / d, pen = m - d;
@@ -2781,7 +2791,7 @@ function collidePlayer(dt) {
   for (const p of SIM.peds) {
     if (p.hit > 0 || (p.kind !== 'cross' && p.kind !== 'walk' && p.kind !== 'alight')) continue;
     const dx = p.x - P.x, dz = p.z - P.z; if (dx * dx + dz * dz > 25) continue;
-    for (const off of [-1.7, 0, 1.7]) {
+    for (const off of PLAYER_CIRCLES) {
       const cx = P.x + fx * off, cz = P.z + fz * off, d = hyp(p.x - cx, p.z - cz);
       if (d < 1.12 + 0.3) {
         if (Math.abs(P.speed) > 2.2) {
@@ -3617,7 +3627,7 @@ function syncRender(dt) {
 
   // ---- stop markers
   let nm = 0;
-  const wantDest = new Set(P.seats.map(s => s.dest));
+  const hasSeatDest = idx => { for (let i = 0; i < P.seats.length; i++) if (P.seats[i].dest === idx) return true; return false; };
   const free = P.seats.length + P.boarding < SEATS;
   const pulse = 1 + 0.07 * Math.sin(tick * 5);
   const mark = (x, z, colHex, sc, beam) => {
@@ -3629,7 +3639,7 @@ function syncRender(dt) {
   };
   for (const st of SIM.stops) {
     const hasVip = st.wait.some(p => p.vip);
-    if (wantDest.has(st.idx)) mark(st.def.x, st.def.z, DEST_COL, 1, true);
+    if (hasSeatDest(st.idx)) mark(st.def.x, st.def.z, DEST_COL, 1, true);
     else if (st.wait.length && free) mark(st.def.x, st.def.z, hasVip ? VIP_COL : PICK_COL, (hasVip ? 1.15 : 1) * (COACH.on && st.idx === 0 ? 1.28 + 0.1 * Math.sin(tick * 8) : 1), true);
     else mark(st.def.x, st.def.z, IDLE_COL, 0.7, false);
   }
@@ -3728,9 +3738,11 @@ function camClear(px, pz, dx, dz, maxD) {
       let hit = -1;
       if (o.type === 'b') {
         const M = 1.0; let t0 = 0, t1 = maxD, ok = true;
-        for (const [pp, d, lo, hi] of [[px, dx, o.x0 - M, o.x1 + M], [pz, dz, o.z0 - M, o.z1 + M]]) {
-          if (Math.abs(d) < 1e-6) { if (pp < lo || pp > hi) ok = false; }
-          else { let a = (lo - pp) / d, b = (hi - pp) / d; if (a > b) { const w = a; a = b; b = w; } t0 = Math.max(t0, a); t1 = Math.min(t1, b); }
+        if (Math.abs(dx) < 1e-6) { if (px < o.x0 - M || px > o.x1 + M) ok = false; }
+        else { let a = (o.x0 - M - px) / dx, b = (o.x1 + M - px) / dx; if (a > b) { const w = a; a = b; b = w; } t0 = Math.max(t0, a); t1 = Math.min(t1, b); }
+        if (ok) {
+          if (Math.abs(dz) < 1e-6) { if (pz < o.z0 - M || pz > o.z1 + M) ok = false; }
+          else { let a = (o.z0 - M - pz) / dz, b = (o.z1 + M - pz) / dz; if (a > b) { const w = a; a = b; b = w; } t0 = Math.max(t0, a); t1 = Math.min(t1, b); }
         }
         if (ok && t0 <= t1 && t0 > 0.01) hit = t0;   // t0 = 0: the dolmus already stands inside the margin, ignore that box
       } else {
@@ -3780,6 +3792,7 @@ function updateCamera(dt) {
 
 // ---------------------------------------------------------------- minimap
 let mmBase = null;
+const _wantDest = new Set(), _anyDest = new Set();
 const MM = { x0: -170, z0: -112, k: 1.2353 };
 const mmx = x => (x - MM.x0) * MM.k, mmz = z => (z - MM.z0) * MM.k;
 function buildMinimapBase() {
@@ -3808,22 +3821,23 @@ function drawMinimap() {
     g.strokeStyle = 'rgba(250,204,21,.8)'; g.lineWidth = 3.2; g.setLineDash([9, 6]); g.beginPath();
     for (let i = 0; i <= P.N; i += 3) { const j = i % P.N; if (i === 0) g.moveTo(mmx(P.X[j]), mmz(P.Z[j])); else g.lineTo(mmx(P.X[j]), mmz(P.Z[j])); }
     g.stroke(); g.setLineDash([]);
-    const anyDest = new Set(player.seats.filter(s => s.any).map(s => s.dest));   // "anywhere" riders: the destination is a stretch of road, not a point
-    if (anyDest.size) {
+    _wantDest.clear(); _anyDest.clear();
+    for (let i = 0; i < player.seats.length; i++) { const s = player.seats[i]; _wantDest.add(s.dest); if (s.any) _anyDest.add(s.dest); }
+    if (_anyDest.size) {
       g.save(); g.strokeStyle = 'rgba(94,224,138,.6)'; g.lineWidth = 7; g.lineCap = 'round'; g.lineJoin = 'round';
-      for (const di of anyDest) { const c0 = SIM.stops[di].def.s; g.beginPath(); for (let k = -ANY_RANGE; k <= ANY_RANGE; k += 5) { pathAt(P, c0 + k, _tp); if (k === -ANY_RANGE) g.moveTo(mmx(_tp.x), mmz(_tp.z)); else g.lineTo(mmx(_tp.x), mmz(_tp.z)); } g.stroke(); }
+      for (const di of _anyDest) { const c0 = SIM.stops[di].def.s; g.beginPath(); for (let k = -ANY_RANGE; k <= ANY_RANGE; k += 5) { pathAt(P, c0 + k, _tp); if (k === -ANY_RANGE) g.moveTo(mmx(_tp.x), mmz(_tp.z)); else g.lineTo(mmx(_tp.x), mmz(_tp.z)); } g.stroke(); }
       g.restore();
     }
-    const wantDest = new Set(player.seats.map(s => s.dest)), guide = SIM.guide;
+    const guide = SIM.guide;
     g.font = '700 12px "Trebuchet MS",sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
     for (const st of SIM.stops) {
-      const x = mmx(st.def.x), z = mmz(st.def.z), drop = wantDest.has(st.idx), wait = st.wait.length > 0, vip = st.wait.some(p => p.vip);
+      const x = mmx(st.def.x), z = mmz(st.def.z), drop = _wantDest.has(st.idx), wait = st.wait.length > 0, vip = st.wait.some(p => p.vip);
       const col = drop ? '#5ee08a' : (wait ? (vip ? '#ffe066' : '#FACC15') : '#9aa3b5');
       g.save(); g.translate(x, z); g.rotate(-ang);   // keep the stop badges upright
       if (guide && guide.stop === st) { g.strokeStyle = '#fff'; g.lineWidth = 2; g.beginPath(); g.arc(0, 0, 12 + 2 * Math.sin(tick * 6), 0, TAU); g.stroke(); }
       g.fillStyle = '#12161f'; g.beginPath(); g.arc(0, 0, 8.5, 0, TAU); g.fill();
       g.strokeStyle = col; g.lineWidth = 2.6; g.stroke();
-      g.fillStyle = col; g.fillText(String(st.idx + 1) + (anyDest.has(st.idx) ? '?' : ''), 0, 0.5);
+      g.fillStyle = col; g.fillText(String(st.idx + 1) + (_anyDest.has(st.idx) ? '?' : ''), 0, 0.5);
       if (wait) { g.fillStyle = vip ? '#ffe066' : '#fff'; g.beginPath(); g.arc(9, -9, 3.4 + Math.min(st.wait.length, 4) * 0.35, 0, TAU); g.fill(); }
       g.restore();
     }
@@ -4239,6 +4253,7 @@ window.addEventListener('orientationchange', () => setTimeout(resize, 100));
 
 // ---------------------------------------------------------------- autopilot (?auto): a real driver that uses the same controls and rules
 const BOT = { uiT: 0, stuck: 0, rev: 0, revSteer: 1, waitT: 0 };
+const BOT_GAP_LOOKS = [4, 8, 13, 19, 27];
 function botGap(path, s) {
   const L = path.L; let gap = 1e9;
   for (const li of path.lights) {
@@ -4247,7 +4262,7 @@ function botGap(path, s) {
     const st = sigState(SIGNALS[li.ap.sig], li.ap.axis);
     if (st === 'r' || (st === 'y' && dd > player.vf * player.vf / (2 * 4.5) + 2)) gap = Math.min(gap, Math.max(dd, 0));
   }
-  for (const k of [4, 8, 13, 19, 27]) {
+  for (const k of BOT_GAP_LOOKS) {
     if (k - 1 >= gap) break;
     pathAt(path, s + 2.4 + k, _tp);
     let hit = false;
