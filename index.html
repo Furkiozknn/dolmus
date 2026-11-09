@@ -1195,6 +1195,22 @@ ul.feat li::before {
   flex: none;
 }
 
+/* Route Master picker (#sRoute) */
+#sRoute .card.hat { width: min(92vw, 540px); }
+#sRoute h3 { font-family: var(--font-display); letter-spacing: 1px; font-size: 16px; color: var(--c-yellow); margin: 12px 0 6px; text-transform: uppercase; }
+.hat-stops, .hat-ch { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+.hat-stops .btn, .hat-ch .btn { padding: 7px 10px; font-size: 14px; min-height: 40px; }
+.hat-stops .btn b { font-family: var(--font-mono); margin-right: 4px; opacity: 0.8; }
+.hat-stops .btn.sel, .hat-ch .btn.sel {
+  background: linear-gradient(180deg, #FFAE1A, #E59500); color: #121316; border-color: #141518; font-weight: 900;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.5), 0 3px 0 #7A4B00;
+}
+.hat-chd { min-height: 2.6em; font-size: 13px; }
+#sRoute .best:empty { display: none; }
+.seat b.mood { position: absolute; top: -10px; right: -8px; font-size: 13px; line-height: 17px; width: 17px; height: 17px; border-radius: 50%; background: #12161f; border: 1.5px solid #FFF8E7; font-family: sans-serif; font-weight: 700; text-shadow: none; display: none; }
+.seat b.mood.like { display: block; color: #5ee08a; font-size: 16px; }
+.seat b.mood.dislike { display: block; color: #ff5a4a; }
+
 /* Level Dispatch Card (#lvCard) */
 #lvCard {
   position: absolute;
@@ -1734,6 +1750,23 @@ body.touch #lvCard {
       </div>
     </div>
   </section>
+
+  <section class="screen dim" id="sRoute" role="dialog" aria-modal="true" aria-labelledby="hatTitle">
+    <div class="card hat">
+      <div class="levha-mini"><span>HAT USTASI · GÜZERGÂH LEVHASI</span></div>
+      <h2 id="hatTitle" data-i="hatTitle"></h2>
+      <p class="how" id="hatLv"></p>
+      <p class="sub" data-i="hatSub"></p>
+      <h3 id="hatStopsH"></h3>
+      <div class="hat-stops" id="hatStops"></div>
+      <p class="how" data-i="hatStopsHelp"></p>
+      <h3 data-i="hatRadio"></h3>
+      <div class="hat-ch" id="hatCh"></div>
+      <p class="hat-chd" id="hatChd"></p>
+      <div class="best" id="hatBestLine"></div>
+      <div class="col"><button class="btn primary" id="bHatGo"><svg class="ic fill"><use href="#i-play"/></svg><span id="hatGoTxt"></span></button><button class="btn" id="bMenuR"><svg class="ic"><use href="#i-home"/></svg><span data-i="menu"></span></button></div>
+    </div>
+  </section>
 </main>
 <div id="dbg"></div>
 <script>setTimeout(function(){if(!window.__dolmusReady){var e=document.getElementById("playTxt");if(e)e.textContent="Three.js could not load (check the connection)";}},25000);</script>
@@ -1852,6 +1885,19 @@ const STR = {
     tipClean: 'Temiz vardiya: ceza ve kayıp bahşiş yok.', bestTipLine: 'En iyi bahşiş: {0} TL', anyDropsLine: 'Müsait yerde inen yolcu: {0}', thx: ['Sağ ol kaptan!', 'Eline sağlık!', 'Allah razı olsun!', 'Kolay gelsin!'], angry: ['Çok bekledim!', 'Bu ne yavaşlık!', 'İneceğim!'],
     keyHelp: 'Ok / WASD sür · Boşluk dur-kapı · H korna',
     pausedAuto: 'Sekme gizlendi, oyun duraklatıldı.', autoOn: 'Otomatik pilot açık',
+    hatTitle: 'Hat Ustası', hatSub: 'Vardiyadan önce hattını kur: 3 durak seç, radyoyu ayarla.',
+    hatStops: 'Hat durakları ({0}/3)', hatStopsHelp: 'Hat duraklarında yolcu daha sık birikir, diğer duraklarda daha seyrek. Hiç seçmezsen klasik vardiya.',
+    hatRadio: 'Radyo / kaset', hatGo: 'Kontağı çevir', hatNeed3: 'Ya 3 durak seç ya hiç seçme',
+    ch_off: 'Kapalı', ch_arabesk: 'Arabesk', ch_pop: 'Pop', ch_haber: 'Haberler', ch_turku: 'Türkü',
+    chd_off: 'Radyo kapalı: yolcu karışımı her zamanki gibi.',
+    chd_arabesk: 'Esnaf gelir: sabırlı, bahşişi bol. Turistler sıkılır.',
+    chd_pop: 'Öğrenciler ve turistler: daha çok yolcu, öğrenci indirimli ve az bahşiş, sabırları kısa. Teyzeler sıkılır.',
+    chd_haber: 'İşe gidenler: daha çok yolcu, biraz fazla öder, sabırsızdır. Öğrenciler sıkılır.',
+    chd_turku: 'Teyzeler gelir: çok sabırlı ama az bahşiş, yolcu biraz seyrek. İşe gidenler sıkılır.',
+    hatToast: 'Hat: {0} · Radyo: {1}', hatClassic: 'klasik',
+    hatLine: 'Hat: {0} · Radyo: {1}', hatProfit: 'Hat kârı: {0} TL = hasılat {1} + bahşiş {2} − yakıt {3} − rölanti {4}',
+    hatBest: 'Bu seviyenin en iyi hattı: {0} TL ({1} · {2})', hatNewBest: 'Yeni hat rekoru: {0} TL!',
+    moodLike: ['Aç şu sesi kaptan!', 'Bu şarkı benim!'], moodDislike: ['Kıs şunu biraz...', 'Başka kanal yok mu?'],
   },
   en: {
     subtitle: 'Drive a dolmuş through Istanbul streets: pick up, drop off, earn.',
@@ -1920,6 +1966,19 @@ const STR = {
     tipClean: 'Clean shift: no penalties and no lost tips.', bestTipLine: 'Best tip: {0} TL', anyDropsLine: 'Anywhere drops: {0}', thx: ['Thanks, driver!', 'Well done!', 'God bless you!', 'Take care!'], angry: ['Waited too long!', 'So slow!', 'Let me out!'],
     keyHelp: 'Arrows / WASD drive · Space stop-door · H horn',
     pausedAuto: 'Tab hidden, game paused.', autoOn: 'Autopilot on',
+    hatTitle: 'Route Master', hatSub: 'Set up your line before the shift: pick 3 stops and tune the radio.',
+    hatStops: 'Route stops ({0}/3)', hatStopsHelp: 'Riders gather faster at your route stops and slower at the others. Pick none for a classic shift.',
+    hatRadio: 'Radio / cassette', hatGo: 'Start the engine', hatNeed3: 'Pick 3 stops or none',
+    ch_off: 'Off', ch_arabesk: 'Arabesk', ch_pop: 'Pop', ch_haber: 'News', ch_turku: 'Türkü (folk)',
+    chd_off: 'Radio off: the usual passenger mix.',
+    chd_arabesk: 'Shopkeepers ride: patient, generous tippers. Tourists get bored.',
+    chd_pop: 'Students and tourists: more riders, student discount and small tips, short patience. Grannies get bored.',
+    chd_haber: 'Commuters: more riders, pay a bit more, impatient. Students get bored.',
+    chd_turku: 'Grannies ride: very patient but small tips, a few fewer riders. Commuters get bored.',
+    hatToast: 'Route: {0} · Radio: {1}', hatClassic: 'classic',
+    hatLine: 'Route: {0} · Radio: {1}', hatProfit: 'Route profit: {0} TL = fares {1} + tips {2} − fuel {3} − idling {4}',
+    hatBest: 'Best route on this level: {0} TL ({1} · {2})', hatNewBest: 'New route record: {0} TL!',
+    moodLike: ['Turn it up, driver!', 'That is my song!'], moodDislike: ['Turn that down a bit...', 'Any other station?'],
   },
 };
 let LANG = 'tr';
@@ -3372,6 +3431,55 @@ const PTYPES = {
 };
 const PTYPE_KEYS = Object.keys(PTYPES);
 function styleByType(p) { const ty = PTYPES[p.ptype]; p.shirt = cpick(ty.shirts); p.scale = ty.scale[0] + CR() * (ty.scale[1] - ty.scale[0]); }
+
+// ---- Hat Ustası (Route Master): before a shift the player picks 3 of the level's stops and a radio channel.
+// Route stops gather riders faster (HAT_ON) and the others slower (HAT_OFF). The channel weights the passenger
+// type mix toward the types it attracts; each type has its own patience / tip / fare behaviour (PTRAIT), and
+// seated riders drain patience slower when they like the channel and faster when they dislike it (mood icon on
+// the seat chip). Channel 'off' with no stops is the classic shift and plays exactly as before.
+const PTRAIT = {
+  student: { pat: 0.72, tip: 0.6, fare: 0.85 }, grandmother: { pat: 1.35, tip: 0.75, fare: 1 }, shopkeeper: { pat: 1.15, tip: 1.4, fare: 1 },
+  tourist: { pat: 0.85, tip: 1.5, fare: 1.1 }, commuter: { pat: 0.75, tip: 1, fare: 1.15 },
+};
+const CHANNELS = {
+  off: { mix: null, dislike: null, rate: 1 },
+  arabesk: { mix: { shopkeeper: 4 }, dislike: 'tourist', rate: 1 },
+  pop: { mix: { student: 3, tourist: 2 }, dislike: 'grandmother', rate: 0.85 },
+  haber: { mix: { commuter: 4 }, dislike: 'student', rate: 0.9 },
+  turku: { mix: { grandmother: 4 }, dislike: 'commuter', rate: 1.1 },
+};
+const CH_KEYS = Object.keys(CHANNELS);
+const HAT_ON = 1.6, HAT_OFF = 0.8;                  // stop spawn-timer speed on / off the chosen route
+const MOOD_PAT = { like: 1.15, dislike: 0.8 }, MOOD_DRAIN = { like: 0.8, dislike: 1.25 };
+const FUEL_TL_M = 0.06, IDLE_TL_S = 0.25;           // route profit: fuel per metre driven, cost per second idling in traffic
+const KEY_HAT = 'dolmus.hat';                        // { [level id]: { profit, stops: [keys], ch } } best route per level
+let PLAN = { stops: [], ch: 'off' };                 // the player's current choice (kept between shifts)
+const planFits = lv => !!lv && !lv.endless && lv.id >= 2;   // level 1 (coached) and endless shifts keep the classic rules
+/** stop keys of a level in route order (same as makeStops) */
+function levelStopKeys(lv) { let defs = STOPDEF[lv.route].slice(); if (lv.stops) defs = defs.filter(d => lv.stops.includes(d.key)); return defs.sort((a, b) => a.s - b.s).map(d => d.key); }
+/** the plan a shift really uses: the player's choice where it fits the level, else classic */
+function planFor(lv) {
+  if (!planFits(lv)) return { stops: [], ch: 'off' };
+  const keys = levelStopKeys(lv), stops = PLAN.stops.filter(k => keys.includes(k));
+  return { stops: stops.length === 3 ? stops : [], ch: CHANNELS[PLAN.ch] ? PLAN.ch : 'off' };
+}
+/** passenger type: one CR draw, like cpick, so the classic shift keeps its exact random stream */
+function pickPtype() {
+  const mix = SIM.plan && CHANNELS[SIM.plan.ch].mix;
+  if (!mix) return cpick(PTYPE_KEYS);
+  let tot = 0; for (const k of PTYPE_KEYS) tot += mix[k] || 1;
+  let r = CR() * tot; for (const k of PTYPE_KEYS) { r -= mix[k] || 1; if (r < 0) return k; }
+  return PTYPE_KEYS[PTYPE_KEYS.length - 1];
+}
+/** 'like' | 'dislike' | '' for a passenger type under the current channel */
+function moodOf(ptype) {
+  const ch = SIM.plan && CHANNELS[SIM.plan.ch]; if (!ch || !ch.mix) return '';
+  return ch.mix[ptype] ? 'like' : ch.dislike === ptype ? 'dislike' : '';
+}
+const radioOn = () => !!(SIM.plan && SIM.plan.ch !== 'off');
+/** patience multiplier for a new waiting passenger (type trait x mood); 1 with the radio off */
+function patMul(ptype) { if (!radioOn()) return 1; const m = moodOf(ptype); return PTRAIT[ptype].pat * (m ? MOOD_PAT[m] : 1); }
+function stopRate(st) { const h = SIM.plan && SIM.plan.stops; return h && h.length ? (h.includes(st.key) ? HAT_ON : HAT_OFF) : 1; }
 const SIM = {
   lv: null, lvIdx: 0, t: 0, hour: 8, rain: 0, rainTarget: 0, jam: false, running: false, over: false, overKind: '',
   cars: [], peds: [], stops: [], hailers: [], pigeons: [], tram: null, van: null, nextId: 1,
@@ -3721,7 +3829,7 @@ let SC = null;
 const netScore = () => SC.fares + SC.tips - SC.pen;
 const SHIFT = 240;
 const SEATS = 12;
-function newScore() { return { fares: 0, tips: 0, pen: 0, pass: 0, hits: 0, reds: 0, brakes: 0, skips: 0, gaveUp: 0, ped: 0, badStop: 0, tipsLost: 0, tipsLostN: 0, anyDrops: 0, bestTip: 0, cost: {} }; }
+function newScore() { return { fares: 0, tips: 0, pen: 0, pass: 0, hits: 0, reds: 0, brakes: 0, skips: 0, gaveUp: 0, ped: 0, badStop: 0, tipsLost: 0, tipsLostN: 0, anyDrops: 0, bestTip: 0, cost: {}, dist: 0, idle: 0 }; }
 function logEv(kind, extra) { if (typeof G !== 'undefined') { G.events.push(Object.assign({ t: +SIM.t.toFixed(1), kind, x: +player.x.toFixed(1), z: +player.z.toFixed(1), v: +player.speed.toFixed(1) }, extra || {})); if (G.events.length > 300) G.events.shift(); } }
 /** every penalty shows its reason as a toast; extra args fill {1}, {2}… of the message */
 function penalize(amount, msgKey, kind, ...args) {
@@ -3750,7 +3858,7 @@ function spawnPax(stop, vip = false) {
   const sp = standSpot(stop, k), d = stop.def;
   const pat = SIM.lv.pat * rr(0.8, 1.2) * (SIM.rain > 0.5 ? 0.8 : 1) * (vip ? 0.8 : 1);
   const p = newPed('pax', sp.x, sp.z, { st: 'wait', stop: stop.idx, slot: k, pat, patMax: pat, vip, hd: Math.atan2(d.rx, d.rz), shirt: vip ? 0xFACC15 : pick(SHIRTS), scale: vip ? 1.12 : 0.92 + R() * 0.2 });
-  if (vip) p.ptype = 'commuter'; else { p.ptype = cpick(PTYPE_KEYS); styleByType(p); }
+  if (vip) p.ptype = 'commuter'; else { p.ptype = pickPtype(); styleByType(p); const m = patMul(p.ptype); p.pat *= m; p.patMax *= m; }
   stop.wait.push(p); return p;
 }
 function spawnHailer(ahead) {
@@ -3769,7 +3877,7 @@ function spawnHailer(ahead) {
     if (from < 0) from = SIM.stops.length - 1;
     const pat = SIM.lv.pat * rr(0.8, 1.1) * (SIM.rain > 0.5 ? 0.8 : 1);
     const h = newPed('hail', x, z, { st: 'wait', from, s, pat, patMax: pat, hd: Math.atan2(rt.x, rt.z), hail: true });
-    h.ptype = cpick(PTYPE_KEYS); styleByType(h);
+    h.ptype = pickPtype(); styleByType(h); { const m = patMul(h.ptype); h.pat *= m; h.patMax *= m; }
     SIM.hailers.push(h); return h;
   }
   return null;
@@ -3812,9 +3920,10 @@ function finishBoard(p) {
   const boardS = p.s !== undefined ? p.s : SIM.stops[from].def.s, dist = Math.max(60, fwdDist(SIM.route.L, boardS, dst.def.s));
   const expT = dist / 8 + 10;
   const seat = { shirt: p.shirt, skin: p.skin, dest, vip: p.vip, dist, boardT: SIM.t, expT, smooth: true, ridePat: p.patMax * 0.9 + expT * 0.6, ridePatMax: p.patMax * 0.9 + expT * 0.6, scale: p.scale, missedPass: false, seatIdx: freeSeatIdx(), ptype: p.ptype || 'commuter', any: !p.vip && SIM.lv.id >= 2 && CR() < 0.34 };
+  seat.mood = p.vip ? '' : moodOf(seat.ptype);   // how this rider feels about the radio channel (seat chip icon, patience drain)
   player.seats.push(seat);
   HOOK.snd('pop');
-  const txt = p.vip ? t('bubVip', stopName(dst.key)) : voiceLine(seat, stopName(dst.key));
+  const txt = p.vip ? t('bubVip', stopName(dst.key)) : seat.mood ? cpick(t(seat.mood === 'like' ? 'moodLike' : 'moodDislike')) : voiceLine(seat, stopName(dst.key));
   HOOK.bubble(txt);
   if (p.vip) HOOK.toast(t('vipAboard'), 'info');
 }
@@ -3836,13 +3945,14 @@ function alight(seat, stopIdx, opts = {}) {
   const P = player, i = P.seats.indexOf(seat); if (i < 0) return;
   P.seats.splice(i, 1);
   const base = Math.round(6 + seat.dist / 28);
-  let fare = seat.vip ? base * 3 + 10 : base;
+  const tr = radioOn() && !seat.vip ? PTRAIT[seat.ptype] : null;   // passenger type behaviour applies with the radio on
+  let fare = seat.vip ? base * 3 + 10 : tr ? Math.round(base * tr.fare) : base;
   if (opts.early > 0) fare = Math.max(1, Math.round(fare * clamp(1 - opts.early / Math.max(seat.dist, 60), 0.7, 1)));   // got off before the stop: shorter ride
   let tip = 0, easy = 0;
   const ride = SIM.t - seat.boardT;
   if (seat.ridePat > 0) {
     const speedy = ride <= seat.expT * 1.15 ? 0.4 : (ride <= seat.expT * 1.5 ? 0.15 : 0), smooth = seat.smooth ? 0.3 : 0;
-    tip = Math.round(fare * (speedy + smooth) * clamp(seat.ridePat / seat.ridePatMax * 1.4, 0.3, 1) * (seat.vip ? 1.5 : 1));
+    tip = Math.round(fare * (speedy + smooth) * clamp(seat.ridePat / seat.ridePatMax * 1.4, 0.3, 1) * (seat.vip ? 1.5 : 1) * (tr ? tr.tip : 1));
   }
   const got = seat.ridePat > 0 ? fare : Math.round(fare * 0.6);
   if (opts.any) {
@@ -4180,11 +4290,11 @@ function updateStops(dt) {
   const lv = SIM.lv, P = player;
   const rainMul = 1 + SIM.rain * 0.5;
   for (const st of SIM.stops) {
-    st.timer -= dt * rainMul;
+    st.timer -= dt * rainMul * stopRate(st);
     if (st.timer <= 0) {
       const ahead = fwdDist(SIM.route.L, P.routeS, st.def.s);
       if (ahead < 45 || ahead > 230) { st.timer = 2; continue; }   // only appear on stops the dolmuş is about to reach
-      st.timer = lv.pInt * rr(0.7, 1.4); spawnPax(st);
+      st.timer = lv.pInt * rr(0.7, 1.4) * CHANNELS[SIM.plan.ch].rate; spawnPax(st);
     }
   }
   SIM.nextHail -= dt * (1 + SIM.rain * 0.5);
@@ -4209,7 +4319,7 @@ function updateStops(dt) {
   }
   // seats: ridePat, missed stop
   for (const s of P.seats) {
-    s.ridePat -= dt;
+    s.ridePat -= dt * (s.mood ? MOOD_DRAIN[s.mood] : 1);
     if (s.ridePat <= 0 && !s.angry) { s.angry = true; HOOK.toast(pick(t('angry')), 'bad'); }
     const dst = SIM.stops[s.dest], d = hyp(dst.def.x - P.x, dst.def.z - P.z);
     if (d < 14 && P.door.state === 'closed' && !P.stopReq && Math.abs(P.speed) > 5 && !s.passing) { s.passing = true; }
@@ -4234,7 +4344,7 @@ function initLevel(lv, idx) {
   R = mulberry(SEED + lv.id * 131 + (lv.attempt || 0) * 17);
   CR = mulberry(SEED * 7 + lv.id * 31 + (lv.attempt || 0) * 5 + 11);
   SIM.lv = lv; SIM.lvIdx = idx; SIM.t = 0; SIM.over = false; SIM.overKind = ''; SIM.rain = 0; SIM.jam = false; SIM.nextId = 1;
-  SIM.route = PATHS[lv.route]; makeStops(lv);
+  SIM.route = PATHS[lv.route]; makeStops(lv); SIM.plan = planFor(lv);
   SC = newScore(); SIM.score = SC;
   SIM.peds.length = 0; SIM.hailers.length = 0;
   resetPlayer(lv);
@@ -4262,6 +4372,7 @@ function stepSim(dt) {
   buildAgents();
   const px = player.x, pz = player.z;
   updatePlayer(dt);
+  { const v = Math.abs(player.speed); SC.dist += v * dt; if (v < 0.5 && player.door.state === 'closed' && !player.boarding) SC.idle += dt; }   // route profit: fuel and idling
   checkRedLights(px, pz);
   player.redT -= dt;
   // route progress
@@ -4281,7 +4392,9 @@ function endShift(kind) {
   const net = netScore(), lv = SIM.lv;
   let stars = 0;
   if (kind !== 'wreck') { if (net >= lv.target) stars = 1; if (net >= lv.t2) stars = 2; if (net >= lv.t3) stars = 3; }
-  SIM.result = { kind, stars, net, score: Object.assign({}, SC), dent: player.dent, lv };
+  const fuel = SC.dist * FUEL_TL_M, idleC = SC.idle * IDLE_TL_S;
+  const route = { stops: SIM.plan.stops.slice(), ch: SIM.plan.ch, fares: SC.fares, tips: SC.tips, fuel, idle: idleC, profit: SC.fares + SC.tips - fuel - idleC, dist: SC.dist, idleS: SC.idle };
+  SIM.result = { kind, stars, net, score: Object.assign({}, SC), dent: player.dent, lv, route };
   HOOK.levelEnd(SIM.result);
 }
 
@@ -5173,6 +5286,7 @@ function drawMinimap() {
       const col = drop ? '#5ee08a' : (wait ? (vip ? '#ffe066' : '#FACC15') : '#9aa3b5');
       g.save(); g.translate(x, z); g.rotate(-ang);   // keep the stop badges upright
       if (guide && guide.stop === st) { g.strokeStyle = '#fff'; g.lineWidth = 2; g.beginPath(); g.arc(0, 0, 12 + 2 * Math.sin(tick * 6), 0, TAU); g.stroke(); }
+      if (SIM.plan && SIM.plan.stops.includes(st.key)) { g.strokeStyle = '#ff9f1a'; g.lineWidth = 2.4; g.beginPath(); g.arc(0, 0, 11.5, 0, TAU); g.stroke(); }   // Route Master stop
       g.fillStyle = '#12161f'; g.beginPath(); g.arc(0, 0, 8.5, 0, TAU); g.fill();
       g.strokeStyle = col; g.lineWidth = 2.6; g.stroke();
       g.fillStyle = col; g.fillText(String(st.idx + 1) + (_anyDest.has(st.idx) ? '?' : ''), 0, 0.5);
@@ -5218,8 +5332,8 @@ const G = { state: 'loading', mode: 'campaign', lvIdx: 0, wave: 1, total: 0, sta
 const el = {};
 ['sTitle', 'sPause', 'sSettings', 'sEnd', 'hud', 'bPlay', 'playTxt', 'bCont', 'bEndless', 'bestLine', 'lvCard', 'cdTitle', 'cdDesc', 'cdList', 'cdTarget', 'countdown', 'cdNum', 'cdSub', 'mascot', 'mascotImg', 'enTips', 'enTitle', 'enSub', 'enStars', 'enStats', 'enRec', 'nextTxt', 'bNext', 'bRetry',
   'stLevel', 'stClock', 'stFare', 'fareBar', 'stSeats', 'dentBar', 'toasts', 'floaters', 'bubbles', 'seatsStrip', 'spVal', 'spArc', 'spNeedle', 'guideBox', 'guideArrow', 'guideTxt', 'hint', 'hurt', 'dbg', 'touch', 'steer', 'pGas', 'pBrake', 'tDoor', 'tHorn',
-  'rMaster', 'rMusic', 'rSfx', 'oMaster', 'oMusic', 'oSfx', 'bTR', 'bEN', 'bQLow', 'bQHigh', 'bMapH', 'bMapN', 'bSound', 'langTxt'].forEach(id => { el[id] = document.getElementById(id); });
-const SCREENS = ['sTitle', 'sPause', 'sSettings', 'sEnd'];
+  'rMaster', 'rMusic', 'rSfx', 'oMaster', 'oMusic', 'oSfx', 'bTR', 'bEN', 'bQLow', 'bQHigh', 'bMapH', 'bMapN', 'bSound', 'langTxt', 'sRoute', 'hatLv', 'hatStopsH', 'hatStops', 'hatCh', 'hatChd', 'hatBestLine', 'bHatGo', 'hatGoTxt'].forEach(id => { el[id] = document.getElementById(id); });
+const SCREENS = ['sTitle', 'sPause', 'sSettings', 'sEnd', 'sRoute'];
 function showScreen(id) { for (const s of SCREENS) el[s].classList.toggle('show', s === id); if (id) { const b = el[id].querySelector('.btn.primary:not([disabled])') || el[id].querySelector('.btn'); if (b && id !== 'sTitle') setTimeout(() => b.focus({ preventScroll: true }), 30); } }
 
 function applyLang() {
@@ -5235,7 +5349,7 @@ function applyLang() {
   if (G.state === 'title' || G.state === 'loading') refreshTitle();
   if (G.state === 'loading') el.playTxt.textContent = t('loading', loadN, loadTotal);
 }
-function setLang(l) { LANG = settings.lang = l; saveSettings(); applyLang(); if (G.state === 'countdown' || G.state === 'play' || G.state === 'paused') fillCard(); if (G.state === 'end') fillEnd(G.lastResult); }
+function setLang(l) { LANG = settings.lang = l; saveSettings(); applyLang(); if (G.state === 'countdown' || G.state === 'play' || G.state === 'paused') fillCard(); if (G.state === 'end') fillEnd(G.lastResult); if (G.state === 'route') fillRoute(); }
 function refreshTitle() {
   el.bCont.classList.toggle('hidden', !runSave);
   const stars = best.stars.reduce((a, b) => a + b, 0);
@@ -5326,8 +5440,42 @@ function startCampaign(fromSave) {
   enterIntro();
 }
 function startEndless() { AUD.init(); G.mode = 'endless'; G.wave = 1; G.endlessTotal = 0; enterIntro(); }
-/** sets the shift up and starts the 3-2-1 countdown (there is no blocking intro screen any more) */
+/** before a shift: the Route Master picker where the level fits it, else straight to the countdown */
 function enterIntro() {
+  const lv = curLevel();
+  if (planFits(lv) && !(SIM_PRE > 0 && !FLAG.auto)) { G.state = 'route'; G.pickLv = lv; showCard(false); hideCountdown(); setHud(false); fillRoute(); showScreen('sRoute'); return; }
+  setupShift();
+}
+const hatRec = () => { const r = lsGet(KEY_HAT); return r && typeof r === 'object' ? r : {}; };
+const routeName = stops => stops.length ? stops.map(stopName).join(' → ') : t('hatClassic');
+function fillRoute() {
+  const lv = G.pickLv || curLevel(), keys = levelStopKeys(lv);
+  PLAN.stops = PLAN.stops.filter(k => keys.includes(k));
+  el.hatLv.textContent = t('level') + ' ' + lv.id + ': ' + levelName(lv);
+  el.hatStopsH.textContent = t('hatStops', PLAN.stops.length);
+  el.hatStops.innerHTML = ''; el.hatCh.innerHTML = '';
+  keys.forEach((k, i) => {
+    const b = document.createElement('button'); b.className = 'btn' + (PLAN.stops.includes(k) ? ' sel' : ''); b.dataset.stop = k;
+    b.setAttribute('aria-pressed', String(PLAN.stops.includes(k))); b.innerHTML = '<b>' + (i + 1) + '</b>'; b.appendChild(document.createTextNode(stopName(k)));
+    b.addEventListener('click', () => { AUD.click(); const j = PLAN.stops.indexOf(k); if (j >= 0) PLAN.stops.splice(j, 1); else if (PLAN.stops.length < 3) PLAN.stops.push(k); fillRoute(); });
+    el.hatStops.appendChild(b);
+  });
+  for (const c of CH_KEYS) {
+    const b = document.createElement('button'); b.className = 'btn' + (PLAN.ch === c ? ' sel' : ''); b.dataset.ch = c; b.textContent = t('ch_' + c);
+    b.setAttribute('aria-pressed', String(PLAN.ch === c));
+    b.addEventListener('click', () => { AUD.click(); PLAN.ch = c; fillRoute(); });
+    el.hatCh.appendChild(b);
+  }
+  el.hatChd.textContent = t('chd_' + PLAN.ch);
+  const r = hatRec()[lv.id];
+  el.hatBestLine.textContent = r ? t('hatBest', fmt(r.profit), routeName(r.stops), t('ch_' + r.ch)) : '';
+  const ok = PLAN.stops.length === 0 || PLAN.stops.length === 3;
+  el.bHatGo.disabled = !ok; el.hatGoTxt.textContent = t(ok ? 'hatGo' : 'hatNeed3');
+}
+/** the picker's start button: lock the plan in and start the countdown */
+function confirmRoute() { if (G.state !== 'route') return; if (PLAN.stops.length !== 0 && PLAN.stops.length !== 3) return; G.pickLv = null; setupShift(); }
+/** sets the shift up and starts the 3-2-1 countdown (there is no blocking intro screen any more) */
+function setupShift() {
   G.state = 'countdown'; camState.mode = 'play';
   const lv = curLevel(); lv.attempt = G.retries; initLevel(lv, G.lvIdx); SIM.running = false;
   camSnap(); fillCard(); showCard(lv.endless || lv.id >= 2); G.cardT = 0;
@@ -5342,6 +5490,7 @@ function beginShift() {
   COACH.on = G.mode === 'campaign' && !!SIM.lv && SIM.lv.id === 1;   // level 1: the first stop is coached
   G.cardT = el.lvCard.classList.contains('show') ? 9 : 0;           // the level card fades out after 9 s of driving
   toast(t('toastStart'), 'info'); el.bubbles.innerHTML = ''; bubbles.length = 0;
+  if (SIM.plan && (SIM.plan.stops.length || SIM.plan.ch !== 'off')) toast(t('hatToast', routeName(SIM.plan.stops), t('ch_' + SIM.plan.ch)), 'info');
 }
 function pauseGame() { if (G.state !== 'play') return; G.state = 'paused'; showScreen('sPause'); input.horn = false; AUD.hornStop(); }
 function resumeGame() { if (G.state !== 'paused') return; if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); G.state = 'play'; showScreen(null); AUD.resume(); }
@@ -5369,7 +5518,13 @@ HOOK.levelEnd = res => {
     else if (res.kind !== 'wreck') G.endlessTotal += Math.max(0, Math.round(res.net));
     if (res.stars === 0 || res.kind === 'wreck') { if (G.endlessTotal > best.endless) { best.endless = G.endlessTotal; rec = true; } writeSave(); }
   }
-  G.log.push({ mode: G.mode, level: lv.id, kind: res.kind, stars: res.stars, net: Math.round(res.net), fares: res.score.fares, tips: res.score.tips, pen: res.score.pen, pass: res.score.pass, dent: Math.round(res.dent), hits: res.score.hits, reds: res.score.reds, brakes: res.score.brakes, skips: res.score.skips, gaveUp: res.score.gaveUp, ped: res.score.ped, anyDrops: res.score.anyDrops, tipsLost: res.score.tipsLost });
+  // Route Master: best route profit per level (only shifts that used a 3-stop route and did not end in a wreck)
+  const ro = res.route; G.hatRecord = false;
+  if (ro && ro.stops.length === 3 && res.kind !== 'wreck') {
+    const all = hatRec(), prev = all[lv.id];
+    if (!prev || ro.profit > prev.profit) { all[lv.id] = { profit: Math.round(ro.profit), stops: ro.stops, ch: ro.ch }; lsSet(KEY_HAT, all); G.hatRecord = true; }
+  }
+  G.log.push({ route: ro ? ro.stops.join('>') : '', ch: ro ? ro.ch : 'off', profit: ro ? Math.round(ro.profit) : 0, dist: ro ? Math.round(ro.dist) : 0, mode: G.mode, level: lv.id, kind: res.kind, stars: res.stars, net: Math.round(res.net), fares: res.score.fares, tips: res.score.tips, pen: res.score.pen, pass: res.score.pass, dent: Math.round(res.dent), hits: res.score.hits, reds: res.score.reds, brakes: res.score.brakes, skips: res.score.skips, gaveUp: res.score.gaveUp, ped: res.score.ped, anyDrops: res.score.anyDrops, tipsLost: res.score.tipsLost });
   G.record = rec; fillEnd(res); showScreen('sEnd'); input.horn = false; AUD.hornStop();
   if (res.stars > 0) setTimeout(() => AUD.star(), 300);
 };
@@ -5394,6 +5549,14 @@ function fillEnd(res) {
   if (costs.length) for (const [k, v] of costs) tl.push([t('tip_' + k, fmt(v)), 0]); else tl.push([t('tipClean'), 1]);
   if (sc.bestTip > 0) tl.push([t('bestTipLine', fmt(sc.bestTip)), 1]);
   if (lv.id >= 2) tl.push([t('anyDropsLine', sc.anyDrops), 1]);
+  const ro = res.route;
+  if (ro && planFits(lv)) {
+    tl.push([t('hatLine', routeName(ro.stops), t('ch_' + ro.ch)), 1]);
+    tl.push([t('hatProfit', fmt(ro.profit), fmt(ro.fares), fmt(ro.tips), fmt(ro.fuel), fmt(ro.idle)), ro.profit > 0 ? 1 : 0]);
+    const r = hatRec()[lv.id];
+    if (G.hatRecord && r) tl.push([t('hatNewBest', fmt(r.profit)), 1]);
+    else if (r) tl.push([t('hatBest', fmt(r.profit), routeName(r.stops), t('ch_' + r.ch)), 1]);
+  }
   el.enTips.innerHTML = tl.map(([txt, ok]) => '<li class="' + (ok ? 'ok' : '') + '">' + txt + '</li>').join('');
   // the white Turkish Van kitten naps on the back seat; awake and cheering on 3 stars (not loaded with ?noassets)
   if (ASSETS.enabled) { el.mascot.classList.remove('hidden'); el.mascotImg.onerror = () => el.mascot.classList.add('hidden'); el.mascotImg.src = 'assets/mascot/' + (res.stars >= 3 ? 'kedi-kutlama.png' : 'kedi-uyuyor.png'); } else el.mascot.classList.add('hidden');
@@ -5436,7 +5599,7 @@ function updateHudStatic() {
 }
 function buildSeatStrip() {
   el.seatsStrip.innerHTML = '';
-  for (let i = 0; i < SEATS; i++) { const d = document.createElement('div'); d.className = 'seat'; d.innerHTML = '<span></span><i></i>'; el.seatsStrip.appendChild(d); }
+  for (let i = 0; i < SEATS; i++) { const d = document.createElement('div'); d.className = 'seat'; d.innerHTML = '<span></span><i></i><b class="mood"></b>'; el.seatsStrip.appendChild(d); }
   const dv = document.createElement('div'); dv.className = 'seat drv'; dv.innerHTML = '<svg class="ic"><use href="#i-wheel"/></svg>'; el.seatsStrip.appendChild(dv);   // the coins of the fare chain end here
   coinEls.length = 0;
 }
@@ -5471,7 +5634,8 @@ function updateHUD(dt) {
   for (let i = 0; i < SEATS; i++) {
     const se = player.seats.find(q => q.seatIdx === i), d = seatEls[i];
     if (!d) continue;
-    const num = d.children[0], bar = d.children[1];
+    const num = d.children[0], bar = d.children[1], mood = d.children[2], mk = se && se.mood ? se.mood : '';
+    if (mood && mood.dataset.m !== mk) { mood.dataset.m = mk; mood.className = 'mood ' + mk; mood.textContent = mk === 'like' ? '\u266B' : mk === 'dislike' ? '\u2639' : ''; }   // radio mood: note = likes the channel, frown = dislikes it
     if (se) {
       d.classList.add('on'); d.style.background = '#' + (se.vip ? 0xFACC15 : se.shirt).toString(16).padStart(6, '0'); num.textContent = String(se.dest + 1) + (se.any ? '?' : '');
       const fr = clamp(se.ridePat / se.ridePatMax, 0, 1); bar.style.background = fr > 0.5 ? '#5ee08a' : fr > 0.25 ? '#FACC15' : '#ff5a4a'; bar.style.right = (3 + (1 - fr) * 20) + 'px';
@@ -5573,7 +5737,8 @@ on('bCardX', () => showCard(false));
 on('bPause', () => { if (G.state === 'play') pauseGame(); else if (G.state === 'paused') resumeGame(); });
 on('bSound', () => { settings.mute = !settings.mute; saveSettings(); AUD.applyGains(); syncSettingsUI(); });
 on('bLang', () => setLang(LANG === 'tr' ? 'en' : 'tr'));
-on('bResume', () => resumeGame()); on('bRestart', () => { G.retries++; enterIntro(); beginShift(); });
+on('bResume', () => resumeGame()); on('bRestart', () => { G.retries++; setupShift(); beginShift(); });   // restart keeps the chosen route and channel
+on('bHatGo', () => confirmRoute()); on('bMenuR', () => toMenu());
 on('bSettingsP', () => openSettings('pause')); on('bMenuP', () => toMenu());
 on('bSetBack', () => closeSettings());
 on('bTR', () => { setLang('tr'); syncSettingsUI(); }); on('bEN', () => { setLang('en'); syncSettingsUI(); });
@@ -5613,6 +5778,12 @@ function botGap(path, s) {
   }
   return gap;
 }
+/** the autopilot's Route Master choice: 3 stops spread around the loop and Arabesk (?ch=<channel> picks another, ?plan=off plays classic) */
+function botPlan(lv) {
+  if (Q.get('plan') === 'off') return { stops: [], ch: 'off' };
+  const keys = levelStopKeys(lv), n = keys.length;
+  return { stops: [keys[0], keys[Math.floor(n / 3)], keys[Math.floor(2 * n / 3)]], ch: CHANNELS[Q.get('ch')] ? Q.get('ch') : 'arabesk' };
+}
 function botTick(dt) {
   if (BOT.lastState !== G.state) { BOT.lastState = G.state; BOT.uiT = 0; }
   BOT.uiT += dt;
@@ -5620,6 +5791,7 @@ function botTick(dt) {
   if (G.done) return;
   if (G.state === 'title') { act(0.8, () => startCampaign(false)); return; }
   if (G.state === 'countdown') { beginShift(); return; }
+  if (G.state === 'route') { act(0.5, () => { PLAN = botPlan(G.pickLv || curLevel()); fillRoute(); confirmRoute(); }); return; }
   if (G.state === 'paused') { resumeGame(); return; }
   if (G.state === 'end') {
     act(1.2, () => {
@@ -5726,7 +5898,9 @@ window.dolmus = {
   get net() { return SC ? netScore() : 0; }, get score() { return SC; }, get seats() { return player.seats.length; }, get dent() { return player.dent; },
   get speed() { return player.speed; }, get log() { return G.log; }, get done() { return G.done; }, get errors() { return G.errors; },
   get hour() { return SIM.hour; }, get rain() { return SIM.rain; },
-  start(lv) { if (lv) G.lvIdx = lv - 1; startCampaign(false); if (lv) { G.lvIdx = lv - 1; enterIntro(); } beginShift(); },
+  start(lv) { if (lv) G.lvIdx = lv - 1; startCampaign(false); if (lv) { G.lvIdx = lv - 1; enterIntro(); } if (G.state === 'route') confirmRoute(); beginShift(); },
+  get plan() { return PLAN; }, set plan(p) { PLAN = { stops: (p && p.stops || []).slice(), ch: p && CHANNELS[p.ch] ? p.ch : 'off' }; }, get simPlan() { return SIM.plan; },
+  CHANNELS, PTRAIT, levelStopKeys, confirmRoute, fillRoute, KEY_HAT,
   get gpu() { try { const gl = renderer.getContext(), e = gl.getExtension('WEBGL_debug_renderer_info'); return e ? gl.getParameter(e.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER); } catch (err) { return '?'; } },
   stats() { return { calls: renderer.info.render.calls, tris: renderer.info.render.triangles, fps: fpsS, cars: SIM.cars.length, peds: SIM.peds.length }; },
 };
@@ -5746,7 +5920,7 @@ async function boot() {
   G.state = 'title'; el.bPlay.disabled = false; window.__dolmusReady = true; if (!lsGet(KEY_SET)) saveSettings();
   showcase(); applyLang();
   if (FLAG.auto || SIM_PRE > 0) {
-    if (G.state === 'title') { if (Q.get('mode') === 'endless') startEndless(); else startCampaign(false); beginShift(); }
+    if (G.state === 'title') { if (Q.get('mode') === 'endless') startEndless(); else startCampaign(false); if (G.state === 'countdown') beginShift(); }
     if (SIM_PRE > 0) window.dolmusSim(SIM_PRE);
     lastSkyHour = -99;
   }
