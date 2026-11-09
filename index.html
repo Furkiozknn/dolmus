@@ -1812,7 +1812,7 @@ const STR = {
     f_pier: 'Vapur iskelesi durağı', f_stops: '{0} durak', f_bus: 'Otobüs durakta bekler',
     tgt: 'Hedef', star1: '1 yıldız', star2: '2 yıldız', star3: '3 yıldız',
     toastAutoLow: 'Akıcı oynanış için kalite Düşük’e alındı (Ayarlar’dan değiştirilebilir).', toastStart: 'Vardiya başladı! Sarı halkalara git.', toastNoBiz: 'Burada kimse yok.', toastFull: 'Dolmuş dolu!',
-    penRed: 'Kırmızı ışık! -{0} TL', penHit: 'Çarpışma! -{0} TL', penBrake: 'Sert fren, yolcular şikayetçi -{0} TL', penSkip: 'El sallayan yolcuyu geçtin -{0} TL',
+    penRed: 'Kırmızı ışık! -{0} TL', penHit: 'Çarpışma! -{0} TL', penBrake: 'Sebepsiz sert fren, yolcular şikayetçi -{0} TL', penSkip: 'El sallayan yolcuyu geçtin -{0} TL',
     penLeft: 'Yolcu sabretmedi -{0} TL', penPed: 'Yayaya çarptın! -{0} TL', missed: 'Durağı kaçırdın!', vipAboard: 'VIP yolcu bindi! Hızlı git.',
     vipSpawn: 'VIP yolcu bekliyor: {0}', jamOn: 'Ana caddede trafik kilitlendi!', jamOff: 'Trafik açıldı.', rainOn: 'Yağmur başladı: yol kaygan.', rainOff: 'Yağmur dindi.',
     vanOn: 'Teslimat kamyoneti şeridi kapattı.', tramBell: 'Tramvay geliyor!', wrecked: 'Dolmuş perte çıktı!',
@@ -1834,8 +1834,10 @@ const STR = {
     },
     close: 'Kapat', go: 'Hadi!',
     coach: 'Halkanın yanında dur, Boşluğa bas (ya da kapı düğmesine dokun)',
-    f_any: 'Müsait bir yerde: bazı yolcular güvenli kaldırımda iner',
+    f_any: 'Müsait bir yerde: kapıdaki halka yeşilse güvenli, turuncuysa geçide/kavşağa çok yakın',
     penBadStop: 'Tehlikeli yerde indirdin -{0} TL', easyStop: '+{0} TL kolay iniş',
+    penBadStop_zebra: 'Yaya geçidine çok yakın ({1} m, en az 9 m) -{0} TL', penBadStop_junction: 'Kavşağa çok yakın ({1} m, en az 10 m) -{0} TL',
+    brakeOk_ped: 'Acil fren: yaya. Ceza yok.', brakeOk_car: 'Acil fren: önde araç. Ceza yok.', brakeOk_light: 'Işıkta fren. Ceza yok.',
     tipLost: 'Para üstü zinciri bitmeden kalktın: -{0} TL bahşiş',
     anyNo_zebra: 'Zebra geçidinde yolcu indirilmez!', anyNo_junction: 'Kavşakta durma! Trafik korna çalıyor.', anyNo_signal: 'Işık kuyruğunda durma! Trafik korna çalıyor.',
     anyNo_lane: 'Şeridi kapatıyorsun, kenara çek.', anyNo_bridge: 'Köprüde durulmaz.', anyNo_curb: 'Burada kaldırım yok.',
@@ -1879,7 +1881,7 @@ const STR = {
     f_pier: 'Ferry pier stop', f_stops: '{0} stops', f_bus: 'Buses wait at their stops',
     tgt: 'Target', star1: '1 star', star2: '2 stars', star3: '3 stars',
     toastAutoLow: 'Quality set to Low for smoother play (change it in Settings).', toastStart: 'Shift started! Head for the yellow rings.', toastNoBiz: 'Nobody to serve here.', toastFull: 'The dolmuş is full!',
-    penRed: 'Red light! -{0} TL', penHit: 'Collision! -{0} TL', penBrake: 'Hard braking, complaints -{0} TL', penSkip: 'You skipped a waving passenger -{0} TL',
+    penRed: 'Red light! -{0} TL', penHit: 'Collision! -{0} TL', penBrake: 'Hard braking for no reason, complaints -{0} TL', penSkip: 'You skipped a waving passenger -{0} TL',
     penLeft: 'A passenger gave up -{0} TL', penPed: 'You hit a pedestrian! -{0} TL', missed: 'You missed the stop!', vipAboard: 'VIP aboard! Drive fast.',
     vipSpawn: 'VIP waiting at {0}', jamOn: 'Traffic jam on the main street!', jamOff: 'Traffic is moving again.', rainOn: 'Rain started: slippery road.', rainOff: 'The rain eased.',
     vanOn: 'A delivery van blocks the lane.', tramBell: 'Tram coming!', wrecked: 'The dolmuş is wrecked!',
@@ -1900,8 +1902,10 @@ const STR = {
     },
     close: 'Close', go: 'Go!',
     coach: 'Stop near the ring, press Space (or tap the door button)',
-    f_any: 'Anywhere riders: some get off at a safe curb',
+    f_any: 'Anywhere riders: door ring green = safe curb, amber = too close to a crossing/junction',
     penBadStop: 'Unsafe drop-off -{0} TL', easyStop: '+{0} TL easy stop',
+    penBadStop_zebra: 'Too close to the crossing ({1} m, need 9 m) -{0} TL', penBadStop_junction: 'Too close to the junction ({1} m, need 10 m) -{0} TL',
+    brakeOk_ped: 'Emergency stop: pedestrian. No penalty.', brakeOk_car: 'Emergency stop: vehicle ahead. No penalty.', brakeOk_light: 'Braking for the light. No penalty.',
     tipLost: 'You left before the fare chain ended: -{0} TL tip',
     anyNo_zebra: 'No drop-offs on a crossing!', anyNo_junction: 'Not in the junction! Traffic honks.', anyNo_signal: 'Do not stop in the signal queue! Traffic honks.',
     anyNo_lane: 'You are blocking the lane, pull to the curb.', anyNo_bridge: 'No stopping on the bridge.', anyNo_curb: 'No curb here.',
@@ -3377,6 +3381,7 @@ const SIM = {
 const player = {
   x: 0, z: 0, hd: 0, vx: 0, vz: 0, steer: 0, y: 0, pitch: 0, roll: 0, ax: 0, load: 0, dent: 0, speed: 0, vf: 0, vl: 0,
   door: { state: 'closed', t: 0 }, stopReq: false, seats: [], boarding: 0, hornOn: false, brakeFlag: 0, hitT: 0, skid: 0, thr: 0,
+  brkHold: 0, hardT: 0,   // brake pedal hold time (s) for the ramp, time spent above the hard-brake limit (s)
   routeS: 0, nearStop: -1, actT: 0, wheel: 0, lastPen: 0, redT: 0, camHd: 0, chain: [], anyDrop: false,
 };
 const input = { throttle: 0, brake: 0, steer: 0, door: false, horn: false };
@@ -3718,10 +3723,11 @@ const SHIFT = 240;
 const SEATS = 12;
 function newScore() { return { fares: 0, tips: 0, pen: 0, pass: 0, hits: 0, reds: 0, brakes: 0, skips: 0, gaveUp: 0, ped: 0, badStop: 0, tipsLost: 0, tipsLostN: 0, anyDrops: 0, bestTip: 0, cost: {} }; }
 function logEv(kind, extra) { if (typeof G !== 'undefined') { G.events.push(Object.assign({ t: +SIM.t.toFixed(1), kind, x: +player.x.toFixed(1), z: +player.z.toFixed(1), v: +player.speed.toFixed(1) }, extra || {})); if (G.events.length > 300) G.events.shift(); } }
-function penalize(amount, msgKey, kind) {
+/** every penalty shows its reason as a toast; extra args fill {1}, {2}… of the message */
+function penalize(amount, msgKey, kind, ...args) {
   logEv(kind, { amount });
   SC.pen += amount; SC[kind] = (SC[kind] || 0) + 1; SC.cost[kind] = (SC.cost[kind] || 0) + amount;
-  HOOK.toast(t(msgKey, amount), 'bad'); HOOK.float('-' + amount, true); HOOK.snd('bad');
+  HOOK.toast(t(msgKey, amount, ...args), 'bad'); HOOK.float('-' + amount, true); HOOK.snd('bad');
 }
 function rough() { for (const s of player.seats) s.smooth = false; }
 const rightOf = (hx, hz) => ({ x: -hz, z: hx });
@@ -3841,7 +3847,7 @@ function alight(seat, stopIdx, opts = {}) {
   const got = seat.ridePat > 0 ? fare : Math.round(fare * 0.6);
   if (opts.any) {
     SC.anyDrops++;
-    if (opts.bad) { tip = 0; penalize(4, 'penBadStop', 'badStop'); HOOK.honk && HOOK.honk(); }   // too close to a crossing or junction
+    if (opts.bad) { tip = 0; penalize(4, opts.badWhy ? 'penBadStop_' + opts.badWhy : 'penBadStop', 'badStop', opts.badDist); HOOK.honk && HOOK.honk(); }   // too close to a crossing or junction
     else easy = seat.vip ? 3 : 2;                                                                  // safe curb: small "easy stop" tip
   }
   // the fare is passed forward along the occupied seats (0.25 s per hop) and credited when the coin reaches the driver
@@ -3892,6 +3898,7 @@ function anywhereRiders() {
 }
 function distToRect(x, z, cx, cz, hx, hz) { return Math.hypot(Math.max(Math.abs(x - cx) - hx, 0), Math.max(Math.abs(z - cz) - hz, 0)); }
 const _cp = { x: 0, z: 0, hx: 0, hz: 1, i: 0 };
+const BAD_ZEBRA = 9, BAD_JUNC = 10;   // metres: closer than this to a zebra / junction box is an unsafe drop-off
 /** can riders get off where the dolmuş stands? { ok, why, honk } when refused, { ok, bad } when allowed (bad = close to a crossing or junction) */
 function curbCheck() {
   const P = player, fx = Math.sin(P.hd), fz = Math.cos(P.hd), road = roadAt(P.x, P.z, 0.5);
@@ -3915,7 +3922,9 @@ function curbCheck() {
     const lat2 = ap.axis === 'x' ? P.z > ap.lz0 - 2 && P.z < ap.lz1 + 2 : P.x > ap.lx0 - 2 && P.x < ap.lx1 + 2;
     if (al > -1 && al < 22 && lat2) return { ok: false, why: 'signal', honk: true };
   }
-  return { ok: true, bad: nearZ < 9 || nearJ < 10 };
+  // allowed, but too close to a crossing (< BAD_ZEBRA m) or junction (< BAD_JUNC m): no tip and a penalty; the curb marker shows it in amber
+  const badZ = nearZ < BAD_ZEBRA, badJ = nearJ < BAD_JUNC, why = badZ && (!badJ || nearZ - BAD_ZEBRA < nearJ - BAD_JUNC) ? 'zebra' : badJ ? 'junction' : null;
+  return { ok: true, bad: !!why, badWhy: why, badDist: why ? Math.max(1, Math.round(why === 'zebra' ? nearZ : nearJ)) : 0 };
 }
 function curbRefuse(chk) {
   HOOK.toast(t('anyNo_' + chk.why), 'bad'); HOOK.snd('bad');
@@ -3927,8 +3936,35 @@ function curbRefuse(chk) {
 function resetPlayer(lv) {
   const P = SIM.route, s0 = (SIM.stops[0].def.s - 34 + P.L) % P.L;
   pathAt(P, s0, _tp);
-  Object.assign(player, { x: _tp.x, z: _tp.z, hd: Math.atan2(_tp.hx, _tp.hz), vx: 0, vz: 0, steer: 0, speed: 0, vf: 0, vl: 0, dent: 0, seats: [], boarding: 0, stopReq: false, hornOn: false, hitT: 0, redT: 0, thr: 0, skid: 0, load: 0, chain: [], anyDrop: false });
+  Object.assign(player, { x: _tp.x, z: _tp.z, hd: Math.atan2(_tp.hx, _tp.hz), vx: 0, vz: 0, steer: 0, speed: 0, vf: 0, vl: 0, dent: 0, seats: [], boarding: 0, stopReq: false, hornOn: false, hitT: 0, redT: 0, thr: 0, skid: 0, load: 0, chain: [], anyDrop: false, brkHold: 0, hardT: 0, brakeFlag: 0 });
   player.door.state = 'closed'; player.door.t = 0; player.camHd = player.hd; player.routeS = s0; player.y = yAt(player.x, player.z);
+}
+// ---- brakes: the service brake builds up while the pedal is held, like a real air-braked minibus.
+// A tap slows gently (BRAKE_A0); holding it reaches full braking (BRAKE_A1) after BRAKE_RAMP seconds.
+// Analog input (gamepad trigger, a half-pressed pedal) scales the whole curve proportionally.
+const BRAKE_A0 = 4, BRAKE_A1 = 13, BRAKE_RAMP = 0.8;
+/** forward deceleration (m/s², positive) for brake input brk (0..1) held for hold seconds */
+function brakeDecel(brk, hold) { return brk * lerp(BRAKE_A0, BRAKE_A1, clamp(hold / BRAKE_RAMP, 0, 1)); }
+// hard braking with passengers aboard costs money only when it is sustained (HARD_T s above HARD_DEC)
+// and nothing ahead justifies it: an emergency stop for a pedestrian, a vehicle or a red light is free.
+const HARD_DEC = 10.2, HARD_T = 0.3;
+/** is there a reason to brake hard ahead? pedestrian, vehicle or a red / yellow light within ~2 s of travel */
+function brakeHazard() {
+  const P = player, fx = Math.sin(P.hd), fz = Math.cos(P.hd), v = Math.max(P.vf, 0);
+  const reach = 8 + v * 2.0;                                  // front bumper is ~2.6 m ahead of the centre
+  const inPath = (x, z, r) => {
+    const al = (x - P.x) * fx + (z - P.z) * fz, lat = (x - P.x) * -fz + (z - P.z) * fx;
+    return al > 0 && al < reach + 2.6 && Math.abs(lat) < 1.6 + r;
+  };
+  for (const a of AG) if (a.kind !== 'player' && inPath(a.x, a.z, a.r)) return a.kind === 'ped' ? 'ped' : 'car';
+  for (const p of SIM.peds) if (p.hit <= 0 && (p.kind === 'cross' || p.kind === 'walk' || p.kind === 'alight') && inPath(p.x, p.z, 0.5)) return 'ped';
+  for (const ap of APPROACHES) {
+    if (fx * ap.dx + fz * ap.dz < 0.7) continue;               // only stop lines we are driving towards
+    const al = ap.axis === 'x' ? (ap.lx - P.x) * ap.dx : (ap.lz - P.z) * ap.dz;
+    const lat = ap.axis === 'x' ? P.z > ap.lz0 - 1 && P.z < ap.lz1 + 1 : P.x > ap.lx0 - 1 && P.x < ap.lx1 + 1;
+    if (lat && al > -1 && al < reach + 2.6 && sigState(SIGNALS[ap.sig], ap.axis) !== 'g') return 'light';
+  }
+  return null;
 }
 function updatePlayer(dt) {
   const P = player, fx = Math.sin(P.hd), fz = Math.cos(P.hd), rx = -fz, rz = fx;
@@ -3955,9 +3991,9 @@ function updatePlayer(dt) {
     if (vf > -0.3) a += 5.9 * (1 - 0.4 * load) * thr * clamp(1 - vf / vmaxF, 0, 1);
     else a += 12 * thr;
   }
-  let hardBrake = false;
+  if (brk > 0.02 && vf > 0.5) P.brkHold += dt; else P.brkHold = 0;   // ramp restarts each time the pedal is released
   if (brk > 0) {
-    if (vf > 0.5) { a -= 13 * brk; hardBrake = true; }
+    if (vf > 0.5) a -= brakeDecel(brk, P.brkHold);
     else if (vf > -vmaxR) a -= 4.2 * brk;
   }
   if (P.stopReq) { if (vf > 0.2) a -= Math.min(9, vf / dt * 0.5 + 2); else if (vf < -0.2) a += 6; }
@@ -3970,10 +4006,15 @@ function updatePlayer(dt) {
   if (!thr && !brk && !P.stopReq && Math.abs(vf) < 0.25) vf = 0;
   if (P.stopReq && Math.abs(vf) < 0.3) vf = 0;
   if (vf > vmaxF) vf -= (vf - vmaxF) * 0.5 * dt * 4;
-  // hard-brake detection (not for the automatic stop)
+  // hard-brake detection (not for the automatic stop): only sustained braking near the top of the ramp counts,
+  // and none at all when a hazard ahead makes it an emergency stop
   const dec = (vfPrev - vf) / dt;
-  if (!P.stopReq && dec > 10.2 && vfPrev > 6 && P.brakeFlag <= 0 && P.seats.length > 0) {
-    P.brakeFlag = 1.4; rough(); penalize(3, 'penBrake', 'brakes');
+  if (!P.stopReq && dec > HARD_DEC && vfPrev > 6) P.hardT += dt; else P.hardT = 0;
+  if (P.hardT > HARD_T && P.brakeFlag <= 0 && P.seats.length > 0) {
+    const why = brakeHazard();
+    P.brakeFlag = 1.4; P.hardT = 0;
+    if (why) { logEv('brakeOk', { why }); HOOK.toast(t('brakeOk_' + why), 'info'); }   // justified: riders understand, no penalty, tips kept
+    else { rough(); penalize(3, 'penBrake', 'brakes'); }
   }
   P.brakeFlag -= dt;
   // yaw (turning right decreases heading), lateral grip
@@ -4117,7 +4158,7 @@ function serviceDoor(dt) {
     if (ar.length) {
       const chk = curbCheck();
       if (!chk.ok) { curbRefuse(chk); P.anyDrop = false; closeDoor(); return; }
-      alight(ar[0].seat, ar[0].seat.dest, { any: true, bad: chk.bad, early: ar[0].early }); P.actT = gap; P.idle = 0; return;
+      alight(ar[0].seat, ar[0].seat.dest, { any: true, bad: chk.bad, badWhy: chk.badWhy, badDist: chk.badDist, early: ar[0].early }); P.actT = gap; P.idle = 0; return;
     }
     P.anyDrop = false;
   }
@@ -4562,6 +4603,9 @@ void main(){ vec3 c = vY>0.0 ? mix(uHor,uTop,pow(vY,0.55)) : uHor*0.8;
   OBJ.rings = inst(ringGeo(), ringMat, 20, false); OBJ.rings.renderOrder = 4;
   const beamMat = new THREE.MeshLambertMaterial({ color: 0xffffff, emissive: 0x222222, transparent: true, opacity: 0.2, depthWrite: false, side: THREE.DoubleSide, blending: THREE.AdditiveBlending });
   OBJ.beams = inst(beamCylGeo(), beamMat, 20, false); OBJ.beams.renderOrder = 5;
+  // curb marker at the door: shows whether a "müsait bir yerde" drop-off here is safe (green), allowed but too close to a crossing / junction (amber) or refused (red)
+  OBJ.curb = new THREE.Mesh(ringGeo(), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.8, depthWrite: false, side: THREE.DoubleSide }));
+  OBJ.curb.scale.set(0.32, 1, 0.32); OBJ.curb.renderOrder = 4; OBJ.curb.visible = false; scene.add(OBJ.curb);
   // lamps, pools, signals
   const lampN = WORLD.lamps.length;
   OBJ.lamps = inst(new THREE.SphereGeometry(0.3, 6, 4), emissiveMat(0xcfd3da), lampN, false);
@@ -4812,6 +4856,8 @@ const sigCache = [];
 let exT = 0, smokeT = 0, vendT = 0;
 const camState = { x: 0, y: 8, z: 0, shake: 0, mode: 'play', orbit: 0, dist: 11 };
 const DEST_COL = 0x5ee08a, PICK_COL = 0xFACC15, VIP_COL = 0xffe066, IDLE_COL = 0x8a93a6;
+const CURB_OK = 0x5ee08a, CURB_BAD = 0xff9f1a, CURB_NO = 0xff3b30;   // curb marker: safe / too close to a crossing or junction / refused
+let curbT = 0;
 
 function setInst(mesh, i, x, y, z, yaw, pitch, scale = 1) {
   _o.position.set(x, y, z); _o.rotation.set(-pitch, yaw, 0); _o.scale.set(scale, scale, scale); _o.updateMatrix(); mesh.setMatrixAt(i, _o.matrix);
@@ -4931,6 +4977,15 @@ function syncRender(dt) {
   OBJ.rings.instanceMatrix.needsUpdate = OBJ.beams.instanceMatrix.needsUpdate = true;
   if (OBJ.rings.instanceColor) { OBJ.rings.instanceColor.needsUpdate = true; OBJ.beams.instanceColor.needsUpdate = true; }
   OBJ.beams.material.opacity = 0.16 + 0.05 * Math.sin(tick * 4);
+  // ---- curb marker (only while an "anywhere" rider is aboard near their stop and the van is slow); the check runs ~7 times a second
+  const curbOn = G.state === 'play' && P.door.state === 'closed' && Math.abs(P.speed) < 9 && anywhereRiders().length > 0;
+  OBJ.curb.visible = curbOn;
+  if (curbOn) {
+    curbT -= dt;
+    if (curbT <= 0) { curbT = 0.15; const c = curbCheck(); OBJ.curb.material.color.setHex(!c.ok ? CURB_NO : c.bad ? CURB_BAD : CURB_OK); }
+    const d = doorPos(); OBJ.curb.position.set(d.x, yAt(d.x, d.z) + 0.18, d.z);
+    OBJ.curb.material.opacity = 0.65 + 0.2 * Math.sin(tick * 6);
+  } else curbT = 0;
   // ---- traffic lights
   let li = 0;
   WORLD.sigHeads.forEach((h, hi) => {
