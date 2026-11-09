@@ -763,8 +763,11 @@ a.btn { text-decoration: none; }
   border: 2px solid #221D17;
   box-shadow: 3px 3px 0 rgba(0,0,0,0.4);
   animation: tin 0.2s ease-out;
-  white-space: nowrap;
-  max-width: 60vw;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  width: max-content;
+  max-width: min(60vw, 260px);
+  text-align: center;
 }
 .bubble.out { opacity: 0; transition: opacity 0.4s; }
 
@@ -2194,7 +2197,7 @@ const STR = {
     subtitle: 'İstanbul sokaklarında dolmuş sür, yolcuları al, bırak, kazan.',
     howtoTouch: 'Direksiyonu çubukla çevir, gaz ve fren pedallarını kullan. Sarı halkada kapı düğmesiyle dur ve yolcuları al. Kırmızıda geçme!',
     howto: 'Ok tuşları / WASD ile sür. Sarı halkada Boşluk ile dur ve kapıyı aç. H korna. Yolcuların sabrı sınırlı, kırmızıda geçme!',
-    loading: 'Yükleniyor… {0}/{1}', play: 'Oyna', continue: 'Devam', endless: 'Sonsuz mod', settings: 'Ayarlar',
+    loading: 'Yükleniyor… {0}/{1}', play: 'Oyna', continue: 'Devam', newGame: 'Yeni oyun', newGameSure: 'Kayıt silinsin mi? Tekrar bas', bubMood: '{0} {1}, lütfen.', endless: 'Sonsuz mod', settings: 'Ayarlar',
     language: 'Dil', paused: 'Duraklatıldı', resume: 'Devam et', restart: 'Yeniden başla', menu: 'Ana menü',
     startShift: 'Vardiyayı başlat', master: 'Genel ses', music: 'Müzik', effects: 'Efektler', quality: 'Kalite',
     low: 'Düşük', high: 'Yüksek', mapMode: 'Mini harita', mapHead: 'Yöne göre', mapNorth: 'Kuzey üstte', fullscreen: 'Tam ekran', toggle: 'Aç / kapat', back: 'Geri',
@@ -2279,7 +2282,7 @@ const STR = {
     subtitle: 'Drive a dolmuş through Istanbul streets: pick up, drop off, earn.',
     howtoTouch: 'Steer with the slider, use the gas and brake pedals. At a yellow ring tap the door button to stop and load passengers. Never run a red light!',
     howto: 'Drive with arrows / WASD. Press Space at a yellow ring to stop and open the door. H is the horn. Passengers are impatient, never run a red light!',
-    loading: 'Loading… {0}/{1}', play: 'Play', continue: 'Continue', endless: 'Endless mode', settings: 'Settings',
+    loading: 'Loading… {0}/{1}', play: 'Play', continue: 'Continue', newGame: 'New game', newGameSure: 'Erase save? Tap again', bubMood: '{0} {1}, please.', endless: 'Endless mode', settings: 'Settings',
     language: 'Language', paused: 'Paused', resume: 'Resume', restart: 'Restart', menu: 'Main menu',
     startShift: 'Start shift', master: 'Master volume', music: 'Music', effects: 'Effects', quality: 'Quality',
     low: 'Low', high: 'High', mapMode: 'Minimap', mapHead: 'Heading up', mapNorth: 'North up', fullscreen: 'Fullscreen', toggle: 'Toggle', back: 'Back',
@@ -4302,7 +4305,7 @@ function finishBoard(p) {
   seat.mood = p.vip ? '' : moodOf(seat.ptype);   // how this rider feels about the radio channel (seat chip icon, patience drain)
   player.seats.push(seat);
   HOOK.snd('pop');
-  const txt = p.vip ? t('bubVip', stopName(dst.key)) : seat.mood ? cpick(t(seat.mood === 'like' ? 'moodLike' : 'moodDislike')) : voiceLine(seat, stopName(dst.key));
+  const txt = p.vip ? t('bubVip', stopName(dst.key)) : seat.mood ? t('bubMood', cpick(t(seat.mood === 'like' ? 'moodLike' : 'moodDislike')), stopName(dst.key)) : voiceLine(seat, stopName(dst.key));   // mood riders still say their stop (same single cpick, CR stream unchanged)
   HOOK.bubble(txt);
   if (p.vip) HOOK.toast(t('vipAboard'), 'info');
 }
@@ -4802,6 +4805,8 @@ function resize() {
   updateBarH();
 }
 function updateBarH() { const bar = document.getElementById('topbar'); if (bar && bar.offsetHeight > 0) document.documentElement.style.setProperty('--barh', bar.offsetHeight + 'px'); }
+// the top bar wraps on phones and its height changes with text/fonts: keep --barh live so the minimap/speed gauge sit below it
+{ const bar = document.getElementById('topbar'); if (bar && window.ResizeObserver) new ResizeObserver(updateBarH).observe(bar, { box: 'border-box' }); if (document.fonts && document.fonts.ready) document.fonts.ready.then(updateBarH, () => {}); }
 const hemi = new THREE.HemisphereLight(0xe3ecf6, 0x8a7a62, 0.9); scene.add(hemi);
 const sun = new THREE.DirectionalLight(0xfff2d6, 2.0);
 sun.shadow.mapSize.set(1024, 1024);
@@ -5733,11 +5738,16 @@ function applyLang() {
 function setLang(l) { LANG = settings.lang = l; saveSettings(); applyLang(); if (G.state === 'countdown' || G.state === 'play' || G.state === 'paused') fillCard(); if (G.state === 'end') fillEnd(G.lastResult); if (G.state === 'route') fillRoute(); }
 function refreshTitle() {
   el.bCont.classList.toggle('hidden', !runSave);
+  // with a save, "Continue" is the big primary button and "New game" sits under it and asks before erasing the save
+  el.bCont.classList.toggle('primary', !!runSave); el.bPlay.classList.toggle('primary', !runSave);
+  if (runSave) el.bPlay.before(el.bCont); else el.bCont.before(el.bPlay);
+  newArm = 0;
   const stars = best.stars.reduce((a, b) => a + b, 0);
   el.bestLine.textContent = best.total || stars || best.endless ? t('bestLine', fmt(best.total), stars, fmt(best.endless)) : t('bestNone');
   if (window.Arena) { const d = Arena.daily(); el.dailyLine.textContent = (d.done ? t('dailyDone') + ' · ' : '') + t('dailyLine', d.streak, d.best); } else el.bDaily.classList.add('hidden');
-  if (G.state !== 'loading') el.playTxt.textContent = t('play');
+  if (G.state !== 'loading') el.playTxt.textContent = t(runSave ? 'newGame' : 'play');
 }
+var newArm = 0;   // time of the first "New game" tap while a save exists, 0 = not armed (second tap within 4 s confirms)
 let lastToast = { t: '', at: 0 };
 function toast(text, kind = 'info') {
   const now = performance.now(); if (lastToast.t === text && now - lastToast.at < 1800) return; lastToast = { t: text, at: now };
@@ -6136,7 +6146,7 @@ if (FLAG.touch || (matchMedia && matchMedia('(pointer:coarse)').matches)) enable
 
 // ---- buttons
 const on = (id, fn) => document.getElementById(id).addEventListener('click', e => { AUD.init(); AUD.click(); fn(e); });
-on('bPlay', () => startCampaign(false)); on('bCont', () => startCampaign(true)); on('bEndless', () => startEndless());
+on('bPlay', () => { const now = performance.now(); if (runSave && !(newArm && now - newArm < 4000)) { newArm = now; el.playTxt.textContent = t('newGameSure'); setTimeout(() => { if (G.state === 'title' && newArm === now) refreshTitle(); }, 4000); return; } newArm = 0; startCampaign(false); }); on('bCont', () => startCampaign(true)); on('bEndless', () => startEndless());
 on('bSettingsT', () => openSettings('title')); on('bLangT', () => setLang(LANG === 'tr' ? 'en' : 'tr'));
 on('bCardX', () => showCard(false));
 on('bPause', () => { if (G.state === 'play') pauseGame(); else if (G.state === 'paused') resumeGame(); });
