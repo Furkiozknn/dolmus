@@ -4345,10 +4345,6 @@ function landCoin(c) {
   SC.fares += c.got; SC.tips += tot; SC.pass++;
   if (tot > SC.bestTip) SC.bestTip = tot;
   HOOK.float('+' + (c.got + tot), false); HOOK.snd('coin'); HOOK.sparkle && HOOK.sparkle();
-  if (c.tip > 0 || c.got > 0) {
-    camState.shake = Math.max(camState.shake, 0.45);
-    try { if (navigator.vibrate) navigator.vibrate([30, 20, 30]); } catch(e){}
-  }
   logEv('coin', { amount: c.got, tip: tot });
   if (c.tip > 0) HOOK.toast(t('tipAdd', c.tip) + ' · ' + cpick(t('thx')), 'good');
   if (c.easy > 0) HOOK.toast(t('easyStop', c.easy), 'good');
@@ -4571,8 +4567,6 @@ function collidePlayer(dt) {
   }
   if (impactMax > 3 && P.hitT <= 0) {
     P.hitT = 0.7; logEv('static', { imp: +impactMax.toFixed(1) }); addDent(impactMax * 0.9, 'static'); rough(); HOOK.snd('crash', clamp(impactMax / 10, 0.3, 1.2)); HOOK.shake(clamp(impactMax / 12, 0.2, 1));
-    el.hurt.style.opacity = '0.85'; setTimeout(() => { el.hurt.style.opacity = '0'; }, 300);
-    try { if (navigator.vibrate) navigator.vibrate([30, 20, 30]); } catch(e){}
   }
   // vs AI vehicles and the tram
   for (const a of AG) {
@@ -4592,8 +4586,6 @@ function collidePlayer(dt) {
           penalize(Math.round(clamp(imp * 0.8 + 3, 4, 14)), 'penHit', 'hits');
           HOOK.snd('crash', clamp(imp / 8, 0.4, 1.3)); HOOK.shake(clamp(imp / 9, 0.3, 1));
           if (a.kind === 'car') { o.hitT = 2.5; HOOK.honk && HOOK.honk(); }
-          el.hurt.style.opacity = '0.85'; setTimeout(() => { el.hurt.style.opacity = '0'; }, 300);
-          try { if (navigator.vibrate) navigator.vibrate([30, 20, 30]); } catch(e){}
         }
       }
     }
@@ -4608,8 +4600,6 @@ function collidePlayer(dt) {
         if (Math.abs(P.speed) > 2.2) {
           p.hit = 2.2; const l = hyp(P.vx, P.vz) || 1; p.hvx = P.vx / l * 3 + (p.x - cx) * 1.5; p.hvz = P.vz / l * 3 + (p.z - cz) * 1.5;
           penalize(25, 'penPed', 'ped'); addDent(3, 'ped'); rough(); HOOK.shake(0.5); HOOK.snd('thud', 0.8);
-          el.hurt.style.opacity = '0.85'; setTimeout(() => { el.hurt.style.opacity = '0'; }, 300);
-          try { if (navigator.vibrate) navigator.vibrate([30, 20, 30]); } catch(e){}
         } else { const nx = (p.x - cx) / (d || 1), nz = (p.z - cz) / (d || 1); p.x += nx * 0.05; p.z += nz * 0.05; }
         break;
       }
