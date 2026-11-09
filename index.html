@@ -2,6 +2,7 @@
 <html lang="tr">
 <head>
 <meta charset="utf-8">
+<meta name="arena-game" content="dolmus">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="theme-color" content="#141518">
 <meta name="description" content="Drive a yellow dolmus minibus through a low-poly Istanbul: pick up waving passengers, learn their stops, earn fares and tips. 8 shifts, free in your browser.">
@@ -141,6 +142,7 @@ svg.ic.fill {
 /* Tactile Physical Dashboard Buttons */
 button { font: inherit; color: inherit; cursor: pointer; }
 *:focus-visible { outline: 3px solid var(--c-nazar-cyan); outline-offset: 2px; }
+a.btn { text-decoration: none; }
 
 .btn {
   min-height: 44px;
@@ -2043,12 +2045,14 @@ body.touch #lvCard {
         <button class="btn primary" id="bPlay" disabled><svg class="ic fill"><use href="#i-play"/></svg><span id="playTxt" data-i="loading"></span></button>
         <button class="btn" id="bCont"><svg class="ic"><use href="#i-restart"/></svg><span data-i="continue"></span></button>
         <button class="btn" id="bEndless"><svg class="ic"><use href="#i-clock"/></svg><span data-i="endless"></span></button>
+        <button class="btn" id="bDaily"><svg class="ic"><use href="#i-star"/></svg><span data-i="daily"></span></button>
         <div class="row">
           <button class="btn" id="bSettingsT"><svg class="ic"><use href="#i-gear"/></svg><span data-i="settings"></span></button>
           <button class="btn" id="bLangT"><svg class="ic"><use href="#i-globe"/></svg><span id="langTxt">TR / EN</span></button>
         </div>
       </div>
       <div class="best" id="bestLine"></div>
+      <div class="best" id="dailyLine"></div>
       <div class="foot"><a href="https://github.com/Furkiozknn" target="_blank" rel="noopener">Claude Game Arena</a> · built by Claude Sonnet 5.5</div>
     </div>
   </section>
@@ -2078,6 +2082,7 @@ body.touch #lvCard {
         <label data-i="quality"></label><div class="seg"><button class="btn" id="bQLow" data-i="low"></button><button class="btn" id="bQHigh" data-i="high"></button></div>
         <label data-i="mapMode"></label><div class="seg"><button class="btn" id="bMapH" data-i="mapHead"></button><button class="btn" id="bMapN" data-i="mapNorth"></button></div>
         <label data-i="fullscreen"></label><div class="seg"><button class="btn" id="bFull"><svg class="ic"><use href="#i-full"/></svg><span data-i="toggle"></span></button></div>
+        <label data-i="a11y"></label><div class="seg"><button class="btn" id="bA11y"><span data-i="a11yOpen"></span></button></div>
       </div>
       <div class="col"><button class="btn primary" id="bSetBack"><span data-i="back"></span></button></div>
       <p class="how" data-i="keysHelp" style="margin-top:12px"></p>
@@ -2101,6 +2106,10 @@ body.touch #lvCard {
         <button class="btn primary" id="bNext"><span id="nextTxt"></span></button>
         <button class="btn" id="bRetry"><svg class="ic"><use href="#i-restart"/></svg><span data-i="retry"></span></button>
         <button class="btn" id="bMenuE"><svg class="ic"><use href="#i-home"/></svg><span data-i="menu"></span></button>
+        <div class="row">
+          <button class="btn" id="bShare"><span data-i="share"></span></button>
+          <a class="btn" id="aOther" href="https://furkiozknn.github.io/" target="_blank" rel="noopener"><span data-i="another"></span></a>
+        </div>
       </div>
     </div>
   </section>
@@ -2251,6 +2260,9 @@ const STR = {
     hatToast: 'Hat: {0} · Radyo: {1}', hatClassic: 'klasik',
     hatLine: 'Hat: {0} · Radyo: {1}', hatProfit: 'Hat kârı: {0} TL = hasılat {1} + bahşiş {2} − yakıt {3} − rölanti {4}',
     hatBest: 'Bu seviyenin en iyi hattı: {0} TL ({1} · {2})', hatNewBest: 'Yeni hat rekoru: {0} TL!',
+    daily: 'Günün Meydan Okuması', lvD: 'Günün Meydan Okuması', dD: 'Bugünün vardiyası herkes için aynı: aynı trafik, aynı yolcular, aynı hava. Bitir, seriyi sürdür.',
+    dailyLine: 'Günlük seri: {0} gün · en iyi: {1}', dailyDone: 'Bugünkü vardiya tamam', a11y: 'Erişilebilirlik', a11yOpen: 'Aç',
+    share: 'Paylaş', another: 'Başka oyun', shareStars: '{0}/3 yıldız · net {1} TL', awFirst: 'İlk vardiya', awCampaign: '8 seviyenin hepsi', awAllStars: '24 yıldızın hepsi',
     moodLike: ['Aç şu sesi kaptan!', 'Bu şarkı benim!'], moodDislike: ['Kıs şunu biraz...', 'Başka kanal yok mu?'],
   },
   en: {
@@ -2332,6 +2344,9 @@ const STR = {
     hatToast: 'Route: {0} · Radio: {1}', hatClassic: 'classic',
     hatLine: 'Route: {0} · Radio: {1}', hatProfit: 'Route profit: {0} TL = fares {1} + tips {2} − fuel {3} − idling {4}',
     hatBest: 'Best route on this level: {0} TL ({1} · {2})', hatNewBest: 'New route record: {0} TL!',
+    daily: 'Daily challenge', lvD: 'Daily challenge', dD: "Today's shift is the same for everyone: same traffic, same riders, same weather. Finish it to keep your streak.",
+    dailyLine: 'Daily streak: {0} days · best: {1}', dailyDone: "Today's shift is done", a11y: 'Accessibility', a11yOpen: 'Open',
+    share: 'Share', another: 'Another game', shareStars: '{0}/3 stars · net {1} TL', awFirst: 'First shift', awCampaign: 'All 8 levels', awAllStars: 'All 24 stars',
     moodLike: ['Turn it up, driver!', 'That is my song!'], moodDislike: ['Turn that down a bit...', 'Any other station?'],
   },
 };
@@ -4695,8 +4710,8 @@ function updateWeatherAndEvents(dt) {
 }
 
 function initLevel(lv, idx) {
-  R = mulberry(SEED + lv.id * 131 + (lv.attempt || 0) * 17);
-  CR = mulberry(SEED * 7 + lv.id * 31 + (lv.attempt || 0) * 5 + 11);
+  R = lv.daily ? mulberry(lv.seed) : mulberry(SEED + lv.id * 131 + (lv.attempt || 0) * 17);
+  CR = lv.daily ? mulberry(lv.seed * 7 + 11) : mulberry(SEED * 7 + lv.id * 31 + (lv.attempt || 0) * 5 + 11);
   SIM.lv = lv; SIM.lvIdx = idx; SIM.t = 0; SIM.over = false; SIM.overKind = ''; SIM.rain = 0; SIM.jam = false; SIM.nextId = 1;
   SIM.route = PATHS[lv.route]; makeStops(lv); SIM.plan = planFor(lv);
   SC = newScore(); SIM.score = SC;
@@ -5688,10 +5703,12 @@ const el = {};
   'stLevel', 'stClock', 'stFare', 'fareBar', 'stSeats', 'dentBar', 'toasts', 'floaters', 'bubbles', 'seatsStrip', 'spVal', 'spArc', 'spNeedle', 'guideBox', 'guideArrow', 'guideTxt', 'hint', 'hurt', 'dbg', 'touch', 'steer', 'pGas', 'pBrake', 'tDoor', 'tHorn',
   'rMaster', 'rMusic', 'rSfx', 'oMaster', 'oMusic', 'oSfx', 'bTR', 'bEN', 'bQLow', 'bQHigh', 'bMapH', 'bMapN', 'bSound', 'langTxt', 'sRoute', 'hatLv', 'hatStopsH', 'hatStops', 'hatCh', 'hatChd', 'hatBestLine', 'bHatGo', 'hatGoTxt'].forEach(id => { el[id] = document.getElementById(id); });
 const SCREENS = ['sTitle', 'sPause', 'sSettings', 'sEnd', 'sRoute'];
+for (const id of ['bDaily', 'dailyLine', 'bA11y', 'bShare', 'aOther']) el[id] = document.getElementById(id);
 function showScreen(id) { for (const s of SCREENS) el[s].classList.toggle('show', s === id); if (id) { const b = el[id].querySelector('.btn.primary:not([disabled])') || el[id].querySelector('.btn'); if (b && id !== 'sTitle') setTimeout(() => b.focus({ preventScroll: true }), 30); } }
 
 function applyLang() {
   document.documentElement.lang = LANG;
+  if (window.Arena) Arena.lang(LANG);
   $$('[data-i]').forEach(n => { n.textContent = t(n.dataset.i === 'howto' && document.body.classList.contains('touch') ? 'howtoTouch' : n.dataset.i, 0, 0); });
   $$('[data-t]').forEach(n => { const s = t(n.dataset.t); n.title = s; n.setAttribute('aria-label', s); });
   el.steer.setAttribute('aria-label', LANG === 'tr' ? 'Direksiyon' : 'Steering');
@@ -5708,6 +5725,7 @@ function refreshTitle() {
   el.bCont.classList.toggle('hidden', !runSave);
   const stars = best.stars.reduce((a, b) => a + b, 0);
   el.bestLine.textContent = best.total || stars || best.endless ? t('bestLine', fmt(best.total), stars, fmt(best.endless)) : t('bestNone');
+  if (window.Arena) { const d = Arena.daily(); el.dailyLine.textContent = (d.done ? t('dailyDone') + ' · ' : '') + t('dailyLine', d.streak, d.best); } else el.bDaily.classList.add('hidden');
   if (G.state !== 'loading') el.playTxt.textContent = t('play');
 }
 let lastToast = { t: '', at: 0 };
@@ -5759,14 +5777,22 @@ HOOK.snd = (name, a) => {
 // ---- level helpers
 function curLevel() {
   if (G.mode === 'campaign') return LEVELS[G.lvIdx];
+  if (G.mode === 'daily') return dailyLevel(G.daily);
   const lv = endlessLevel(G.wave); lv.t2 = Math.round(lv.target * 1.4); lv.t3 = Math.round(lv.target * 1.85); return lv;
 }
-function levelName(lv) { return lv.endless ? t('lvE', lv.wave) : t('lv' + lv.id); }
+function levelName(lv) { return lv.daily ? t('lvD') : lv.endless ? t('lvE', lv.wave) : t('lv' + lv.id); }
+// Daily challenge (arena-kit): an endless-style shift whose wave (1-4) and gameplay rng come from the UTC day seed
+// (same for everyone that day, ?d=YYYYMMDD replays a day). It never touches the campaign save or the endless record.
+function dailyLevel(d) {
+  const lv = endlessLevel(1 + d.seed % 4); lv.t2 = Math.round(lv.target * 1.4); lv.t3 = Math.round(lv.target * 1.85);
+  return Object.assign(lv, { daily: d.day, seed: d.seed });
+}
+function startDaily() { if (!window.Arena) return; AUD.init(); G.mode = 'daily'; G.daily = Arena.daily(); G.dailyRec = null; G.retries = 0; enterIntro(); }
 /** the level card: a dismissable corner card (new-feature list); it never blocks the shift */
 function fillCard() {
   const lv = curLevel();
   el.cdTitle.textContent = lv.endless ? levelName(lv) : t('level') + ' ' + lv.id + ': ' + levelName(lv);
-  el.cdDesc.textContent = t(lv.endless ? 'dE' : 'd' + lv.id);
+  el.cdDesc.textContent = t(lv.daily ? 'dD' : lv.endless ? 'dE' : 'd' + lv.id);
   el.cdList.innerHTML = '';
   const feats = lv.endless ? ['f_traffic', 'f_rain', 'f_vip', 'f_any', 'f_stops:10'] : lv.feat;
   for (const f of feats) { const [k, a] = f.split(':'); const li = document.createElement('li'); li.textContent = t(k, a); el.cdList.appendChild(li); }
@@ -5867,6 +5893,8 @@ HOOK.levelEnd = res => {
       runSave = idx >= 7 ? null : { level: idx + 1, total: G.total, stars: G.stars };
       writeSave();
     }
+  } else if (G.mode === 'daily') {
+    if (res.stars > 0 && res.kind !== 'wreck' && G.daily) G.dailyRec = G.daily.complete(Math.round(res.net));
   } else {
     if (res.stars > 0) G.endlessTotal += Math.round(res.net);
     else if (res.kind !== 'wreck') G.endlessTotal += Math.max(0, Math.round(res.net));
@@ -5879,23 +5907,30 @@ HOOK.levelEnd = res => {
     if (!prev || ro.profit > prev.profit) { all[lv.id] = { profit: Math.round(ro.profit), stops: ro.stops, ch: ro.ch }; lsSet(KEY_HAT, all); G.hatRecord = true; }
   }
   G.log.push({ route: ro ? ro.stops.join('>') : '', ch: ro ? ro.ch : 'off', profit: ro ? Math.round(ro.profit) : 0, dist: ro ? Math.round(ro.dist) : 0, mode: G.mode, level: lv.id, kind: res.kind, stars: res.stars, net: Math.round(res.net), fares: res.score.fares, tips: res.score.tips, pen: res.score.pen, pass: res.score.pass, dent: Math.round(res.dent), hits: res.score.hits, reds: res.score.reds, brakes: res.score.brakes, skips: res.score.skips, gaveUp: res.score.gaveUp, ped: res.score.ped, anyDrops: res.score.anyDrops, tipsLost: res.score.tipsLost });
+  if (window.Arena && res.stars > 0 && res.kind !== 'wreck') {
+    Arena.award('dolmus:first-shift', t('awFirst'));
+    if (G.mode === 'campaign' && idx >= 7) Arena.award('dolmus:campaign', t('awCampaign'));
+    if (best.stars.every(v => v >= 3)) Arena.award('dolmus:all-stars', t('awAllStars'));
+  }
   G.record = rec; fillEnd(res); showScreen('sEnd'); input.horn = false; AUD.hornStop();
   if (res.stars > 0) setTimeout(() => AUD.star(), 300);
 };
 function fillEnd(res) {
   if (!res) return;
-  const lv = res.lv, camp = G.mode === 'campaign', last = camp && G.lvIdx >= 7;
+  const lv = res.lv, camp = G.mode === 'campaign', daily = G.mode === 'daily', last = camp && G.lvIdx >= 7;
   let title, sub, nextKey = null;
   if (res.kind === 'wreck') { title = t('endWreck'); sub = t('subWreck'); }
   else if (res.stars === 0) { title = t('endFail'); sub = t('subFail'); }
   else if (camp && last) { title = t('endWin'); sub = t('subWin'); nextKey = 'endless'; }
   else if (camp) { title = t('endClear'); sub = t('subClear'); nextKey = 'next'; }
+  else if (daily) { title = t('endClear'); sub = G.dailyRec ? t('daily') + ' · ' + t('dailyLine', G.dailyRec.streak, G.dailyRec.best) : t('subClear'); }
   else { title = t('endClear'); sub = t('subClear'); nextKey = 'nextShift'; }
-  if (!camp && (res.stars === 0 || res.kind === 'wreck')) { title = t('endEndless'); sub = t('subEndless', fmt(G.endlessTotal)); }
+  if (!camp && !daily && (res.stars === 0 || res.kind === 'wreck')) { title = t('endEndless'); sub = t('subEndless', fmt(G.endlessTotal)); }
   el.enTitle.textContent = title; el.enSub.textContent = sub;
   el.enStars.innerHTML = [1, 2, 3].map(n => '<svg viewBox="0 0 24 24" class="' + (res.stars >= n ? 'on' : '') + '" style="animation-delay:' + (n * 0.25) + 's"><use href="#i-star"/></svg>').join('');
   const sc = res.score, rows = [[t('sFares'), fmt(sc.fares) + ' ' + t('tl'), 'pos'], [t('sTips'), fmt(sc.tips) + ' ' + t('tl'), 'pos'], [t('sPen'), (sc.pen > 0 ? '-' : '') + fmt(sc.pen) + ' ' + t('tl'), sc.pen > 0 ? 'neg' : ''], [t('sNet'), fmt(res.net) + ' ' + t('tl'), ''], [t('sPass'), String(sc.pass), ''], [t('sDent'), Math.round(res.dent) + '%', '']];
-  if (!camp) rows.push([t('sTotal'), fmt(G.endlessTotal) + ' ' + t('tl'), '']);
+  if (daily) { /* one shift: no running total */ }
+  else if (!camp) rows.push([t('sTotal'), fmt(G.endlessTotal) + ' ' + t('tl'), '']);
   else rows.push([t('sTotal'), fmt(G.total) + ' ' + t('tl'), '']);
   el.enStats.innerHTML = rows.map(r => '<span>' + r[0] + '</span><span class="' + r[2] + '">' + r[1] + '</span>').join('');
   // what cost the most, in plain words, plus the best tip and the number of "anywhere" drop-offs
@@ -5916,7 +5951,8 @@ function fillEnd(res) {
   if (ASSETS.enabled) { el.mascot.classList.remove('hidden'); el.mascotImg.onerror = () => el.mascot.classList.add('hidden'); el.mascotImg.src = 'assets/mascot/' + (res.stars >= 3 ? 'kedi-kutlama.png' : 'kedi-uyuyor.png'); } else el.mascot.classList.add('hidden');
   el.enRec.classList.toggle('hidden', !G.record); el.enRec.textContent = t('newRecord');
   el.bNext.classList.toggle('hidden', !nextKey); if (nextKey) el.nextTxt.textContent = t(nextKey);
-  el.bRetry.querySelector('span').textContent = t(!camp && (res.stars === 0 || res.kind === 'wreck') ? 'playAgain' : 'retry');
+  el.bRetry.querySelector('span').textContent = t(!camp && !daily && (res.stars === 0 || res.kind === 'wreck') ? 'playAgain' : 'retry');
+  if (window.Arena) { const others = Arena.games.filter(g => g !== Arena.game); el.aOther.href = 'https://furkiozknn.github.io/' + others[(G.log.length * 7 + Math.max(0, Math.round(res.net))) % others.length] + '/'; }
 }
 function nextAction() {
   const res = G.lastResult; if (!res || res.stars === 0 || res.kind === 'wreck') return;
@@ -5947,7 +5983,7 @@ function toggleFullscreen() { try { if (document.fullscreenElement) document.exi
 let hudT = 0;
 function updateHudStatic() {
   const lv = SIM.lv; if (!lv) return;
-  el.stLevel.textContent = lv.endless ? 'E' + lv.wave : String(lv.id);
+  el.stLevel.textContent = lv.daily ? 'D' : lv.endless ? 'E' + lv.wave : String(lv.id);
   const bars = el.fareBar.querySelectorAll('u'); bars[0].style.left = (lv.target / lv.t3 * 100) + '%'; bars[1].style.left = (lv.t2 / lv.t3 * 100) + '%';
   buildSeatStrip();
 }
@@ -6033,6 +6069,7 @@ function readInput() {
   input.steer = clamp(o.steer, -1, 1); input.throttle = o.throttle; input.brake = o.brake; input.horn = o.horn;
 }
 window.addEventListener('keydown', e => {
+  if (document.querySelector('.arena-modal')) return;   // the arena-kit panel handles its own keys (Esc closes it)
   // modal focus trap for active screens (#sPause, #sSettings, #sEnd, #sTitle) and #lvCard when focused
   if (e.key === 'Tab') {
     const sc = document.querySelector('.screen.show') || (el.lvCard.classList.contains('show') && el.lvCard.contains(document.activeElement) ? el.lvCard : null);
@@ -6062,6 +6099,10 @@ window.addEventListener('keydown', e => {
 window.addEventListener('keyup', e => { keys[e.code] = false; });
 window.addEventListener('blur', () => { for (const k in keys) keys[k] = false; input.horn = false; AUD.hornStop(); });
 document.addEventListener('visibilitychange', () => { if (document.hidden && G.state === 'play') pauseGame(); });
+// arena-kit: the same pause when the tab is hidden (the game's own listener stays); on 'resume' the pause menu stays up.
+// No Arena.perf.attach here: the game's own fps watchdog (qualityWatch) already drops the resolution on slow GPUs.
+// The game has no reduced-motion flag of its own to map.
+if (window.Arena) Arena.on('pause', () => { if (G.state === 'play') pauseGame(); });
 window.addEventListener('pointerdown', () => { AUD.init(); AUD.resume(); }, { once: false });
 function enableTouch() { document.body.classList.add('touch'); applyLang(); resize(); }
 window.addEventListener('touchstart', () => enableTouch(), { once: true, passive: true });
@@ -6102,6 +6143,12 @@ function setMapMode(rot) { settings.mapRot = rot; saveSettings(); syncSettingsUI
 on('bMapH', () => setMapMode(true)); on('bMapN', () => setMapMode(false));
 document.getElementById('minimap').addEventListener('click', () => { AUD.init(); AUD.click(); setMapMode(settings.mapRot === false); toast(t(settings.mapRot === false ? 'mapNorth' : 'mapHead'), 'info'); });
 on('bNext', () => nextAction()); on('bRetry', () => retryCurrent()); on('bMenuE', () => toMenu());
+on('bDaily', () => startDaily()); on('bA11y', () => { if (window.Arena) Arena.openSettings(); }); on('bShare', () => shareResult());
+function shareResult() {
+  const r = G.lastResult; if (!r || !window.Arena) return;
+  const lv = r.lv, name = lv.daily ? t('lvD') + ' ' + lv.daily : lv.endless ? levelName(lv) : t('level') + ' ' + lv.id + ': ' + levelName(lv);
+  return Arena.share({ title: 'Dolmuş', lines: [name, t('shareStars', r.stars, fmt(r.net))], url: 'https://furkiozknn.github.io/dolmus/' + (lv.daily ? '?d=' + lv.daily : '') });
+}
 for (const [id, key, out] of [['rMaster', 'master', 'oMaster'], ['rMusic', 'music', 'oMusic'], ['rSfx', 'sfx', 'oSfx']]) {
   el[id].addEventListener('input', () => { settings[key] = el[id].value / 100; el[out].textContent = el[id].value + '%'; AUD.applyGains(); saveSettings(); });
 }
@@ -6143,7 +6190,7 @@ function botTick(dt) {
   BOT.uiT += dt;
   const act = (th, fn) => { if (BOT.uiT > th) { BOT.uiT = 0; fn(); } };
   if (G.done) return;
-  if (G.state === 'title') { act(0.8, () => startCampaign(false)); return; }
+  if (G.state === 'title') { act(0.8, () => { if (Q.get('mode') === 'daily' && window.Arena) startDaily(); else startCampaign(false); }); return; }
   if (G.state === 'countdown') { beginShift(); return; }
   if (G.state === 'route') { act(0.5, () => { PLAN = botPlan(G.pickLv || curLevel()); fillRoute(); confirmRoute(); }); return; }
   if (G.state === 'paused') { resumeGame(); return; }
@@ -6151,6 +6198,7 @@ function botTick(dt) {
     act(1.2, () => {
       const r = G.lastResult;
       if (G.mode === 'campaign' && G.lvIdx >= 7 && r.stars > 0) { G.done = true; return; }
+      if (G.mode === 'daily' && r.stars > 0 && r.kind !== 'wreck') { G.done = true; return; }
       if (Q.has('cal')) { if (G.lvIdx >= 7) { G.done = true; return; } G.lvIdx++; G.retries = 0; enterIntro(); return; }
       if (r.stars > 0 && r.kind !== 'wreck') nextAction();
       else { if (G.retries >= 3) { G.done = true; G.failed = true; return; } retryCurrent(); }
@@ -6274,7 +6322,7 @@ async function boot() {
   G.state = 'title'; el.bPlay.disabled = false; window.__dolmusReady = true; if (!lsGet(KEY_SET)) saveSettings();
   showcase(); applyLang();
   if (FLAG.auto || SIM_PRE > 0) {
-    if (G.state === 'title') { if (Q.get('mode') === 'endless') startEndless(); else startCampaign(false); if (G.state === 'countdown') beginShift(); }
+    if (G.state === 'title') { if (Q.get('mode') === 'endless') startEndless(); else if (Q.get('mode') === 'daily' && window.Arena) startDaily(); else startCampaign(false); if (G.state === 'countdown') beginShift(); }
     if (SIM_PRE > 0) window.dolmusSim(SIM_PRE);
     lastSkyHour = -99;
   }
