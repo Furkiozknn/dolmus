@@ -147,7 +147,6 @@ The live state is on `window.dolmus` (state, level, time, net, score, seats, den
 
 <p align="center"><img src="docs/05-phone-portrait.png" width="300" alt="Dolmuş on a phone"><br><sub>On a phone</sub></p>
 
-Promo video: <a href="https://github.com/Furkiozknn/social-videos/releases/download/promo-2026-10/2026-10-28-dolmus-en.mp4">EN</a> &middot; <a href="https://github.com/Furkiozknn/social-videos/releases/download/promo-2026-10/2026-10-28-dolmus-tr.mp4">TR</a>
 
 </details>
 
