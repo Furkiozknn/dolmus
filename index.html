@@ -1935,7 +1935,7 @@ body.touch #lvCard {
       <button class="btn icon rocker" id="bLang" data-t="language" aria-label="Language"><svg class="ic"><use href="#i-globe"/></svg></button>
     </div>
   </div>
-  <div id="toasts"></div>
+  <div id="toasts" role="status" aria-live="polite"></div>
   <div id="lvCard"><button class="x" id="bCardX" data-t="close" aria-label="Close"><svg class="ic"><use href="#i-close"/></svg></button><h3 id="cdTitle"></h3><p id="cdDesc"></p><ul class="feat" id="cdList"></ul><div class="tgt" id="cdTarget"></div></div>
   <canvas id="minimap" width="420" height="316"></canvas>
   <div id="guideBox"><div id="guideArrow"><svg viewBox="0 0 24 24"><use href="#i-arrow"/></svg></div><div id="guideTxt"></div></div>
@@ -1969,10 +1969,10 @@ body.touch #lvCard {
   <div id="floaters"></div><div id="bubbles"></div>
   <div id="touch">
     <div id="steer" role="slider" aria-label="Steering" aria-valuemin="-100" aria-valuemax="100" aria-valuenow="0"><i></i></div>
-    <div id="pBrake" class="pedal" aria-label="Brake"><svg class="ic" style="width:30px;height:30px"><use href="#i-pause"/></svg><span>FREN</span></div>
-    <div id="pGas" class="pedal" aria-label="Gas"><svg class="ic" style="width:34px;height:34px;transform:rotate(-90deg)"><use href="#i-play"/></svg><span>GAZ</span></div>
-    <div id="tDoor" class="pedal" aria-label="Door"><svg class="ic" style="width:26px;height:26px"><use href="#i-door"/></svg><span>KAPI</span></div>
-    <div id="tHorn" class="pedal" aria-label="Horn"><svg class="ic" style="width:26px;height:26px"><use href="#i-horn"/></svg><span>KORNA</span></div>
+    <div id="pBrake" class="pedal" aria-label="Brake" data-t="aBrake"><svg class="ic" style="width:30px;height:30px"><use href="#i-pause"/></svg><span data-i="pBrake">FREN</span></div>
+    <div id="pGas" class="pedal" aria-label="Gas" data-t="aGas"><svg class="ic" style="width:34px;height:34px;transform:rotate(-90deg)"><use href="#i-play"/></svg><span data-i="pGas">GAZ</span></div>
+    <div id="tDoor" class="pedal" aria-label="Door" data-t="aDoor"><svg class="ic" style="width:26px;height:26px"><use href="#i-door"/></svg><span data-i="pDoor">KAPI</span></div>
+    <div id="tHorn" class="pedal" aria-label="Horn" data-t="aHorn"><svg class="ic" style="width:26px;height:26px"><use href="#i-horn"/></svg><span data-i="pHorn">KORNA</span></div>
   </div>
 </div>
 
@@ -2202,6 +2202,8 @@ const STR = {
     startShift: 'Vardiyayı başlat', master: 'Genel ses', music: 'Müzik', effects: 'Efektler', quality: 'Kalite',
     low: 'Düşük', high: 'Yüksek', mapMode: 'Mini harita', mapHead: 'Yöne göre', mapNorth: 'Kuzey üstte', fullscreen: 'Tam ekran', toggle: 'Aç / kapat', back: 'Geri',
     keysHelp: 'P / Esc duraklat · M müzik · X efekt · L dil · N harita · H korna · Boşluk dur / kapı',
+    keysHelpTouch: 'Üst çubuk: duraklat, ses, dil · KAPI düğmesi dur / kapı · KORNA düğmesi korna',
+    pGas: 'GAZ', pBrake: 'FREN', pDoor: 'KAPI', pHorn: 'KORNA', aGas: 'Gaz', aBrake: 'Fren', aDoor: 'Kapı', aHorn: 'Korna',
     retry: 'Tekrar dene', next: 'Sonraki seviye', nextShift: 'Sonraki vardiya', playAgain: 'Tekrar oyna',
     level: 'Seviye', shift: 'Vardiya', fares: 'Hasılat', seats: 'Koltuk', dents: 'Hasar', pause: 'Duraklat', sound: 'Ses', tl: 'TL',
     bestLine: 'En iyi: {0} TL · {1}/24 yıldız · Sonsuz: {2} TL', bestNone: 'Henüz rekor yok.',
@@ -2243,7 +2245,8 @@ const STR = {
     },
     close: 'Kapat', go: 'Hadi!',
     coach: 'Halkanın yanında dur, Boşluğa bas (ya da kapı düğmesine dokun)',
-    f_any: 'Müsait bir yerde: kapıdaki halka yeşilse güvenli, turuncuysa geçide/kavşağa çok yakın',
+    coachTouch: 'Halkanın yanında dur, KAPI düğmesine dokun',
+    f_any: 'Müsait bir yerde: kapıdaki halka ✓ yeşilse güvenli, ! turuncuysa geçide/kavşağa çok yakın',
     penBadStop: 'Tehlikeli yerde indirdin -{0} TL', easyStop: '+{0} TL kolay iniş',
     penBadStop_zebra: 'Yaya geçidine çok yakın ({1} m, en az 9 m) -{0} TL', penBadStop_junction: 'Kavşağa çok yakın ({1} m, en az 10 m) -{0} TL',
     brakeOk_ped: 'Acil fren: yaya. Ceza yok.', brakeOk_car: 'Acil fren: önde araç. Ceza yok.', brakeOk_light: 'Işıkta fren. Ceza yok.',
@@ -2287,6 +2290,8 @@ const STR = {
     startShift: 'Start shift', master: 'Master volume', music: 'Music', effects: 'Effects', quality: 'Quality',
     low: 'Low', high: 'High', mapMode: 'Minimap', mapHead: 'Heading up', mapNorth: 'North up', fullscreen: 'Fullscreen', toggle: 'Toggle', back: 'Back',
     keysHelp: 'P / Esc pause · M music · X effects · L language · N map · H horn · Space stop / door',
+    keysHelpTouch: 'Top bar: pause, sound, language · DOOR button stop / door · HORN button horn',
+    pGas: 'GAS', pBrake: 'BRAKE', pDoor: 'DOOR', pHorn: 'HORN', aGas: 'Gas', aBrake: 'Brake', aDoor: 'Door', aHorn: 'Horn',
     retry: 'Try again', next: 'Next level', nextShift: 'Next shift', playAgain: 'Play again',
     level: 'Level', shift: 'Shift', fares: 'Fares', seats: 'Seats', dents: 'Dents', pause: 'Pause', sound: 'Sound', tl: 'TL',
     bestLine: 'Best: {0} TL · {1}/24 stars · Endless: {2} TL', bestNone: 'No record yet.',
@@ -2327,7 +2332,8 @@ const STR = {
     },
     close: 'Close', go: 'Go!',
     coach: 'Stop near the ring, press Space (or tap the door button)',
-    f_any: 'Anywhere riders: door ring green = safe curb, amber = too close to a crossing/junction',
+    coachTouch: 'Stop near the ring, tap the DOOR button',
+    f_any: 'Anywhere riders: door ring ✓ green = safe curb, ! amber = too close to a crossing/junction',
     penBadStop: 'Unsafe drop-off -{0} TL', easyStop: '+{0} TL easy stop',
     penBadStop_zebra: 'Too close to the crossing ({1} m, need 9 m) -{0} TL', penBadStop_junction: 'Too close to the junction ({1} m, need 10 m) -{0} TL',
     brakeOk_ped: 'Emergency stop: pedestrian. No penalty.', brakeOk_car: 'Emergency stop: vehicle ahead. No penalty.', brakeOk_light: 'Braking for the light. No penalty.',
@@ -3796,6 +3802,8 @@ function buildWorldGeometry(stage) {
 
 // ---------------------------------------------------------------- simulation state
 const HOOK = { toast() { }, float() { }, bubble() { }, snd() { }, shake() { }, hurt() { }, levelEnd() { } };
+/** arena-kit "reduce motion": no camera shake, a soft hurt vignette, markers stop pulsing. Read live (visual layer only, the sim never reads it). */
+const calm = () => !!(window.Arena && Arena.settings && Arena.settings.reducedMotion);
 const CAR_COLS = [0xd94f4f, 0x3d7fc4, 0xe8e2d0, 0x39393f, 0x7a9d5a, 0xe0a030, 0x8c8f99, 0xf2f2f2, 0x7a4fb5, 0x2f9e9a, 0xe27b3b];
 const SKINS = [0xf0c8a0, 0xe0ac80, 0xc68b5e, 0x8d5a3a, 0xf5d6b5];
 const SHIRTS = [0xe5484d, 0x2b8cc4, 0x3fae6a, 0xf2a33a, 0x7a4fb5, 0xf0e6d2, 0x2d3b55, 0xd1568b, 0x56b3a8, 0x9aa3ad];
@@ -4985,6 +4993,18 @@ function ringGeo() {
   for (let i = 0; i < N; i++) { const a0 = i / N * TAU, a1 = (i + 1) / N * TAU; m.quadTo([Math.cos(a0) * ri, 0, Math.sin(a0) * ri], [Math.cos(a0) * ro, 0, Math.sin(a0) * ro], [Math.cos(a1) * ro, 0, Math.sin(a1) * ro], [Math.cos(a1) * ri, 0, Math.sin(a1) * ri], 0xffffff, 0, 1, 0); }
   return m.build();
 }
+/** curb marker symbol (second channel next to the ring colour, colour-blind safe): 'ok' check, 'bad' exclamation, 'no' cross */
+function curbIconMat(kind, col) {
+  const c = document.createElement('canvas'); c.width = c.height = 64; const g = c.getContext('2d');
+  g.beginPath(); g.arc(32, 32, 28, 0, TAU); g.fillStyle = 'rgba(14,15,18,0.82)'; g.fill(); g.lineWidth = 5; g.strokeStyle = '#' + col.toString(16).padStart(6, '0'); g.stroke();
+  g.strokeStyle = '#fff'; g.lineWidth = 7; g.lineCap = 'round'; g.lineJoin = 'round'; g.beginPath();
+  if (kind === 'ok') { g.moveTo(19, 33); g.lineTo(28, 42); g.lineTo(45, 23); }
+  else if (kind === 'bad') { g.moveTo(32, 17); g.lineTo(32, 35); g.moveTo(32, 46); g.lineTo(32, 46.5); }
+  else { g.moveTo(22, 22); g.lineTo(42, 42); g.moveTo(42, 22); g.lineTo(22, 42); }
+  g.stroke();
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
+  const m = new THREE.SpriteMaterial({ map: t, transparent: true, depthTest: false, depthWrite: false, fog: false, toneMapped: false }); m.userData.kind = kind; return m;
+}
 function beamCylGeo() {
   const g = new THREE.CylinderGeometry(0.9, 2.6, 16, 14, 1, true); g.translate(0, 8, 0); return g;
 }
@@ -5103,6 +5123,8 @@ void main(){ vec3 c = vY>0.0 ? mix(uHor,uTop,pow(vY,0.55)) : uHor*0.8;
   // curb marker at the door: shows whether a "müsait bir yerde" drop-off here is safe (green), allowed but too close to a crossing / junction (amber) or refused (red)
   OBJ.curb = new THREE.Mesh(ringGeo(), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.8, depthWrite: false, side: THREE.DoubleSide }));
   OBJ.curb.scale.set(0.32, 1, 0.32); OBJ.curb.renderOrder = 4; OBJ.curb.visible = false; scene.add(OBJ.curb);
+  OBJ.curbMats = { ok: curbIconMat('ok', CURB_OK), bad: curbIconMat('bad', CURB_BAD), no: curbIconMat('no', CURB_NO) };
+  OBJ.curbIcon = new THREE.Sprite(OBJ.curbMats.ok); OBJ.curbIcon.name = 'curbIcon'; OBJ.curbIcon.scale.set(1.1, 1.1, 1); OBJ.curbIcon.renderOrder = 6; OBJ.curbIcon.visible = false; scene.add(OBJ.curbIcon);
   // lamps, pools, signals
   const lampN = WORLD.lamps.length;
   OBJ.lamps = inst(new THREE.SphereGeometry(0.3, 6, 4), emissiveMat(0xcfd3da), lampN, false);
@@ -5361,7 +5383,7 @@ function setInst(mesh, i, x, y, z, yaw, pitch, scale = 1) {
 }
 function syncRender(dt) {
   tick += dt;
-  const P = player, hour = SIM.hour;
+  const P = player, hour = SIM.hour, still = calm();
   if (Math.abs(hour - lastSkyHour) > 0.01 || Math.abs(SIM.rain - lastSkyRain) > 0.02) updateSky(hour, SIM.rain);
   // decor chunks and neon boards are not drawn beyond 230 m (the fog hides them anyway)
   for (const m of OBJ.decor) { const bs = m.geometry.boundingSphere; m.visible = hyp(bs.center.x - camera.position.x, bs.center.z - camera.position.z) < 230 + bs.radius; }
@@ -5431,7 +5453,7 @@ function syncRender(dt) {
       const fr = clamp(p.pat / p.patMax, 0, 1);
       pp[pn * 3] = p.x; pp[pn * 3 + 1] = y + (rainU ? 2.6 : 1.95) * sc; pp[pn * 3 + 2] = p.z;
       _c.setHex(fr > 0.5 ? 0x5ee08a : fr > 0.25 ? 0xFACC15 : 0xff5a4a); pc[pn * 3] = _c.r; pc[pn * 3 + 1] = _c.g; pc[pn * 3 + 2] = _c.b;
-      ps[pn] = p.vip ? 13 : 8 + (fr < 0.25 ? 2 * Math.abs(Math.sin(tick * 8)) : 0); pa[pn] = 0.95; pn++;
+      ps[pn] = p.vip ? 13 : 8 + (fr < 0.25 ? (still ? 2 : 2 * Math.abs(Math.sin(tick * 8))) : 0); pa[pn] = 0.95; pn++;
     }
   }
   for (let i = pn; i < 40; i++) pa[i] = 0;
@@ -5455,7 +5477,7 @@ function syncRender(dt) {
   let nm = 0;
   const hasSeatDest = idx => { for (let i = 0; i < P.seats.length; i++) if (P.seats[i].dest === idx) return true; return false; };
   const free = P.seats.length + P.boarding < SEATS;
-  const pulse = 1 + 0.07 * Math.sin(tick * 5);
+  const pulse = still ? 1 : 1 + 0.07 * Math.sin(tick * 5);
   const mark = (x, z, colHex, sc, beam) => {
     const y = yAt(x, z) + 0.16;
     _o.position.set(x, y, z); _o.rotation.set(0, tick * 0.4, 0); _o.scale.set(sc * pulse, 1, sc * pulse); _o.updateMatrix(); OBJ.rings.setMatrixAt(nm, _o.matrix);
@@ -5466,22 +5488,22 @@ function syncRender(dt) {
   for (const st of SIM.stops) {
     const hasVip = st.wait.some(p => p.vip);
     if (hasSeatDest(st.idx)) mark(st.def.x, st.def.z, DEST_COL, 1, true);
-    else if (st.wait.length && free) mark(st.def.x, st.def.z, hasVip ? VIP_COL : PICK_COL, (hasVip ? 1.15 : 1) * (COACH.on && st.idx === 0 ? 1.28 + 0.1 * Math.sin(tick * 8) : 1), true);
+    else if (st.wait.length && free) mark(st.def.x, st.def.z, hasVip ? VIP_COL : PICK_COL, (hasVip ? 1.15 : 1) * (COACH.on && st.idx === 0 ? 1.28 + (still ? 0 : 0.1 * Math.sin(tick * 8)) : 1), true);
     else mark(st.def.x, st.def.z, IDLE_COL, 0.7, false);
   }
   if (free) for (const h of SIM.hailers) mark(h.x, h.z, PICK_COL, 0.55, true);
   OBJ.rings.count = nm; OBJ.beams.count = nm;
   OBJ.rings.instanceMatrix.needsUpdate = OBJ.beams.instanceMatrix.needsUpdate = true;
   if (OBJ.rings.instanceColor) { OBJ.rings.instanceColor.needsUpdate = true; OBJ.beams.instanceColor.needsUpdate = true; }
-  OBJ.beams.material.opacity = 0.16 + 0.05 * Math.sin(tick * 4);
+  OBJ.beams.material.opacity = still ? 0.16 : 0.16 + 0.05 * Math.sin(tick * 4);
   // ---- curb marker (only while an "anywhere" rider is aboard near their stop and the van is slow); the check runs ~7 times a second
   const curbOn = G.state === 'play' && P.door.state === 'closed' && Math.abs(P.speed) < 9 && anywhereRiders().length > 0;
-  OBJ.curb.visible = curbOn;
+  OBJ.curb.visible = OBJ.curbIcon.visible = curbOn;
   if (curbOn) {
     curbT -= dt;
-    if (curbT <= 0) { curbT = 0.15; const c = curbCheck(); OBJ.curb.material.color.setHex(!c.ok ? CURB_NO : c.bad ? CURB_BAD : CURB_OK); }
-    const d = doorPos(); OBJ.curb.position.set(d.x, yAt(d.x, d.z) + 0.18, d.z);
-    OBJ.curb.material.opacity = 0.65 + 0.2 * Math.sin(tick * 6);
+    if (curbT <= 0) { curbT = 0.15; const c = curbCheck(), k = !c.ok ? 'no' : c.bad ? 'bad' : 'ok'; OBJ.curb.material.color.setHex(k === 'no' ? CURB_NO : k === 'bad' ? CURB_BAD : CURB_OK); OBJ.curbIcon.material = OBJ.curbMats[k]; }
+    const d = doorPos(); OBJ.curb.position.set(d.x, yAt(d.x, d.z) + 0.18, d.z); OBJ.curbIcon.position.set(d.x, yAt(d.x, d.z) + 1.7, d.z);
+    OBJ.curb.material.opacity = still ? 0.8 : 0.65 + 0.2 * Math.sin(tick * 6);
   } else curbT = 0;
   // ---- traffic lights
   let li = 0;
@@ -5522,7 +5544,7 @@ function syncRender(dt) {
     rain.geo.attributes.position.needsUpdate = true; rain.geo.attributes.aAlpha.needsUpdate = false;
   }
   updateCamera(dt);
-  matNeon.color.setScalar(NEONB * ((Math.sin(tick * 7.3) * Math.sin(tick * 3.1 + 1) > 0.94) ? 0.6 : 1));   // an occasional neon flicker
+  matNeon.color.setScalar(NEONB * (!still && Math.sin(tick * 7.3) * Math.sin(tick * 3.1 + 1) > 0.94 ? 0.6 : 1));   // an occasional neon flicker
   updateReflections();
   splashT -= dt;
   if (SIM.rain > 0.2 && splashT <= 0 && SIM.running) {   // rain splashes on the road ahead of the dolmus
@@ -5619,7 +5641,7 @@ function updateCamera(dt) {
   cs.x += (tx - cs.x) * k; cs.y += (ty - cs.y) * k; cs.z += (tz - cs.z) * k;
   if (!isFinite(cs.x) || hyp(cs.x - P.x, cs.z - P.z) > 40) { cs.x = tx; cs.y = ty; cs.z = tz; }
   cs.shake *= Math.exp(-dt * 5);
-  const sh = cs.shake * 0.5;
+  const sh = calm() ? 0 : cs.shake * 0.5;
   camera.position.set(cs.x + (Math.random() - 0.5) * sh, Math.max(cs.y, yAt(cs.x, cs.z) + 1.8) + (Math.random() - 0.5) * sh, cs.z + (Math.random() - 0.5) * sh);
   camera.lookAt(P.x + fx * 6, P.y + 1.6, P.z + fz * 6);
   const fov = 55 + clamp(sp, 0, 22) * 0.45; if (Math.abs(fov - camera.fov) > 0.05) { camera.fov = fov; camera.updateProjectionMatrix(); }
@@ -5669,7 +5691,7 @@ function drawMinimap() {
       const x = mmx(st.def.x), z = mmz(st.def.z), drop = _wantDest.has(st.idx), wait = st.wait.length > 0, vip = st.wait.some(p => p.vip);
       const col = drop ? '#5ee08a' : (wait ? (vip ? '#ffe066' : '#FACC15') : '#9aa3b5');
       g.save(); g.translate(x, z); g.rotate(-ang);   // keep the stop badges upright
-      if (guide && guide.stop === st) { g.strokeStyle = '#fff'; g.lineWidth = 2; g.beginPath(); g.arc(0, 0, 12 + 2 * Math.sin(tick * 6), 0, TAU); g.stroke(); }
+      if (guide && guide.stop === st) { g.strokeStyle = '#fff'; g.lineWidth = 2; g.beginPath(); g.arc(0, 0, 12 + (calm() ? 0 : 2 * Math.sin(tick * 6)), 0, TAU); g.stroke(); }
       if (SIM.plan && SIM.plan.stops.includes(st.key)) { g.strokeStyle = '#ff9f1a'; g.lineWidth = 2.4; g.beginPath(); g.arc(0, 0, 11.5, 0, TAU); g.stroke(); }   // Route Master stop
       g.fillStyle = '#12161f'; g.beginPath(); g.arc(0, 0, 8.5, 0, TAU); g.fill();
       g.strokeStyle = col; g.lineWidth = 2.6; g.stroke();
@@ -5724,7 +5746,8 @@ function showScreen(id) { for (const s of SCREENS) el[s].classList.toggle('show'
 function applyLang() {
   document.documentElement.lang = LANG;
   if (window.Arena) Arena.lang(LANG);
-  $$('[data-i]').forEach(n => { n.textContent = t(n.dataset.i === 'howto' && document.body.classList.contains('touch') ? 'howtoTouch' : n.dataset.i, 0, 0); });
+  const touch = document.body.classList.contains('touch');   // touch devices: no keyboard keys in the help texts
+  $$('[data-i]').forEach(n => { const k = n.dataset.i; n.textContent = t(touch && (k === 'howto' || k === 'keysHelp') ? k + 'Touch' : k, 0, 0); });
   $$('[data-t]').forEach(n => { const s = t(n.dataset.t); n.title = s; n.setAttribute('aria-label', s); });
   el.steer.setAttribute('aria-label', LANG === 'tr' ? 'Direksiyon' : 'Steering');
   el.langTxt.textContent = LANG === 'tr' ? 'TR · EN' : 'EN · TR';
@@ -5782,8 +5805,8 @@ HOOK.toast = (txt, kind) => { toast(txt, kind); if (kind === 'good') AUD.good();
 HOOK.float = floater;
 HOOK.bubble = bubble;
 HOOK.honk = () => AUD.honk(300 + Math.random() * 60, 0.35, 0.12);
-HOOK.shake = a => { camState.shake = Math.max(camState.shake, a * 2.2); };
-HOOK.hurt = a => { el.hurt.style.opacity = clamp(0.25 + a / 20, 0.3, 0.85); setTimeout(() => { el.hurt.style.opacity = 0; }, 120); };
+HOOK.shake = a => { if (!calm()) camState.shake = Math.max(camState.shake, a * 2.2); };
+HOOK.hurt = a => { const c = calm(); el.hurt.style.opacity = c ? 0.18 : clamp(0.25 + a / 20, 0.3, 0.85); setTimeout(() => { el.hurt.style.opacity = 0; }, c ? 400 : 120); };   // reduce motion: a faint edge glow, no red flash
 HOOK.tramStop = () => { if (SIM.tram && hyp(SIM.tram.x - player.x, SIM.tram.z - player.z) < 80) AUD.bell(); };
 HOOK.vanParked = () => { toast(t('vanOn'), 'info'); };
 HOOK.sparkle = () => { for (let i = 0; i < 12; i++) fx.spawn(player.x + (Math.random() - 0.5) * 1.2, player.y + 2.6, player.z + (Math.random() - 0.5) * 1.2, (Math.random() - 0.5) * 2, 2 + Math.random() * 2.5, (Math.random() - 0.5) * 2, 0.9, 0.5, 0.1, 0xFACC15, 0.95, 4); };
@@ -6062,7 +6085,7 @@ function updateHUD(dt) {
     const dx = g.x - P.x, dz = g.z - P.z, fx = Math.sin(P.camHd), fz = Math.cos(P.camHd), ang = Math.atan2(dx * -fz + dz * fx, dx * fx + dz * fz);
     el.guideArrow.style.transform = 'rotate(' + ang + 'rad)';
     const name = g.stop ? stopName(g.stop.key) : (LANG === 'tr' ? 'El sallayan yolcu' : 'Waving passenger');
-    el.guideTxt.innerHTML = name + '<small>' + (coachNow ? t('coach') : t(g.kind === 'drop' ? 'guideDrop' : g.kind === 'pick' ? 'guidePick' : 'guideCruise') + ' · ' + t('guideM', Math.round(hyp(dx, dz)))) + '</small>';
+    el.guideTxt.innerHTML = name + '<small>' + (coachNow ? t(document.body.classList.contains('touch') ? 'coachTouch' : 'coach') : t(g.kind === 'drop' ? 'guideDrop' : g.kind === 'pick' ? 'guidePick' : 'guideCruise') + ' · ' + t('guideM', Math.round(hyp(dx, dz)))) + '</small>';
   } else el.guideBox.style.display = 'none';
 }
 
@@ -6123,6 +6146,7 @@ document.addEventListener('visibilitychange', () => { if (document.hidden && G.s
 // No Arena.perf.attach here: the game's own fps watchdog (qualityWatch) already drops the resolution on slow GPUs.
 // The game has no reduced-motion flag of its own to map.
 if (window.Arena) Arena.on('pause', () => { if (G.state === 'play') pauseGame(); });
+if (window.Arena) Arena.on('settings', () => { if (calm()) { camState.shake = 0; el.hurt.style.opacity = 0; } });   // "reduce motion" switched on mid-shift: stop a running shake now
 window.addEventListener('pointerdown', () => { AUD.init(); AUD.resume(); }, { once: false });
 function enableTouch() { document.body.classList.add('touch'); applyLang(); resize(); }
 window.addEventListener('touchstart', () => enableTouch(), { once: true, passive: true });
