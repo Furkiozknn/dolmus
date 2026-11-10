@@ -1,0 +1,20 @@
+{
+  "game": "dolmus",
+  "recorded": "2026-11-10T01:02:09.040Z",
+  "commit": "3385f30",
+  "entrySha": "f80877906087",
+  "run": "() => { window.dolmusSim(4000); }",
+  "metrics": {
+    "levels": 8,
+    "firstTry": 8,
+    "stars": 16,
+    "net": 2700,
+    "pass": 162,
+    "attempts": 8,
+    "hits": 6,
+    "reds": 2,
+    "dent": 53,
+    "done": true,
+    "gameErrors": 0
+  }
+}
