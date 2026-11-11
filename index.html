@@ -1528,6 +1528,7 @@ body.touch #lvCard {
   inset: 0;
   pointer-events: none;
   z-index: 6;
+  background: radial-gradient(ellipse at center, rgba(184, 38, 28, 0.28) 0%, rgba(184, 38, 28, 0.65) 100%);
   box-shadow: inset 0 0 90px 20px rgba(184, 38, 28, 0.85);
   opacity: 0;
   transition: opacity 0.35s ease;
@@ -4526,11 +4527,18 @@ function alight(seat, stopIdx, opts = {}) {
   newPed('alight', door.x, door.z, { st: 'alight', tx, tz, shirt: seat.shirt, skin: seat.skin, hd: P.hd, t: 0, scale: seat.scale });
 }
 function landCoin(c) {
-  const tot = c.tip + c.easy;
-  SC.fares += c.got; SC.tips += tot; SC.pass++;
+  const tot = (c.tip || 0) + (c.easy || 0);
+  if (!SC) SC = newScore();
+  SC.fares += (c.got || 0); SC.tips += tot; SC.pass++;
   if (tot > SC.bestTip) SC.bestTip = tot;
-  HOOK.float('+' + (c.got + tot), false); HOOK.snd('coin'); HOOK.sparkle && HOOK.sparkle();
-  logEv('coin', { amount: c.got, tip: tot });
+  HOOK.float('+' + ((c.got || 0) + tot), false); HOOK.snd('coin'); HOOK.sparkle && HOOK.sparkle();
+  // Camera micro-shake on fare collection; extra noticeable when earning a tip
+  if (HOOK.shake) HOOK.shake(tot > 0 ? 0.48 : 0.22);
+  // Short haptic feedback via navigator.vibrate([30, 20, 30]) if supported
+  if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
+    try { navigator.vibrate([30, 20, 30]); } catch (e) { /* ignore */ }
+  }
+  logEv('coin', { amount: c.got || 0, tip: tot });
   if (c.tip > 0) HOOK.toast(t('tipAdd', c.tip) + ' · ' + cpick(t('thx')), 'good');
   if (c.easy > 0) HOOK.toast(t('easyStop', c.easy), 'good');
 }
@@ -6059,7 +6067,22 @@ HOOK.float = floater;
 HOOK.bubble = bubble;
 HOOK.honk = () => AUD.honk(300 + Math.random() * 60, 0.35, 0.12);
 HOOK.shake = a => { if (!calm()) camState.shake = Math.max(camState.shake, a * 2.2); };
-HOOK.hurt = a => { const c = calm(); el.hurt.style.opacity = c ? 0.18 : clamp(0.25 + a / 20, 0.3, 0.85); setTimeout(() => { el.hurt.style.opacity = 0; }, c ? 400 : 120); };   // reduce motion: a faint edge glow, no red flash
+HOOK.hurt = a => {
+  const c = calm();
+  if (el.hurt) {
+    el.hurt.style.transition = 'opacity 0.05s ease-out';
+    el.hurt.style.opacity = c ? '0.18' : String(clamp(0.4 + (a || 0) / 20, 0.5, 0.95));
+    setTimeout(() => {
+      if (el.hurt) {
+        el.hurt.style.transition = 'opacity 0.35s ease-out';
+        el.hurt.style.opacity = '0';
+      }
+    }, c ? 400 : 120);
+  }
+  if (!c && typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
+    try { navigator.vibrate([30, 20, 30]); } catch (e) { /* ignore */ }
+  }
+};
 HOOK.tramStop = () => { if (SIM.tram && hyp(SIM.tram.x - player.x, SIM.tram.z - player.z) < 80) AUD.bell(); };
 HOOK.vanParked = () => { toast(t('vanOn'), 'info'); };
 HOOK.sparkle = () => { for (let i = 0; i < 12; i++) fx.spawn(player.x + (Math.random() - 0.5) * 1.2, player.y + 2.6, player.z + (Math.random() - 0.5) * 1.2, (Math.random() - 0.5) * 2, 2 + Math.random() * 2.5, (Math.random() - 0.5) * 2, 0.9, 0.5, 0.1, 0xFACC15, 0.95, 4); };
@@ -6614,7 +6637,7 @@ window.dolmusSim = function (seconds) {
   return window.dolmus;
 };
 window.dolmus = {
-  G, SIM, player, input, AUD, STR, WORLD, ASSETS, DBG, camClear, camState, staticHits, obAll, scene, renderer, camera, COACH, voiceRecent, curbCheck, anywhereRiders, doorPress, closeDoor, forfeitChain,
+  G, SIM, player, input, AUD, STR, WORLD, ASSETS, DBG, camClear, camState, staticHits, obAll, scene, renderer, camera, COACH, voiceRecent, curbCheck, anywhereRiders, doorPress, closeDoor, forfeitChain, landCoin, HOOK,
   get state() { return G.state; }, get level() { return SIM.lv && SIM.lv.id; }, get time() { return SIM.t; },
   get muavin() { return OBJ.muavin; }, get roofSign() { return OBJ.roofSign; }, get routeSignName() { return currentRoofRoute; },
   get net() { return SC ? netScore() : 0; }, get score() { return SC; }, get seats() { return player.seats.length; }, get dent() { return player.dent; },
