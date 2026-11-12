@@ -2543,7 +2543,7 @@ function t(k, ...a) {
   return s.replace(/\{(\d)\}/g, (_, i) => (a[+i] === undefined ? '' : a[+i]));
 }
 const stopName = key => (STOPS[key] ? STOPS[key][LANG === 'tr' ? 0 : 1] : key);
-const fmt = n => Math.round(n).toLocaleString(LANG === 'tr' ? 'tr-TR' : 'en-US');
+const fmt = n => Math.round(Number.isFinite(Number(n)) ? Number(n) : 0).toLocaleString(LANG === 'tr' ? 'tr-TR' : 'en-US');
 
 // ---------------------------------------------------------------- settings / save (all in try/catch)
 const KEY_SET = 'arena.dolmus.settings', KEY_SAVE = 'arena.dolmus.save';
@@ -2558,9 +2558,40 @@ function lsSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch
 })();
 const saveSettings = () => lsSet(KEY_SET, settings);
 // arena.dolmus.save = { best: {...}, run: {level,total,stars} | null }
-const SAVED = lsGet(KEY_SAVE) || {};
-const best = Object.assign({ total: 0, stars: [0, 0, 0, 0, 0, 0, 0, 0], endless: 0, fares: [0, 0, 0, 0, 0, 0, 0, 0] }, SAVED.best || {});
-let runSave = SAVED.run || null;
+const LEVEL_COUNT = 8;
+const _rawSaved = lsGet(KEY_SAVE);
+const SAVED = (_rawSaved && typeof _rawSaved === 'object' && !Array.isArray(_rawSaved)) ? _rawSaved : {};
+const _rawBest = (SAVED.best && typeof SAVED.best === 'object' && !Array.isArray(SAVED.best)) ? SAVED.best : {};
+// Validate and pad level arrays to LEVEL_COUNT finite numbers (replace non-finite with 0)
+const sanitizeLevelArr = arr => {
+  const src = Array.isArray(arr) ? arr : [];
+  const out = [];
+  for (let i = 0; i < LEVEL_COUNT; i++) {
+    const v = src[i];
+    const n = typeof v === 'number' ? v : (typeof v === 'string' && v.trim() !== '' ? Number(v) : NaN);
+    out.push(Number.isFinite(n) ? n : 0);
+  }
+  return out;
+};
+const best = Object.assign({ total: 0, stars: sanitizeLevelArr(null), endless: 0, fares: sanitizeLevelArr(null) }, _rawBest, {
+  total: Number.isFinite(Number(_rawBest.total)) ? Number(_rawBest.total) : 0,
+  endless: Number.isFinite(Number(_rawBest.endless)) ? Number(_rawBest.endless) : 0,
+  stars: sanitizeLevelArr(_rawBest.stars),
+  fares: sanitizeLevelArr(_rawBest.fares),
+});
+// Treat runSave as null if not an object with expected fields (level, total, stars)
+const validateRunSave = r => {
+  if (!r || typeof r !== 'object' || Array.isArray(r)) return null;
+  if (!('level' in r && 'total' in r && 'stars' in r)) return null;
+  const level = Number(r.level), total = Number(r.total);
+  if (!Number.isFinite(level) || !Number.isFinite(total) || !Array.isArray(r.stars)) return null;
+  return Object.assign({}, r, {
+    level: Math.round(level),
+    total,
+    stars: r.stars.map(s => { const n = Number(s); return Number.isFinite(n) ? n : 0; }),
+  });
+};
+let runSave = validateRunSave(SAVED.run);
 const writeSave = () => lsSet(KEY_SAVE, { best, run: runSave });
 const saveBest = writeSave;
 
@@ -6026,8 +6057,10 @@ function refreshTitle() {
   el.bCont.classList.toggle('primary', !!runSave); el.bPlay.classList.toggle('primary', !runSave);
   if (runSave) el.bPlay.before(el.bCont); else el.bCont.before(el.bPlay);
   newArm = 0;
-  const stars = best.stars.reduce((a, b) => a + b, 0);
-  el.bestLine.textContent = best.total || stars || best.endless ? t('bestLine', fmt(best.total), stars, fmt(best.endless)) : t('bestNone');
+  const stars = (Array.isArray(best.stars) ? best.stars : []).reduce((a, b) => a + (Number.isFinite(b) ? b : 0), 0);
+  const total = Number.isFinite(best.total) ? best.total : 0;
+  const endless = Number.isFinite(best.endless) ? best.endless : 0;
+  el.bestLine.textContent = total || stars || endless ? t('bestLine', fmt(total), stars, fmt(endless)) : t('bestNone');
   if (window.Arena) { const d = Arena.daily(); el.dailyLine.textContent = (d.done ? t('dailyDone') + ' · ' : '') + t('dailyLine', d.streak, d.best); } else el.bDaily.classList.add('hidden');
   if (G.state !== 'loading') el.playTxt.textContent = t(runSave ? 'newGame' : 'play');
 }
