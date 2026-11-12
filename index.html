@@ -5078,20 +5078,27 @@ function dolmusGeo() {
   d.box(-0.99, 1.2, 0.75, 0.05, 1.5, 1.25, 0x1f232d); // door opening (dark) behind the sliding door
   return [m.build(), d.build()];
 }
+// Roof sign text in capitals. A plain toUpperCase() turns the Turkish i into I (BEŞIKTAŞ, EMINÖNÜ); Turkish names
+// (every TR label, and EN labels that keep the Turkish name such as Beşiktaş) use the tr-TR rules, other EN labels en-US.
+function signStop(key) {
+  const tr = LANG === 'tr' || (STOPS[key] && STOPS[key][0] === STOPS[key][1]);
+  return stopName(key).toLocaleUpperCase(tr ? 'tr-TR' : 'en-US');
+}
+const signPair = (a, b) => signStop(a) + ' – ' + signStop(b);
 function getRouteSignName() {
   if (SIM.plan && SIM.plan.stops && SIM.plan.stops.length >= 2) {
     const s0 = SIM.plan.stops[0], s1 = SIM.plan.stops[SIM.plan.stops.length - 1];
-    return (stopName(s0) + ' – ' + stopName(s1)).toUpperCase();
+    return signPair(s0, s1);
   }
   if (SIM.stops && SIM.stops.length >= 2) {
     const n = SIM.stops.length;
     const keys = SIM.stops.map(s => s.key);
-    if (keys.includes('kadikoy') && keys.includes('besiktas')) return (stopName('kadikoy') + ' – ' + stopName('besiktas')).toUpperCase();
-    if (keys.includes('kadikoy') && keys.includes('karakoy')) return (stopName('kadikoy') + ' – ' + stopName('karakoy')).toUpperCase();
-    if (keys.includes('balat') && keys.includes('besiktas')) return (stopName('balat') + ' – ' + stopName('besiktas')).toUpperCase();
+    if (keys.includes('kadikoy') && keys.includes('besiktas')) return signPair('kadikoy', 'besiktas');
+    if (keys.includes('kadikoy') && keys.includes('karakoy')) return signPair('kadikoy', 'karakoy');
+    if (keys.includes('balat') && keys.includes('besiktas')) return signPair('balat', 'besiktas');
     const s0 = SIM.stops[0].key, s1 = SIM.stops[Math.floor(n / 2)].key;
-    if (s0 !== s1) return (stopName(s0) + ' – ' + stopName(s1)).toUpperCase();
-    return (stopName(s0) + ' – ' + stopName(SIM.stops[n - 1].key)).toUpperCase();
+    if (s0 !== s1) return signPair(s0, s1);
+    return signPair(s0, SIM.stops[n - 1].key);
   }
   return 'KADIKÖY – TAKSİM';
 }
