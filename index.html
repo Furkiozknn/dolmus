@@ -2668,8 +2668,8 @@ const STR = {
       any: ['Müsait bir yerde! {0} civarı yeter.', '{0} yakınında müsait bir yerde, usta!', 'Şurada müsait bir yer olunca, {0} dolayları.', 'Müsait yerde bırak, {0} civarı!', 'Uygun bir yerde dur, {0} yakını olsun!', 'Müsait bir yerde, kaptan! {0} tarafı.'],
     },
     close: 'Kapat', go: 'Hadi!',
-    coach: 'Halkanın yanında dur, Boşluğa bas (ya da kapı düğmesine dokun)',
-    coachTouch: 'Halkanın yanında dur, KAPI düğmesine dokun',
+    coach: 'İlk durak hemen burada: halkanın yanında dur, Boşluğa bas (ya da kapı düğmesine dokun)',
+    coachTouch: 'İlk durak hemen burada: halkanın yanında dur, KAPI düğmesine dokun',
     f_any: 'Müsait bir yerde: kapıdaki halka ✓ yeşilse güvenli, ! turuncuysa geçide/kavşağa çok yakın',
     penBadStop: 'Tehlikeli yerde indirdin -{0} TL', easyStop: '+{0} TL kolay iniş',
     penBadStop_zebra: 'Yaya geçidine çok yakın ({1} m, en az 9 m) -{0} TL', penBadStop_junction: 'Kavşağa çok yakın ({1} m, en az 10 m) -{0} TL',
@@ -2756,8 +2756,8 @@ const STR = {
       any: ['Anywhere safe near {0}, please!', 'Pull over anywhere good by {0}!', 'Somewhere handy near {0} is fine!', 'Drop me wherever it’s safe near {0}!', 'Anywhere free around {0}, driver!', 'Whenever there’s room, near {0}!'],
     },
     close: 'Close', go: 'Go!',
-    coach: 'Stop near the ring, press Space (or tap the door button)',
-    coachTouch: 'Stop near the ring, tap the DOOR button',
+    coach: 'First stop is right here: stop near the ring, press Space (or tap the door button)',
+    coachTouch: 'First stop is right here: stop near the ring, tap the DOOR button',
     f_any: 'Anywhere riders: door ring ✓ green = safe curb, ! amber = too close to a crossing/junction',
     penBadStop: 'Unsafe drop-off -{0} TL', easyStop: '+{0} TL easy stop',
     penBadStop_zebra: 'Too close to the crossing ({1} m, need 9 m) -{0} TL', penBadStop_junction: 'Too close to the junction ({1} m, need 10 m) -{0} TL',
@@ -5165,7 +5165,7 @@ function updateStops(dt) {
     const check = p => {
       if (p.st !== 'wait' || p.skipped) return;
       const d = hyp(p.x - P.x, p.z - P.z);
-      if (d < 7) { p.near = (p.near || 0) + dt; if (p.near > 0.1) { p.skipped = true; p.pat *= 0.5; penalize(4, 'penSkip', 'skips'); } }
+      if (d < 7) { p.near = (p.near || 0) + dt; if (p.near > 0.1 && !(COACH.on && !FLAG.auto)) { p.skipped = true; p.pat *= 0.5; penalize(4, 'penSkip', 'skips'); } }
     };
     for (const st of SIM.stops) for (const p of st.wait) check(p);
     for (const h of SIM.hailers) check(h);
