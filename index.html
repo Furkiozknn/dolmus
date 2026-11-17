@@ -6992,8 +6992,9 @@ document.getElementById('minimap').addEventListener('click', () => { AUD.init();
 // already waits. On the game's own site midgame() resolves false at once and nothing changes. One tap = one action.
 let endBusy = false;
 const afterBreak = (f) => () => {
+  if (!(window.Arena && Arena.portal && Arena.portal.name !== 'none')) return f(); // own site: synchronous, as before
   if (endBusy) return; endBusy = true;
-  const ad = window.Arena && Arena.portal ? Arena.portal.midgame() : Promise.resolve(false);
+  const ad = Arena.portal.midgame();
   ad.catch(() => false).then(() => { endBusy = false; f(); });
 };
 on('bNext', afterBreak(() => nextAction())); on('bRetry', afterBreak(() => retryCurrent())); on('bMenuE', () => toMenu());
