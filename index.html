@@ -987,6 +987,22 @@ body.touch #toasts {
   top: calc(var(--barh, 66px) + max(8px, env(safe-area-inset-top)) + 12px);
 }
 
+/* Yazı denetimi (2026-11): dokunmatikte rehber kutusu sağdaki pedala binmesin; metin kaydırılır */
+body.touch #guideBox {
+  max-width: calc(100vw - max(14px, env(safe-area-inset-left)) - max(14px, env(safe-area-inset-right)) - 92px);
+  white-space: normal;
+}
+/* Dar ekranda nazar boncuğu saat/vardiya yazısının üstüne düşmesin: üst panelin altından sarksın */
+@media (max-width: 700px) {
+  .windshield-nazar { top: calc(var(--barh, 66px) + max(8px, env(safe-area-inset-top))); }
+}
+/* Yatay telefonda başlık kartı ekrana sığsın: tabela ve büyük logo gizlenir, OYNA görünür kalır */
+@media (max-height: 440px) {
+  #sTitle .route-levha, #sTitle #logoBig { display: none; }
+  #sTitle .card h1 { font-size: 28px; margin: 0 0 4px; }
+  #sTitle .card .how { font-size: 12px; margin: 4px 0 8px; }
+}
+
 @media (orientation: portrait) {
   body.touch #toasts { top: calc(var(--barh, 66px) + max(8px, env(safe-area-inset-top)) + 116px); }
   body.touch #seatsStrip { flex-wrap: wrap; width: 136px; }
