@@ -6985,7 +6985,15 @@ on('bFull', () => toggleFullscreen());
 function setMapMode(rot) { settings.mapRot = rot; saveSettings(); syncSettingsUI(); if (G.state === 'play' || G.state === 'paused' || G.state === 'countdown') drawMinimap(); }
 on('bMapH', () => setMapMode(true)); on('bMapN', () => setMapMode(false));
 document.getElementById('minimap').addEventListener('click', () => { AUD.init(); AUD.click(); setMapMode(settings.mapRot === false); toast(t(settings.mapRot === false ? 'mapNorth' : 'mapHead'), 'info'); });
-on('bNext', () => nextAction()); on('bRetry', () => retryCurrent()); on('bMenuE', () => toMenu());
+// Portals (arena-kit v1.3 Arena.portal): an interstitial may play between shifts, on the end screen where the game
+// already waits. On the game's own site midgame() resolves false at once and nothing changes. One tap = one action.
+let endBusy = false;
+const afterBreak = (f) => () => {
+  if (endBusy) return; endBusy = true;
+  const ad = window.Arena && Arena.portal ? Arena.portal.midgame() : Promise.resolve(false);
+  ad.catch(() => false).then(() => { endBusy = false; f(); });
+};
+on('bNext', afterBreak(() => nextAction())); on('bRetry', afterBreak(() => retryCurrent())); on('bMenuE', () => toMenu());
 on('bDaily', () => startDaily()); on('bA11y', () => { if (window.Arena) Arena.openSettings(); }); on('bShare', () => shareResult());
 function shareResult() {
   const r = G.lastResult; if (!r || !window.Arena) return;
