@@ -5,15 +5,22 @@
 <meta name="arena-game" content="dolmus">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="theme-color" content="#141518">
-<meta name="description" content="Drive a yellow dolmus minibus through a low-poly Istanbul: pick up waving passengers, learn their stops, earn fares and tips. 8 shifts, free in your browser.">
+<meta name="description" content="Sarı dolmuşu low-poly İstanbul sokaklarında sür: el sallayan yolcuları al, duraklarında indir, ücret ve bahşiş kazan. 8 vardiya, tarayıcıda ücretsiz. / Drive a yellow dolmuş minibus through a low-poly Istanbul, free in your browser.">
+<link rel="canonical" href="https://furkiozknn.github.io/dolmus/">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Dolmuş · 3D Istanbul Minibus Driving Game">
-<meta property="og:description" content="Drive a yellow dolmus minibus through a low-poly Istanbul: pick up waving passengers, learn their stops, earn fares and tips. 8 shifts, free in your browser.">
+<meta property="og:title" content="Dolmuş · 3D İstanbul Minibüs Sürüş Oyunu">
+<meta property="og:locale" content="tr_TR">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:description" content="Sarı dolmuşu low-poly İstanbul sokaklarında sür: yolcuları al, duraklarında indir, ücret ve bahşiş kazan. 8 vardiya, tarayıcıda ücretsiz.">
+<meta property="og:image:alt" content="Dolmuş: sarı minibüs, İstanbul sokağı, yolcular">
 <meta property="og:url" content="https://furkiozknn.github.io/dolmus/">
 <meta property="og:image" content="https://furkiozknn.github.io/dolmus/docs/card.jpg">
 <meta property="og:image:width" content="960">
 <meta property="og:image:height" content="540">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Dolmuş · 3D İstanbul Minibüs Sürüş Oyunu">
+<meta name="twitter:description" content="Sarı dolmuşu sür, yolcuları indir, bahşişi topla. Tarayıcıda ücretsiz.">
+<meta name="twitter:image" content="https://furkiozknn.github.io/dolmus/docs/card.jpg">
 <title>Dolmuş</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1166,6 +1173,23 @@ body.touch #guideBox {
   text-decoration: none;
   border-bottom: 1px dotted var(--c-yellow);
 }
+
+
+/* v2.1: Yenilikler / rekorlar / rozetler penceresi */
+#sNews .card { max-width: min(560px, 100%); }
+#sNews h3 { margin: 14px 0 6px; font-size: 14px; letter-spacing: .06em; text-transform: uppercase; color: var(--c-yellow); }
+#sNews .vtag { color: var(--dim); font-size: 13px; margin: 0 0 4px; }
+#sNews ul { margin: 0; padding-left: 18px; font-size: 14px; line-height: 1.45; text-align: left; }
+#sNews .board, #sNews .badges { list-style: none; padding: 0; display: grid; gap: 6px; }
+#sNews .board li, #sNews .badges li { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 7px 10px; border: 1px solid var(--c-asphalt-border); border-radius: 8px; background: rgba(255,255,255,.04); text-align: left; }
+#sNews .board li b { color: var(--c-yellow); font-variant-numeric: tabular-nums; white-space: nowrap; }
+#sNews .badges li.off { opacity: .6; }
+#sNews .badges li small { display: block; color: var(--dim); font-size: 12px; }
+#sNews .none { color: var(--dim); font-size: 13px; margin: 0; }
+.foot .vtag, .foot a { white-space: nowrap; }
+#sTitle .row { flex-wrap: nowrap; }
+#sTitle .row .btn { flex: 1 1 0; min-width: 0; padding-left: 8px; padding-right: 8px; gap: 6px; }
+#sTitle .row .btn .ic { flex: none; }
 
 /* Settings Form Controls */
 .set {
@@ -2684,11 +2708,12 @@ window.ArenaCore = { version: VERSION, kalite, render, kabuk, his, kamera, test 
         <div class="row">
           <button class="btn" id="bSettingsT"><svg class="ic"><use href="#i-gear"/></svg><span data-i="settings"></span></button>
           <button class="btn" id="bLangT"><svg class="ic"><use href="#i-globe"/></svg><span id="langTxt">TR / EN</span></button>
+          <button class="btn" id="bNews"><svg class="ic"><use href="#i-star"/></svg><span data-i="news"></span></button>
         </div>
       </div>
       <div class="best" id="bestLine"></div>
       <div class="best" id="dailyLine"></div>
-      <div class="foot"><a href="https://github.com/Furkiozknn" target="_blank" rel="noopener">Claude Game Arena</a> · built by Claude Sonnet 5.5</div>
+      <div class="foot"><a href="https://github.com/Furkiozknn" target="_blank" rel="noopener">Claude Game Arena</a> · built by Claude Sonnet 5.5 · <span class="vtag" id="verTag" data-i="verTag"></span> · <a href="https://furkiozknn.github.io/" target="_blank" rel="noopener" data-i="others"></a></div>
     </div>
   </section>
 
@@ -2722,6 +2747,21 @@ window.ArenaCore = { version: VERSION, kalite, render, kabuk, his, kamera, test 
       </div>
       <div class="col"><button class="btn primary" id="bSetBack"><span data-i="back"></span></button></div>
       <p class="how" data-i="keysHelp" style="margin-top:12px"></p>
+    </div>
+  </section>
+
+  <section class="screen dim" id="sNews" role="dialog" aria-modal="true" aria-labelledby="newsTitle">
+    <div class="card">
+      <div class="levha-mini"><span>GÜNCELLEME NOTLARI</span></div>
+      <h2 id="newsTitle" data-i="news"></h2>
+      <p class="vtag" data-i="verTag"></p>
+      <h3 data-i="newsH"></h3>
+      <ul id="newsList"></ul>
+      <h3 data-i="boardH"></h3>
+      <ol class="board" id="boardList"></ol>
+      <h3 data-i="badgesH"></h3>
+      <ul class="badges" id="badgeList"></ul>
+      <div class="col" style="margin-top:14px"><button class="btn primary" id="bNewsBack"><span data-i="back"></span></button></div>
     </div>
   </section>
 
@@ -2831,6 +2871,12 @@ const STR = {
     retry: 'Tekrar dene', next: 'Sonraki seviye', nextShift: 'Sonraki vardiya', playAgain: 'Tekrar oyna',
     level: 'Seviye', shift: 'Vardiya', fares: 'Hasılat', seats: 'Koltuk', dents: 'Hasar', pause: 'Duraklat', sound: 'Ses', tl: 'TL',
     bestLine: 'En iyi: {0} TL · {1}/24 yıldız · Sonsuz: {2} TL', bestNone: 'Henüz rekor yok.',
+    news: 'Yenilikler', verTag: 'v2.1 · Kasım 2026', others: 'Diğer oyunlar', newsH: 'Bu güncellemede',
+    newsList: ['Yenilikler penceresi ve sürüm etiketi (bu ekran).', 'Yerel rekor tablosu: en iyi 5 vardiyan bu cihazda saklanır.', 'Rozetler: kusursuz vardiya, üç yıldız, ıslak yol ustası, günün vardiyası ve hat veteranı.', 'Açılış ekranında "Diğer oyunlar" bağlantısı; Türkçe sayfa açıklaması, paylaşım kartı ve 404 sayfası.'],
+    boardH: 'En iyi 5 vardiya', boardNone: 'Henüz kayıtlı vardiya yok. Bir vardiyayı yıldızla bitir, burada görünsün.', badgesH: 'Rozetler', badgeNew: 'Yeni rozet: {0}',
+    bgClean: 'Kusursuz vardiya', bgCleanD: 'Çarpışma, kırmızıda geçme ve sert fren olmadan yıldız al', bg3: 'Üç yıldız', bg3D: 'Bir vardiyayı 3 yıldızla bitir',
+    bgRain: 'Islak yol ustası', bgRainD: 'Yağmurlu bir seviyeyi (3, 5 ya da 8) çarpmadan bitir', bgDaily: 'Günün vardiyası', bgDailyD: 'Günün Meydan Okuması\'nı bitir',
+    bg10: 'Hat veteranı', bg10D: '10 vardiya bitir ({0}/10)', bgOn: 'Kazanıldı',
     lv1: 'Ana cadde turu', lv2: 'Köprü ve tramvay', lv3: 'Yağmur başlıyor', lv4: 'Dar sokaklar', lv5: 'Trafik kilitlendi',
     lv6: 'Vapur iskelesi', lv7: 'Akşam telaşı', lv8: 'Gece vardiyası', lvE: 'Sonsuz vardiya {0}',
     d1: 'Sabah işe gidenlerle dolu ana cadde. Isın, yolcuları al ve doğru durakta indir.',
@@ -2920,6 +2966,12 @@ const STR = {
     retry: 'Try again', next: 'Next level', nextShift: 'Next shift', playAgain: 'Play again',
     level: 'Level', shift: 'Shift', fares: 'Fares', seats: 'Seats', dents: 'Dents', pause: 'Pause', sound: 'Sound', tl: 'TL',
     bestLine: 'Best: {0} TL · {1}/24 stars · Endless: {2} TL', bestNone: 'No record yet.',
+    news: "What's new", verTag: 'v2.1 · November 2026', others: 'More games', newsH: 'In this update',
+    newsList: ["What's new window and a version tag (this screen).", 'Local leaderboard: your 5 best shifts are kept on this device.', 'Badges: flawless shift, three stars, wet-road master, daily shift and line veteran.', 'A "More games" link on the title screen; a proper page description, share card and 404 page.'],
+    boardH: '5 best shifts', boardNone: 'No shifts recorded yet. Finish a shift with a star and it shows up here.', badgesH: 'Badges', badgeNew: 'New badge: {0}',
+    bgClean: 'Flawless shift', bgCleanD: 'Earn a star with no crashes, red lights or hard braking', bg3: 'Three stars', bg3D: 'Finish a shift with 3 stars',
+    bgRain: 'Wet-road master', bgRainD: 'Finish a rainy level (3, 5 or 8) without a crash', bgDaily: 'Shift of the day', bgDailyD: 'Finish the daily challenge',
+    bg10: 'Line veteran', bg10D: 'Finish 10 shifts ({0}/10)', bgOn: 'Earned',
     lv1: 'Main street run', lv2: 'Bridge and tram', lv3: 'Here comes the rain', lv4: 'Narrow streets', lv5: 'Gridlock',
     lv6: 'The ferry pier', lv7: 'Evening rush', lv8: 'Night shift', lvE: 'Endless shift {0}',
     d1: 'Main street full of morning commuters. Warm up, pick people up and drop them at the right stop.',
@@ -6501,8 +6553,8 @@ const el = {};
 ['sTitle', 'sPause', 'sSettings', 'sEnd', 'hud', 'bPlay', 'playTxt', 'bCont', 'bEndless', 'bestLine', 'lvCard', 'cdTitle', 'cdDesc', 'cdList', 'cdTarget', 'countdown', 'cdNum', 'cdSub', 'mascot', 'mascotImg', 'enTips', 'enTitle', 'enSub', 'enStars', 'enStats', 'enRec', 'nextTxt', 'bNext', 'bRetry',
   'stLevel', 'stClock', 'stFare', 'fareBar', 'stSeats', 'dentBar', 'toasts', 'floaters', 'bubbles', 'seatsStrip', 'spVal', 'spArc', 'spNeedle', 'guideBox', 'guideArrow', 'guideTxt', 'hint', 'hurt', 'dbg', 'touch', 'steer', 'pGas', 'pBrake', 'tDoor', 'tHorn',
   'rMaster', 'rMusic', 'rSfx', 'oMaster', 'oMusic', 'oSfx', 'bTR', 'bEN', 'bQLow', 'bQHigh', 'bMapH', 'bMapN', 'bSound', 'langTxt', 'sRoute', 'hatLv', 'hatStopsH', 'hatStops', 'hatCh', 'hatChd', 'hatBestLine', 'bHatGo', 'hatGoTxt'].forEach(id => { el[id] = document.getElementById(id); });
-const SCREENS = ['sTitle', 'sPause', 'sSettings', 'sEnd', 'sRoute'];
-for (const id of ['bDaily', 'dailyLine', 'bA11y', 'bShare', 'aOther', 'pUni', 'bPedU', 'bPedS']) el[id] = document.getElementById(id);
+const SCREENS = ['sTitle', 'sPause', 'sSettings', 'sEnd', 'sRoute', 'sNews'];
+for (const id of ['sNews', 'bNews', 'bNewsBack', 'newsList', 'boardList', 'badgeList', 'bDaily', 'dailyLine', 'bA11y', 'bShare', 'aOther', 'pUni', 'bPedU', 'bPedS']) el[id] = document.getElementById(id);
 function showScreen(id) { for (const s of SCREENS) el[s].classList.toggle('show', s === id); if (id) { const b = el[id].querySelector('.btn.primary:not([disabled])') || el[id].querySelector('.btn'); if (b && id !== 'sTitle') setTimeout(() => b.focus({ preventScroll: true }), 30); } }
 
 function applyLang() {
@@ -6519,6 +6571,7 @@ function applyLang() {
   document.title = 'Dolmuş';
   updateRoofSign();
   if (G.state === 'title' || G.state === 'loading') refreshTitle();
+  if (el.sNews && el.sNews.classList.contains('show')) fillNews();
   if (G.state === 'loading') el.playTxt.textContent = t('loading', loadN, loadTotal);
 }
 function setLang(l) { LANG = settings.lang = l; saveSettings(); applyLang(); if (G.state === 'countdown' || G.state === 'play' || G.state === 'paused') fillCard(); if (G.state === 'end') fillEnd(G.lastResult); if (G.state === 'route') fillRoute(); }
@@ -6735,7 +6788,8 @@ HOOK.levelEnd = res => {
     if (G.mode === 'campaign' && idx >= 7) Arena.award('dolmus:campaign', t('awCampaign'));
     if (best.stars.every(v => v >= 3)) Arena.award('dolmus:all-stars', t('awAllStars'));
   }
-  G.record = rec; fillEnd(res); showScreen('sEnd'); input.horn = false; AUD.hornStop();
+  let newBadges = []; try { newBadges = recordRun(res); } catch (e) { /* the leaderboard must never break the end screen */ }
+  G.record = rec; fillEnd(res); for (const nb of newBadges) { const li = document.createElement('li'); li.textContent = '🏅 ' + t('badgeNew', nb); el.enTips.appendChild(li); } showScreen('sEnd'); input.horn = false; AUD.hornStop();
   if (window.Arena && Arena.complete) Arena.complete({ mount: $('#sEnd .col') });   // arena-kit v1.1: <game>/complete event + one-tap 👍/👎 under the end buttons (nothing on ?auto)
   if (res.stars > 0) setTimeout(() => AUD.star(), 300);
 };
@@ -6798,6 +6852,44 @@ function syncSettingsUI() {
   const ic = settings.mute || (!settings.sfxOn && !settings.musicOn) ? '#i-sfx-off' : '#i-sfx';
   el.bSound.querySelector('use').setAttribute('href', ic);
 }
+// ---------------------------------------------------------------- v2.1: local leaderboard + badges (own keys, old saves untouched)
+const KEY_BOARD = 'arena.dolmus.board', KEY_BADGE = 'arena.dolmus.rozet';
+const BADGES = ['clean', '3', 'rain', 'daily', '10'];
+const badgeKey = id => id === 'clean' ? 'Clean' : id === 'rain' ? 'Rain' : id === 'daily' ? 'Daily' : id;
+const boardGet = () => { const b = lsGet(KEY_BOARD); return Array.isArray(b) ? b.filter(r => r && Number.isFinite(r.net) && Number.isFinite(r.stars)).slice(0, 5) : []; };
+const badgeGet = () => { const b = lsGet(KEY_BADGE); return b && typeof b === 'object' && !Array.isArray(b) ? b : {}; };
+/** after a finished shift: leaderboard entry + badge checks; returns the names of badges earned right now */
+function recordRun(res) {
+  if (!(res.stars > 0 && res.kind !== 'wreck')) return [];
+  const lv = res.lv, sc = res.score || {};
+  const b = boardGet(); b.push({ net: Math.round(res.net), stars: res.stars, lv: lv.daily ? 'D' : lv.endless ? 'E' + lv.wave : String(lv.id), d: new Date().toISOString().slice(0, 10) });
+  b.sort((x, y) => y.net - x.net); lsSet(KEY_BOARD, b.slice(0, 5));
+  const bd = badgeGet(), got = [], n = (Number(bd.shifts) || 0) + 1; bd.shifts = n;
+  const earn = id => { if (!bd[id]) { bd[id] = Date.now(); got.push(t('bg' + badgeKey(id))); } };
+  if (!sc.hits && !sc.reds && !sc.brakes) earn('clean');
+  if (res.stars >= 3) earn('3');
+  if (!sc.hits && !lv.daily && !lv.endless && (lv.id === 3 || lv.id === 5 || lv.id === 8)) earn('rain');
+  if (lv.daily) earn('daily');
+  if (n >= 10) earn('10');
+  lsSet(KEY_BADGE, bd);
+  return got;
+}
+function levelLabel(c) { return c === 'D' ? t('daily') : String(c).startsWith('E') ? t('endless') + ' ' + String(c).slice(1) : t('level') + ' ' + c; }
+function fillNews() {
+  el.newsList.innerHTML = ''; for (const x of t('newsList')) { const li = document.createElement('li'); li.textContent = x; el.newsList.appendChild(li); }
+  const b = boardGet(); el.boardList.innerHTML = '';
+  if (!b.length) { const p = document.createElement('p'); p.className = 'none'; p.textContent = t('boardNone'); el.boardList.appendChild(p); }
+  b.forEach((r, i) => { const li = document.createElement('li'), l = document.createElement('span'), v = document.createElement('b');
+    l.textContent = (i + 1) + '. ' + levelLabel(r.lv) + ' · ' + r.d; v.textContent = fmt(r.net) + ' TL ' + '★'.repeat(Math.max(0, Math.min(3, r.stars))); li.append(l, v); el.boardList.appendChild(li); });
+  const bd = badgeGet(); el.badgeList.innerHTML = '';
+  for (const id of BADGES) {
+    const key = badgeKey(id), li = document.createElement('li'), d = document.createElement('span'), nm = document.createElement('b'), sm = document.createElement('small');
+    li.className = bd[id] ? 'on' : 'off'; nm.textContent = (bd[id] ? '🏅 ' : '🔒 ') + t('bg' + key); sm.textContent = t('bg' + key + 'D', Math.min(10, Number(bd.shifts) || 0));
+    d.append(nm, sm); li.appendChild(d); if (bd[id]) { const k = document.createElement('span'); k.textContent = t('bgOn'); li.appendChild(k); } el.badgeList.appendChild(li);
+  }
+}
+function openNews() { fillNews(); showScreen('sNews'); }
+function closeNews() { showScreen('sTitle'); }
 function openSettings(from) { G.settingsFrom = from; syncSettingsUI(); showScreen('sSettings'); }
 function closeSettings() { saveSettings(); showScreen(G.settingsFrom === 'pause' ? 'sPause' : 'sTitle'); }
 function toggleMusic() { settings.musicOn = !settings.musicOn; saveSettings(); AUD.applyGains(); toast((LANG === 'tr' ? 'Müzik ' : 'Music ') + (settings.musicOn ? (LANG === 'tr' ? 'açık' : 'on') : (LANG === 'tr' ? 'kapalı' : 'off')), 'info'); syncSettingsUI(); }
@@ -6916,6 +7008,7 @@ window.addEventListener('keydown', e => {
   if (e.code === 'KeyP' || e.code === 'Escape') {
     if (G.state === 'play') pauseGame(); else if (G.state === 'paused') resumeGame(); else if (G.state === 'title' && el.sSettings.classList.contains('show')) closeSettings();
     else if (el.sSettings.classList.contains('show')) closeSettings();
+    else if (el.sNews.classList.contains('show')) closeNews();
   }
   else if (e.code === 'KeyM') toggleMusic(); else if (e.code === 'KeyX') toggleSfx(); else if (e.code === 'KeyL') setLang(LANG === 'tr' ? 'en' : 'tr'); else if (e.code === 'KeyN') { setMapMode(settings.mapRot === false); toast(t(settings.mapRot === false ? 'mapNorth' : 'mapHead'), 'info'); }
   else if (e.code === 'Enter' && G.state === 'countdown' && tgt !== 'BUTTON') beginShift();
@@ -6973,7 +7066,7 @@ if (FLAG.touch || (matchMedia && matchMedia('(pointer:coarse)').matches)) enable
 // ---- buttons
 const on = (id, fn) => document.getElementById(id).addEventListener('click', e => { AUD.init(); AUD.click(); fn(e); });
 on('bPlay', () => { const now = performance.now(); if (runSave && !(newArm && now - newArm < 4000)) { newArm = now; el.playTxt.textContent = t('newGameSure'); setTimeout(() => { if (G.state === 'title' && newArm === now) refreshTitle(); }, 4000); return; } newArm = 0; startCampaign(false); }); on('bCont', () => startCampaign(true)); on('bEndless', () => startEndless());
-on('bSettingsT', () => openSettings('title')); on('bLangT', () => setLang(LANG === 'tr' ? 'en' : 'tr'));
+on('bNews', () => openNews()); on('bNewsBack', () => closeNews()); on('bSettingsT', () => openSettings('title')); on('bLangT', () => setLang(LANG === 'tr' ? 'en' : 'tr'));
 on('bCardX', () => showCard(false));
 on('bPause', () => { if (G.state === 'play') pauseGame(); else if (G.state === 'paused') resumeGame(); });
 on('bSound', () => { settings.mute = !settings.mute; saveSettings(); AUD.applyGains(); syncSettingsUI(); });

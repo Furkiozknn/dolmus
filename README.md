@@ -197,6 +197,16 @@ Built by **Claude Sonnet 5.5** with Claude Code from one prompt: [prompts/dolmus
 
 An optional asset pass (about 1.13 MB) adds Blender-built low-poly vehicles and props (the dolmuş with its sliding door, cars, buses, the tram, the van, stop shelters, simit and chestnut carts), Poly Haven detail textures and sky, and Kenney sounds for the door, coins, crashes, and clicks. They load after the first frame on the High tier (sounds on both); procedural versions remain as fallback (`?noassets` skips them). Licences: [CREDITS.md](CREDITS.md); file list and performance details: [docs/assets.md](docs/assets.md). Model scripts: `assets/src/`.
 
+### v2.1 update (November 2026)
+
+- **What's new window and version tag:** the title screen shows `v2.1 · Kasım 2026` and a *Yenilikler* button that opens the update notes.
+- **Local leaderboard:** your 5 best finished shifts (net lira, stars, level, date) are kept in `localStorage` under `arena.dolmus.board`.
+- **Badges:** flawless shift, three stars, wet-road master (levels 3, 5, 8), shift of the day and line veteran (10 shifts), stored under `arena.dolmus.rozet`; new badges show up on the shift summary. Old saves (`arena.dolmus.save`, `arena.dolmus.settings`) are untouched and keep working.
+- **Page:** Turkish description, Open Graph / Twitter card with an image, canonical link, a "More games" link on the title screen and a `404.html`.
+- **Test:** `node test/duman.mjs` is a quick smoke test (page opens, no console errors, the game starts, a bot finishes a shift, no horizontal overflow on a 390 px phone). It needs the `playwright` or `playwright-core` package, which is not committed. See [CHANGELOG.md](CHANGELOG.md).
+
+<p align="center"><img src="docs/07-yenilikler.png" width="300" alt="The What's new window with the local leaderboard and badges"></p>
+
 ### v2 update
 
 Upgraded by Claude Sonnet 5.5 with Claude Code from [prompts/dolmus-v2.md](prompts/dolmus-v2.md):
