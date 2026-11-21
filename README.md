@@ -22,10 +22,26 @@
 <!-- portals:end -->
 
 <p align="center">
+  <strong>Dolmuş, dolmuş, yer var mı? El sallayan yolcu, kırmızıda dur, inecek var! Türkçe kolay mı? Oyunda daha kolay.</strong>
+</p>
+
+<p align="center">
+  <strong>Turkish is easy… IN A DOLMUŞ? The game song asks the question; the game gives you the answer.</strong>
+</p>
+
+<p align="center">
+  Dolmuş: Türk şehirlerinin ortak minibüs taksileri üzerine 3B arcade sürüş oyunu. Sarı dolmuşu İstanbul tarzı low-poly bir mahallede sür, el sallayan yolcuları al, duraklarında indir, ücret ve bahşiş kazan.
+</p>
+
+<p align="center">
   <strong>A 3D arcade driving game about the shared minibus taxis of Turkish cities: drive a yellow dolmuş through a low-poly Istanbul-style neighbourhood, pick up waving passengers, drop them at their stops and earn fares and tips.</strong>
 </p>
 
 <!-- gameplay gif -->
+
+## Şarkı videosu / Song video
+
+**Dolmuş · Oyun Şarkısı**: oyunun tanıtım şarkısı videosu, paylaşım videoları deposunda: [social-videos / 2026-11](https://github.com/Furkiozknn/social-videos/blob/master/2026-11/2026-11-20-dolmus-telefon.mp4). Videonun görsel stil notları: [docs/STIL.md](docs/STIL.md).
 
 ## Features
 
