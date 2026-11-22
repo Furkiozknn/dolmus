@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://furkiozknn.github.io/dolmus/">
-    <img src="docs/card.jpg" width="100%" alt="Dolmuş: drive a yellow shared minibus through a low-poly Istanbul neighbourhood, pick up and drop off passengers. Click to play in your browser.">
+    <img src="docs/card-3d.jpg" width="100%" alt="Dolmuş: drive a yellow shared minibus through a low-poly Istanbul neighbourhood, pick up and drop off passengers. Click to play in your browser.">
   </a>
 </p>
 
@@ -29,13 +29,29 @@
 
 ## Features
 
+<p align="center">
+  <img src="docs/features.jpg" width="100%" alt="A cream fare-receipt list beside a yellow dolmus minibus at a sunlit stop, naming five features: eight shifts plus endless mode, shared minibus rules, Müsait bir yerde drops, a living city and a single-file 60 fps build.">
+</p>
+
+<details>
+<summary><b>Feature details</b></summary>
+
 - **Eight shifts and endless mode:** Drive 8 distinct shifts lasting 4 minutes each with 6 to 10 stops—from morning canal bridges and rain to the ferry pier and night rush—plus an endless mode calibrated across 1 to 3 stars.
 - **Shared minibus mechanics:** Stop within 13 m to board waving passengers across 12 seats, monitor chat bubbles and destination chips, and execute a 3-2-1 countdown start with pulsing-ring guidance.
 - **"Müsait bir yerde" & fare chain:** From level 2, about a third of riders request drops at any safe curb within 70 m; fares hop forward row by row along occupied seats where early pullaways forfeit tips.
 - **Living city simulation:** Traffic follows lanes and lights across about 300 procedural buildings, zebras, trams, buses, and scattering pigeons, accompanied by 24 unique passenger dialogue lines per language.
 - **Ultra-lean web performance:** A single `index.html` running Three.js r170 delivering 60 fps at 52–65 draw calls on Intel UHD 620 (1280x720), verified by an automated bot finishing all 8 shifts with 0 JS errors.
 
+</details>
+
 ## How to play
+
+<p align="center">
+  <img src="docs/how-to-play.jpg" width="100%" alt="A yellow dolmus minibus on a rainy cobblestone street beside a red tram, with three numbered steps (drive and spot, stop and board, drop off and earn tips) and a keyboard controls strip.">
+</p>
+
+<details>
+<summary><b>Goal and steps</b></summary>
 
 > [!TIP]
 > **Goal:** A shift lasts 4 minutes. Drive the fixed route (6 to 10 stops, numbered on the minimap) and earn as many Turkish lira as you can; 1 to 3 stars depend on your net total versus the level target.
@@ -43,6 +59,8 @@
 1. **Drive and spot passengers:** Steer with `A`/`D` (or arrows) and accelerate with `W`. Look for passengers waving on the pavement or waiting at marked stops.
 2. **Stop and board (`Space`):** Press `Space` within about 13 m of a stop or waving rider. The dolmuş brakes to a halt and opens the door: alighting passengers pay, new ones board, and fares hop forward to the driver.
 3. **Drop off & earn tips:** Deliver riders to their requested stops or safe curbs ("müsait bir yerde") within 70 m. Drive smoothly and avoid collisions, red lights, or hard braking to maximize tips and keep dents under 100%.
+
+</details>
 
 <details>
 <summary><b>Moves and rules</b></summary>
