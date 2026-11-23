@@ -97,7 +97,7 @@
     linear-gradient(225deg, rgba(255,255,255,0.025) 25%, transparent 25%) -12px 0/ 24px 24px,
     linear-gradient(315deg, rgba(0,0,0,0.3) 25%, transparent 25%) 0 0/ 24px 24px,
     linear-gradient(45deg, rgba(0,0,0,0.3) 25%, transparent 25%) 0 0/ 24px 24px,
-    linear-gradient(180deg, #272A33 0%, #18191F 100%);
+    linear-gradient(180deg, #4A3628 0%, #2E2119 100%);
   --checker-trim: repeating-conic-gradient(#141518 0 25%, #E59500 0 50%) 0 0/14px 14px;
 }
 
@@ -1621,6 +1621,88 @@ body.touch #lvCard {
   #guideBox { bottom: calc(max(10px, env(safe-area-inset-bottom)) + 54px); }
 }
 
+
+/* ---- stil-3d (23.11): the song video's warm clay world. Cocoa panels, soft deep shadows, round buttons, chibi faces. */
+:root { --c-asphalt-border: rgba(255, 214, 160, 0.22); }
+.card { border-radius: 22px; box-shadow: inset 0 2px 0 rgba(255,236,200,0.22), inset 0 -4px 0 rgba(40,20,5,0.45), 0 18px 44px rgba(60,28,0,0.5); }
+.card::before { border-radius: 20px 20px 0 0; }
+.screen.dim { background: rgba(48, 26, 10, 0.55); }
+.btn { border-radius: 16px; border-color: #7A6049; background: linear-gradient(180deg, #6A5140 0%, #46342A 100%); box-shadow: 0 4px 0 #2A1B11, 0 8px 14px rgba(40,18,0,0.28), inset 0 2px 0 rgba(255,232,200,0.25); }
+.btn:hover { background: linear-gradient(180deg, #7A5E4A 0%, #533E31 100%); }
+.btn.primary { background: linear-gradient(180deg, #FFAE1A 0%, #E59500 50%, #C47900 100%); border-color: #FFE699; box-shadow: 0 4px 0 #7A4B00, 0 8px 16px rgba(120,70,0,0.35), inset 0 2px 0 rgba(255,255,255,0.6); }
+.btn.primary:hover { background: linear-gradient(180deg, #FFBA3B 0%, #F5A30D 50%, #D48400 100%); }
+.btn.icon { border-radius: 14px; }
+#topbar, #seatsStrip { border-radius: 18px; box-shadow: inset 0 2px 0 rgba(255,236,200,0.18), 0 10px 26px rgba(50,24,0,0.45); }
+.seat { border-radius: 10px 10px 6px 6px; }
+img.f3d { pointer-events: none; user-select: none; -webkit-user-drag: none; }
+#topbar .brand img.brand3d { height: 34px; width: auto; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.45)); }
+#logo3d { display: block; height: 116px; width: auto; margin: -4px auto 0; filter: drop-shadow(0 10px 12px rgba(40,18,0,0.45)); }
+.h1row, .h2row { display: flex; align-items: center; justify-content: center; gap: 10px; }
+.h1row h1, .h2row h2 { min-width: 0; }
+.h1row .face { height: 66px; width: auto; flex: none; filter: drop-shadow(0 5px 6px rgba(40,18,0,0.45)); }
+.h2row .face { height: 50px; width: auto; flex: none; margin: -4px 0 6px; filter: drop-shadow(0 4px 5px rgba(40,18,0,0.45)); }
+#sEnd .driver3d { position: absolute; left: 12px; top: 12px; width: 76px; height: 76px; border-radius: 50%; background: radial-gradient(circle at 50% 35%, #FFE6B0, #E9C27A); border: 3px solid #FFF; box-shadow: 0 4px 10px rgba(0,0,0,0.2); overflow: hidden; }
+#sEnd .driver3d img { width: 100%; height: auto; margin-top: 6px; }
+#sEnd .driver3d:has(img[hidden]) { display: none; }
+body.a3d #sEnd .receipt-header { padding-left: 84px; padding-right: 84px; min-height: 70px; }
+@media (max-width: 600px) {
+  #sEnd .driver3d, #sEnd .mascot { width: 56px; height: 56px; top: 10px; }
+  #sEnd .driver3d { left: 10px; } #sEnd .mascot { right: 10px; }
+  body.a3d #sEnd .receipt-header { padding-left: 58px; padding-right: 58px; min-height: 58px; }
+  /* phone: retry + menu side by side, so the faces' header room does not push share / other games off screen */
+  #sEnd .col { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  #sEnd .col .btn.primary { grid-column: 1 / -1; }
+  #sEnd .col .row { display: contents; }
+  #sEnd .col .btn { padding-left: 8px; padding-right: 8px; }
+}
+/* seat chips: the rider's chibi face, the stop number in a badge */
+.seat em.pf { position: absolute; inset: 1px 1px 6px; border-radius: 7px 7px 3px 3px; background: center 12% / 92% auto no-repeat; display: none; }
+.seat.on em.pf.has { display: block; }
+.seat span { position: relative; z-index: 1; }
+.seat.on:has(em.pf.has) span { align-self: flex-end; margin-bottom: 4px; font-size: 0.8em; line-height: 1; padding: 1px 3px; border-radius: 5px; background: rgba(20,12,6,0.72); }
+.seat.drv.face3d { background: radial-gradient(circle at 50% 30%, #FFE6B0, #E9B65A); overflow: hidden; }
+.seat.drv.face3d svg.ic { display: none; }
+.seat.drv.face3d img { width: 112%; height: auto; margin-top: 6px; }
+/* short desktop / landscape: smaller pictures so every button of a card stays on screen */
+@media (max-height: 800px) {
+  #logo3d { height: 80px; }
+  .h1row .face { height: 54px; }
+  .h2row .face { height: 42px; }
+}
+@media (max-height: 640px) {
+  #logo3d { height: 60px; }
+  .h1row .face { height: 44px; }
+}
+@media (max-height: 440px) {
+  #sTitle #logo3d { display: none; }
+  .h1row .face { height: 36px; }
+  .h2row .face { height: 32px; margin: 0; }
+}
+@media (max-width: 760px) {
+  .h1row .face { height: 50px; }
+  .h1row { gap: 6px; }
+}
+@media (max-width: 420px) {
+  #sTitle .row .btn { font-size: 15px; letter-spacing: 0.4px; gap: 4px; }
+}
+/* shift report on short desktops: stats in two columns, buttons in a 2-column grid, so every button fits at 720 px */
+@media (max-height: 800px) and (min-width: 600px) {
+  #sEnd .card.receipt { padding: 16px 22px 26px; width: min(92vw, 560px); }
+  #sEnd .driver3d, #sEnd .mascot { width: 62px; height: 62px; top: 8px; }
+  body.a3d #sEnd .receipt-header { min-height: 54px; padding-left: 76px; padding-right: 76px; }
+  #sEnd #enTitle { font-size: 30px; margin: 2px 0 0; }
+  #sEnd #enSub { margin: 0 0 2px; }
+  #sEnd .stars { margin: 2px 0; }
+  #sEnd .stars svg { width: 34px; height: 34px; }
+  #sEnd .kv { grid-template-columns: 1fr auto 1fr auto; gap: 3px 14px; padding: 6px 0; margin: 6px 0; font-size: 13px; }
+  #sEnd ul.feat.tips { margin: 4px 0; }
+  #sEnd ul.feat.tips li { padding: 3px 10px; margin: 3px 0; font-size: 12.5px; }
+  #sEnd .rec { margin: 2px 0; font-size: 18px; }
+  #sEnd .col { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+  #sEnd .col .btn.primary { grid-column: 1 / -1; }
+  #sEnd .col .row { display: contents; }
+  #sEnd .col .btn { min-height: 40px; padding-top: 7px; padding-bottom: 7px; }
+}
 @media (prefers-reduced-motion: reduce) {
   *, ::before, ::after {
     animation-duration: 0.01s !important;
@@ -2563,7 +2645,7 @@ window.ArenaCore = { version: VERSION, kalite, render, kabuk, his, kamera, test 
 
   <div id="topbar">
     <div class="brand">
-      <svg viewBox="0 0 68 52"><use href="#logo"/></svg>
+      <svg viewBox="0 0 68 52"><use href="#logo"/></svg><img class="f3d brand3d" data-src="assets/3d/sofor-yuz.webp" data-swap="prev" alt="" hidden>
       <div class="brand-text">
         <span class="brand-name">DOLMUŞ</span>
         <span class="brand-sub">İSTANBUL</span>
@@ -2696,8 +2778,8 @@ window.ArenaCore = { version: VERSION, kalite, render, kabuk, his, kamera, test 
         <span class="rivet bl"></span><span class="rivet br"></span>
       </div>
 
-      <svg id="logoBig" viewBox="0 0 68 52" role="img" aria-label="Dolmuş"><use href="#logo"/></svg>
-      <h1>DOLMUŞ</h1>
+      <svg id="logoBig" viewBox="0 0 68 52" role="img" aria-label="Dolmuş"><use href="#logo"/></svg><img id="logo3d" class="f3d" data-src="assets/3d/dolmus-sofor.webp" data-swap="prev" alt="Dolmuş" hidden>
+      <div class="h1row"><img class="f3d face" data-src="assets/3d/sofor-yuz.webp" alt="" hidden><h1>DOLMUŞ</h1><img class="f3d face" data-src="assets/3d/turist-yuz.webp" alt="" hidden></div>
       <p class="sub" data-i="subtitle"></p>
       <p class="how" data-i="howto"></p>
       <div class="col">
@@ -2720,7 +2802,7 @@ window.ArenaCore = { version: VERSION, kalite, render, kabuk, his, kamera, test 
   <section class="screen dim" id="sPause" role="dialog" aria-modal="true">
     <div class="card">
       <div class="levha-mini"><span>VARDİYA MOLA</span></div>
-      <h2 data-i="paused"></h2>
+      <div class="h2row"><img class="f3d face" data-src="assets/3d/sofor-yuz.webp" alt="" hidden><h2 data-i="paused"></h2></div>
       <div class="col">
         <button class="btn primary" id="bResume"><svg class="ic fill"><use href="#i-play"/></svg><span data-i="resume"></span></button>
         <button class="btn" id="bRestart"><svg class="ic"><use href="#i-restart"/></svg><span data-i="restart"></span></button>
@@ -2733,7 +2815,7 @@ window.ArenaCore = { version: VERSION, kalite, render, kabuk, his, kamera, test 
   <section class="screen dim" id="sSettings" role="dialog" aria-modal="true">
     <div class="card">
       <div class="levha-mini"><span>KOKPİT & SİGORTA PANELİ</span></div>
-      <h2 data-i="settings"></h2>
+      <div class="h2row"><img class="f3d face" data-src="assets/3d/turist-yuz.webp" alt="" hidden><h2 data-i="settings"></h2></div>
       <div class="set">
         <label for="rMaster" data-i="master"></label><input type="range" id="rMaster" min="0" max="100"><output id="oMaster"></output>
         <label for="rMusic" data-i="music"></label><input type="range" id="rMusic" min="0" max="100"><output id="oMusic"></output>
@@ -2753,7 +2835,7 @@ window.ArenaCore = { version: VERSION, kalite, render, kabuk, his, kamera, test 
   <section class="screen dim" id="sNews" role="dialog" aria-modal="true" aria-labelledby="newsTitle">
     <div class="card">
       <div class="levha-mini"><span>GÜNCELLEME NOTLARI</span></div>
-      <h2 id="newsTitle" data-i="news"></h2>
+      <div class="h2row"><img class="f3d face" data-src="assets/3d/ogrenci-yuz.webp" alt="" hidden><h2 id="newsTitle" data-i="news"></h2></div>
       <p class="vtag" data-i="verTag"></p>
       <h3 data-i="newsH"></h3>
       <ul id="newsList"></ul>
@@ -2771,6 +2853,7 @@ window.ArenaCore = { version: VERSION, kalite, render, kabuk, his, kamera, test 
         <div class="receipt-seal">★ İSTANBUL DOLMUŞÇULAR ESNAF ODASI ★</div>
         <div class="receipt-sub">GÜNLÜK HESAP PUSULASI &middot; VARDİYA RAPORU</div>
       </div>
+      <div class="driver3d"><img class="f3d" data-src="assets/3d/sofor-yuz.webp" alt="" hidden></div>
       <div class="mascot hidden" id="mascot"><img id="mascotImg" alt="Kadıköy Kedisi" width="84" height="84"></div>
       <h2 id="enTitle"></h2>
       <p id="enSub"></p>
@@ -2793,7 +2876,7 @@ window.ArenaCore = { version: VERSION, kalite, render, kabuk, his, kamera, test 
   <section class="screen dim" id="sRoute" role="dialog" aria-modal="true" aria-labelledby="hatTitle">
     <div class="card hat">
       <div class="levha-mini"><span>HAT USTASI · GÜZERGÂH LEVHASI</span></div>
-      <h2 id="hatTitle" data-i="hatTitle"></h2>
+      <div class="h2row"><img class="f3d face" data-src="assets/3d/esnaf-yuz.webp" alt="" hidden><h2 id="hatTitle" data-i="hatTitle"></h2><img class="f3d face" data-src="assets/3d/nine-yuz.webp" alt="" hidden></div>
       <p class="how" id="hatLv"></p>
       <p class="sub" data-i="hatSub"></p>
       <h3 id="hatStopsH"></h3>
@@ -5690,10 +5773,10 @@ function buildMuavinGroup() {
   m.boxB(-0.09, 0.58, 0.01, 0.15, 0.39, 0.22, VEST); m.boxB(0.09, 0.58, 0.01, 0.15, 0.39, 0.22, VEST); m.boxB(0, 0.58, -0.02, 0.32, 0.39, 0.18, VEST);
   m.boxB(0.05, 0.52, 0.11, 0.14, 0.12, 0.06, POUCH); m.boxB(0.05, 0.58, 0.11, 0.04, 0.06, 0.03, 0xd4af37);
   m.cyl(0, 0.98, 0, 0.06, 0.06, 0.08, 6, SKIN);
-  m.sphere(0, 1.13, 0, 0.12, 0.13, 0.12, 7, 5, SKIN);
-  m.boxB(0, 1.10, 0.115, 0.09, 0.025, 0.03, 0x1f1914);
-  m.sphere(0, 1.17, -0.01, 0.125, 0.09, 0.13, 7, 4, CAP, 0, Math.PI * 0.5);
-  m.box(0, 1.17, 0.14, 0.14, 0.02, 0.07, CAP, 0, 0.2);
+  m.sphere(0, 1.2, 0, 0.2, 0.2, 0.19, 10, 7, SKIN);   // stil-3d: chibi head, moustache, flat cap
+  m.sphere(0, 1.13, 0.17, 0.09, 0.03, 0.04, 8, 4, 0x1f1914);
+  m.sphere(0, 1.27, -0.01, 0.215, 0.13, 0.215, 10, 4, CAP, 0, Math.PI * 0.5);
+  m.box(0, 1.27, 0.2, 0.2, 0.025, 0.1, CAP, 0, 0.2);
   m.boxB(-0.21, 0.60, 0.06, 0.09, 0.36, 0.09, SHIRT); m.boxB(-0.21, 0.52, 0.12, 0.08, 0.10, 0.08, SKIN);
   const bodyMesh = new THREE.Mesh(m.build(), matLam); bodyMesh.castShadow = true; grp.add(bodyMesh);
   const armPiv = new THREE.Group(); armPiv.position.set(0.20, 0.94, 0.02);
@@ -5759,13 +5842,33 @@ function tramGeo() {
 // pedestrians: torso + head are one instance each; the two legs and the two arms are instanced limbs hinged at the hip / shoulder,
 // so the walk cycle swings them in opposition (2 instances per person). Limb colours: legs = trousers, arms = sleeves.
 const PANTS = [0x2b2f3a, 0x3a4252, 0x4a3a2e, 0x1f2a38, 0x5a5a62, 0x6b5a46, 0x33404f];
+// stil-3d (23.11): chibi people as in the song video: big round head with hair cap, eyes and cheeks, short round body,
+// short limbs; smooth normals so the soft light reads as clay. Hip / shoulder pivots: PED_HIP / PED_SH.
+const PED_HIP = 0.42, PED_SH = 0.86;
+function smoothGeo(g) {
+  const pos = g.attributes.position.array, nor = g.attributes.normal.array, acc = new Map(), key = i => Math.round(pos[i] * 1e4) + ',' + Math.round(pos[i + 1] * 1e4) + ',' + Math.round(pos[i + 2] * 1e4);
+  for (let i = 0; i < pos.length; i += 3) { const k = key(i); let a = acc.get(k); if (!a) acc.set(k, a = [0, 0, 0]); a[0] += nor[i]; a[1] += nor[i + 1]; a[2] += nor[i + 2]; }
+  for (let i = 0; i < pos.length; i += 3) { const a = acc.get(key(i)), l = Math.hypot(a[0], a[1], a[2]) || 1; nor[i] = a[0] / l; nor[i + 1] = a[1] / l; nor[i + 2] = a[2] / l; }
+  g.attributes.normal.needsUpdate = true; return g;
+}
 function pedGeos() {
   const b = new Mesher(false, 0), h = new Mesher(false, 0), a = new Mesher(false, 0), l = new Mesher(false, 0);
-  b.cyl(0, 0.5, 0, 0.215, 0.215, 0.12, 7, 0x8a8a8a); b.cyl(0, 0.58, 0, 0.25, 0.2, 0.56, 7, 0xffffff); b.cyl(0, 1.12, 0, 0.1, 0.1, 0.1, 6, 0xe0b090);
-  h.sphere(0, 1.33, 0, 0.19, 0.2, 0.19, 7, 5, 0xffffff); h.sphere(0, 1.37, -0.02, 0.2, 0.18, 0.2, 7, 4, 0x2a2018, 0, Math.PI * 0.55);
-  a.boxB(0, -0.5, 0, 0.1, 0.52, 0.1, 0xffffff); a.boxB(0, -0.58, 0, 0.11, 0.1, 0.11, 0xd8b090);
-  l.boxB(0, -0.6, 0, 0.14, 0.6, 0.15, 0xffffff); l.boxB(0, -0.62, 0.04, 0.15, 0.1, 0.25, 0x30302f);
-  return [b.build(), h.build(), a.build(), l.build()];
+  // body (instance colour = shirt): round barrel torso and a darker belt/trouser top
+  b.sphere(0, 0.47, 0, 0.215, 0.11, 0.19, 12, 6, 0x6a6a72);
+  b.sphere(0, 0.66, 0, 0.245, 0.27, 0.215, 12, 8, 0xffffff);
+  // head (instance colour = skin): big round head, hair cap, eyes, rosy cheeks, little nose
+  h.sphere(0, 1.2, 0, 0.31, 0.29, 0.29, 14, 10, 0xffffff);
+  h.sphere(0, 1.235, -0.03, 0.325, 0.3, 0.31, 14, 6, 0x2a2018, 0, Math.PI * 0.52);
+  for (const sx of [-1, 1]) {
+    h.sphere(sx * 0.105, 1.19, 0.262, 0.045, 0.055, 0.03, 8, 5, 0x161210);
+    h.sphere(sx * 0.17, 1.1, 0.225, 0.055, 0.04, 0.03, 8, 4, 0xffb4a8);
+  }
+  h.sphere(0, 1.13, 0.29, 0.035, 0.03, 0.03, 6, 4, 0xf4c6b0);
+  // arm (instance colour = shirt): sleeve and a round hand
+  a.cyl(0, -0.33, 0, 0.062, 0.07, 0.33, 8, 0xffffff); a.sphere(0, -0.37, 0, 0.075, 0.075, 0.075, 8, 5, 0xd8b090);
+  // leg (instance colour = trousers): short round leg and a big soft shoe
+  l.cyl(0, -0.36, 0, 0.08, 0.085, 0.36, 8, 0xffffff); l.sphere(0, -0.38, 0.04, 0.095, 0.065, 0.135, 8, 5, 0x30302f);
+  return [smoothGeo(b.build()), smoothGeo(h.build()), smoothGeo(a.build()), smoothGeo(l.build())];
 }
 function umbrellaGeo() {
   const m = new Mesher(false, 0);
@@ -5837,11 +5940,11 @@ function buildScene() {
   seaMesh = new THREE.Mesh(new THREE.PlaneGeometry(3000, 3000, 1, 1).rotateX(-Math.PI / 2), new THREE.MeshLambertMaterial({ color: 0x4aa3c9, transparent: true, opacity: 0.93 }));
   seaMesh.position.set(0, SEA_Y, 0); seaMesh.receiveShadow = false; scene.add(seaMesh);
   // sky dome
-  skyU = { uTop: { value: new THREE.Color(0x5ea9ea) }, uHor: { value: new THREE.Color(0xcbe6f7) }, uCloud: { value: new THREE.Color(0xffffff) }, uSky: { value: 0 }, uShift: { value: 0 }, uTex: { value: null } };
+  skyU = { uTop: { value: new THREE.Color(0x5ea9ea) }, uHor: { value: new THREE.Color(0xcbe6f7) }, uCloud: { value: new THREE.Color(0xffffff) }, uSky: { value: 0 }, uShift: { value: 0 }, uTex: { value: null }, uArt: { value: 0 }, uArtTex: { value: null } };
   skyMesh = new THREE.Mesh(new THREE.SphereGeometry(1000, 18, 12), new THREE.ShaderMaterial({
     uniforms: skyU, side: THREE.BackSide, depthWrite: false, fog: false,
     vertexShader: 'varying float vY; varying vec3 vDir; void main(){ vDir = normalize(position); vY = vDir.y; gl_Position = projectionMatrix*modelViewMatrix*vec4(position,1.0); }',
-    fragmentShader: `uniform vec3 uTop; uniform vec3 uHor; uniform vec3 uCloud; uniform float uSky; uniform float uShift; uniform sampler2D uTex; varying float vY; varying vec3 vDir;
+    fragmentShader: `uniform vec3 uTop; uniform vec3 uHor; uniform vec3 uCloud; uniform float uSky; uniform float uShift; uniform sampler2D uTex; uniform float uArt; uniform sampler2D uArtTex; varying float vY; varying vec3 vDir;
 void main(){ vec3 c = vY>0.0 ? mix(uHor,uTop,pow(vY,0.55)) : uHor*0.8;
   if (uSky > 0.001 && vY > 0.0) {
     vec3 d = normalize(vDir); vec2 uv = vec2(atan(d.z, d.x) / 6.2831853 + 0.5 + uShift, 1.0 - acos(clamp(d.y, -1.0, 1.0)) / 3.1415927);
@@ -5849,6 +5952,10 @@ void main(){ vec3 c = vY>0.0 ? mix(uHor,uTop,pow(vY,0.55)) : uHor*0.8;
     float m = smoothstep(0.12, 0.55, t.r) * smoothstep(0.02, 0.22, vY) * uSky;
     float sh = mix(0.72, 1.06, smoothstep(0.2, 0.9, dot(t, vec3(0.333))));
     c = mix(c, uCloud * sh, m);
+  }
+  if (uArt > 0.001) {   // stil-3d: painted clay-cloud sky (assets/3d/gok.webp), mirrored around the horizon
+    vec3 d = normalize(vDir); vec2 uv = vec2((atan(d.z, d.x) / 6.2831853 + 0.5) * 4.0, 0.3 + 0.7 * clamp(vY / 0.5, 0.0, 1.0));
+    c = mix(c, texture2D(uArtTex, uv).rgb, uArt * smoothstep(-0.03, 0.03, vY));
   }
   gl_FragColor=vec4(c,1.0);
 #include <colorspace_fragment>
@@ -5903,7 +6010,8 @@ void main(){ vec3 c = vY>0.0 ? mix(uHor,uTop,pow(vY,0.55)) : uHor*0.8;
   OBJ.hazard = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.2, 0.1), emissiveMat(0xffa000)); OBJ.hazard.visible = false; scene.add(OBJ.hazard);
   // people
   const [pb, ph, pa, pl] = pedGeos();
-  OBJ.pedB = inst(pb, tintMat, MAXP, true); OBJ.pedH = inst(ph, tintMat, MAXP, false); OBJ.pedA = inst(pa, tintMat, MAXP * 2, false); OBJ.pedLeg = inst(pl, tintMat, MAXP * 2, false);
+  const pedMat = OBJ.pedMat = new THREE.MeshLambertMaterial({ vertexColors: true });   // stil-3d: smooth clay shading
+  OBJ.pedB = inst(pb, pedMat, MAXP, true); OBJ.pedH = inst(ph, pedMat, MAXP, false); OBJ.pedA = inst(pa, pedMat, MAXP * 2, false); OBJ.pedLeg = inst(pl, pedMat, MAXP * 2, false);
   OBJ.pig = inst(pigeonGeo(), matLam, 20, false);
   OBJ.umb = inst(umbrellaGeo(), tintMat, MAXP, false);   // umbrellas: only drawn while it rains
   // wet roads: puddles that fade in with the rain
@@ -5980,6 +6088,9 @@ function updateSky(hour, rainA) {
   hemi.intensity = lerp(0.95, 1.02, L) * (1 + 0.2 * rainA);
   SKY.top.setHex(0x0a1030).lerp(_c.setHex(0x4a98e2), L).lerp(_c.setHex(0x7a6fb0), warm * 0.15).lerp(_c.setHex(0x7c8794), rainA * 0.8);
   SKY.hor.setHex(0x1c2448).lerp(_c.setHex(0xd6e5ee), L).lerp(_c.setHex(0xff9a6a), warm * 0.38).lerp(_c.setHex(0x9ba6b1), rainA * 0.8 * Math.max(L, 0.25));
+  const artF = ASSETS.art ? L * (1 - 0.85 * rainA) : 0;   // stil-3d: warm painted sky by day, fog and fill light follow its horizon
+  if (artF > 0) { SKY.hor.lerp(ART.hor, artF * 0.75); hemi.color.lerp(_c.setHex(0xf6e4cf), artF * 0.6); sun.color.lerp(_c.setHex(0xffdcae), artF * 0.35); }
+  skyU.uArt.value = artF; if (ASSETS.art) cloudGroup.visible = !(ASSETS.sky && !lowQ()) && artF < 0.5;
   skyU.uTop.value.copy(SKY.top); skyU.uHor.value.copy(SKY.hor);
   scene.fog.color.copy(SKY.hor); scene.fog.near = lerp(80, 35, rainA); scene.fog.far = lerp(430, 230, rainA);
   seaMesh.material.color.setHex(0x1d4a6e).lerp(_c.setHex(0x4aa3c9), L).lerp(_c.setHex(0x6b8da3), rainA * 0.5);
@@ -6125,6 +6236,18 @@ async function loadSky() {
   VMAT.dol = std({ roughness: 0.55, emissive: 0x5a4600 }); VMAT.tint = std({ roughness: 0.55 }); VMAT.det = std({ roughness: 0.4 });
   ASSETS.sky = true; ASSETS.env = true; lastSkyHour = -99;
 }
+// ---- stil-3d: painted sky (Leonardo AI, see CREDITS.md); its horizon colour also tints the fog by day
+const ART = { hor: new THREE.Color(0xf0d2c4) };
+async function loadArtSky() {
+  const tex = await new THREE.TextureLoader().loadAsync('assets/3d/gok.webp');
+  tex.colorSpace = THREE.SRGBColorSpace; tex.wrapS = THREE.MirroredRepeatWrapping; tex.wrapT = THREE.ClampToEdgeWrapping;
+  try {   // average colour of the row the horizon samples (70 % down the picture)
+    const im = tex.image, c = document.createElement('canvas'); c.width = 64; c.height = 32; const g = c.getContext('2d'); g.drawImage(im, 0, 0, 64, 32);
+    const d = g.getImageData(0, 22, 64, 1).data; let r = 0, gg = 0, b = 0; for (let i = 0; i < d.length; i += 4) { r += d[i]; gg += d[i + 1]; b += d[i + 2]; }
+    ART.hor.setRGB(r / 64 / 255, gg / 64 / 255, b / 64 / 255, THREE.SRGBColorSpace);
+  } catch (e) {}
+  skyU.uArtTex.value = tex; ASSETS.art = true; lastSkyHour = -99;
+}
 /** switch the optional High-tier looks on or off (called after assets arrive and whenever the quality setting changes) */
 function applyAssetTier() {
   if (!OBJ.plBody) return;
@@ -6150,6 +6273,7 @@ async function loadAssets() {
   try { await loadAssetsInner(); } finally { ASSETS.busy = false; }
 }
 async function loadAssetsInner() {
+  if (wants('sky') && !ASSETS.art) try { await loadArtSky(); } catch (e) { assetFail('art-sky', e); }
   if (!GLTFLoaderC && !lowQ()) try {
     const [a, b] = await Promise.all([import('three/addons/loaders/GLTFLoader.js'), import('three/addons/utils/BufferGeometryUtils.js')]);
     GLTFLoaderC = new a.GLTFLoader(); BGU = b;
@@ -6256,11 +6380,11 @@ function syncRender(dt) {
     OBJ.pedB.setColorAt(np, _c.setHex(p.shirt)); OBJ.pedH.setColorAt(np, _c.setHex(p.skin));
     // legs hinged at the hip, arms at the shoulder; right arm waves when the person is hailing the dolmus
     const pm = (mesh, i, lx, ly, rx, rz, base) => { _e.set(rx, 0, rz, 'XYZ'); _q3.setFromEuler(_e); _v2.set(lx, ly, 0); _s.set(1, 1, 1); _m5.compose(_v2, _q3, _s); _m5.premultiply(base); mesh.setMatrixAt(i, _m5); };
-    pm(OBJ.pedLeg, np * 2, -0.1, 0.6, sw, 0, _m6); pm(OBJ.pedLeg, np * 2 + 1, 0.1, 0.6, -sw, 0, _m6);
+    pm(OBJ.pedLeg, np * 2, -0.11, PED_HIP, sw, 0, _m6); pm(OBJ.pedLeg, np * 2 + 1, 0.11, PED_HIP, -sw, 0, _m6);
     const pants = PANTS[p.id % PANTS.length]; OBJ.pedLeg.setColorAt(np * 2, _c.setHex(pants)); OBJ.pedLeg.setColorAt(np * 2 + 1, _c.setHex(pants));
-    pm(OBJ.pedA, np * 2, -0.3, 1.08, -sw * 0.8 + 0.05 * idle, -0.07, _m4);
-    if (p.wave) pm(OBJ.pedA, np * 2 + 1, 0.3, 1.08, 0, 2.55 + 0.45 * Math.sin(tick * 9 + p.id), _m4);
-    else pm(OBJ.pedA, np * 2 + 1, 0.3, 1.08, sw * 0.8 - 0.05 * idle, 0.07, _m4);
+    pm(OBJ.pedA, np * 2, -0.28, PED_SH, -sw * 0.8 + 0.05 * idle, -0.07, _m4);
+    if (p.wave) pm(OBJ.pedA, np * 2 + 1, 0.28, PED_SH, 0, 2.55 + 0.45 * Math.sin(tick * 9 + p.id), _m4);
+    else pm(OBJ.pedA, np * 2 + 1, 0.28, PED_SH, sw * 0.8 - 0.05 * idle, 0.07, _m4);
     OBJ.pedA.setColorAt(np * 2, _c.setHex(p.shirt)); OBJ.pedA.setColorAt(np * 2 + 1, _c.setHex(p.shirt));
     np++;
     if ((p.kind === 'pax' || p.kind === 'hail') && p.st === 'wait' && pn < 40) {
@@ -6906,8 +7030,8 @@ function updateHudStatic() {
 }
 function buildSeatStrip() {
   el.seatsStrip.innerHTML = '';
-  for (let i = 0; i < SEATS; i++) { const d = document.createElement('div'); d.className = 'seat'; d.innerHTML = '<span></span><i></i><b class="mood"></b>'; el.seatsStrip.appendChild(d); }
-  const dv = document.createElement('div'); dv.className = 'seat drv'; dv.innerHTML = '<svg class="ic"><use href="#i-wheel"/></svg>'; el.seatsStrip.appendChild(dv);   // the coins of the fare chain end here
+  for (let i = 0; i < SEATS; i++) { const d = document.createElement('div'); d.className = 'seat'; d.innerHTML = '<span></span><i></i><b class="mood"></b><em class="pf"></em>'; el.seatsStrip.appendChild(d); }
+  const dv = document.createElement('div'); dv.className = 'seat drv' + (faces3dOk ? ' face3d' : ''); dv.innerHTML = '<svg class="ic"><use href="#i-wheel"/></svg>' + (faces3dOk ? '<img class="f3d" src="assets/3d/sofor-yuz.webp" alt="">' : ''); el.seatsStrip.appendChild(dv);   // the coins of the fare chain end here
   coinEls.length = 0;
 }
 const chipCenter = i => { const c = el.seatsStrip.children[i]; return c ? { x: c.offsetLeft + c.offsetWidth / 2, y: c.offsetTop + c.offsetHeight / 2 } : { x: 0, y: 0 }; };
@@ -6941,7 +7065,8 @@ function updateHUD(dt) {
   for (let i = 0; i < SEATS; i++) {
     const se = player.seats.find(q => q.seatIdx === i), d = seatEls[i];
     if (!d) continue;
-    const num = d.children[0], bar = d.children[1], mood = d.children[2], mk = se && se.mood ? se.mood : '';
+    const num = d.children[0], bar = d.children[1], mood = d.children[2], pf = d.children[3], mk = se && se.mood ? se.mood : '';
+    if (pf && pf.tagName === 'EM') { const fk = faces3dOk && se ? FACE3D[se.vip ? 'vip' : se.ptype] || '' : ''; if (pf.dataset.f !== fk) { pf.dataset.f = fk; pf.classList.toggle('has', !!fk); pf.style.backgroundImage = fk ? 'url(assets/3d/' + fk + '-yuz.webp)' : ''; } }
     if (mood && mood.dataset.m !== mk) { mood.dataset.m = mk; mood.className = 'mood ' + mk; mood.textContent = mk === 'like' ? '\u266B' : mk === 'dislike' ? '\u2639' : ''; }   // radio mood: note = likes the channel, frown = dislikes it
     if (se) {
       d.classList.add('on'); d.style.background = '#' + (se.vip ? 0xFACC15 : se.shirt).toString(16).padStart(6, '0'); num.textContent = String(se.dest + 1) + (se.any ? '?' : '');
@@ -7259,6 +7384,18 @@ window.dolmus = {
 // arena-core v2 test contract: window.__game.read() / step(seconds) for bots, gates and ?capture recordings
 if (window.ArenaCore) ArenaCore.test.kur({ read: () => ({ fps: fpsS, state: G.state, done: G.done, errors: G.errors.slice(), fx: FX && FX.info }), step: s => window.dolmusSim(s) });
 
+// ---- stil-3d: chibi pictures from the song video's world (assets/3d, Leonardo AI). Missing files keep the SVG / plain look.
+const FACE3D = { student: 'ogrenci', grandmother: 'nine', shopkeeper: 'esnaf', tourist: 'turist', commuter: 'memur', vip: 'memur' };
+let faces3dOk = false;
+function load3dFaces() {
+  document.body.classList.add('a3d');
+  for (const im of document.querySelectorAll('img.f3d[data-src]')) {
+    im.onload = () => { im.hidden = false; if (im.dataset.swap === 'prev' && im.previousElementSibling) im.previousElementSibling.style.display = 'none'; };
+    im.onerror = () => { im.hidden = true; };
+    im.src = im.dataset.src;
+  }
+  const probe = new Image(); probe.onload = () => { faces3dOk = true; if (el.seatsStrip.children.length) buildSeatStrip(); }; probe.src = 'assets/3d/sofor-yuz.webp';
+}
 // ---------------------------------------------------------------- boot
 async function boot() {
   const stages = [0, 1, 2, 3, 4];
@@ -7271,6 +7408,7 @@ async function boot() {
   await step(() => { buildScene(); applyQuality(); });
   await step(() => { buildMinimapBase(); });
   await step(() => { for (const k of ['carB', 'busB', 'pedB', 'pedH', 'pedA', 'pedLeg', 'rings', 'beams', 'umb']) { OBJ[k].setColorAt(0, _c.setHex(0xffffff)); } for (let i = 0; i < WORLD.sigHeads.length * 3; i++) OBJ.sig.setColorAt(i, _c.setHex(0x333333)); });
+  if (ASSETS.enabled) load3dFaces();
   G.state = 'title'; el.bPlay.disabled = false; window.__dolmusReady = true; if (!lsGet(KEY_SET)) saveSettings();
   showcase(); applyLang();
   if (FLAG.auto || SIM_PRE > 0) {

@@ -24,3 +24,14 @@ Converted to mono 22 kHz MP3 (`assets/sfx/`).
 ## Mascot (original artwork, project owner)
 
 - **The white Turkish Van kitten** (`assets/mascot/kedi-uyuyor.png`, `assets/mascot/kedi-kutlama.png`): the series mascot, copied from the project's own mascot set (`video-studio/public/maskot/`); the celebrating pose is downscaled to 256 px. It appears on the shift-summary card (asleep on the dolmuş back seat, awake and cheering on 3 stars) and is not loaded with `?noassets`.
+
+## 3D chibi pictures (stil-3d, 23.11.2026; Leonardo AI, free plan, Auto/Lucid Origin model)
+
+Made for this game in the style of its song video; white backgrounds removed locally (`atolye/oyun-stil/dolmus/kes.py`). Files in `assets/3d/`, loaded only with assets on (`?noassets` keeps the old look).
+
+- Character sheet 1 (Leonardo AI): `sofor-yuz.webp` (the dolmuş driver: title, pause, shift report, top bar, driver seat chip), `turist-yuz.webp` (tourist: title, settings, tourist riders' seat chips), `nine-yuz.webp` (grandmother), `ogrenci-yuz.webp` (student)
+- Character sheet 2 (Leonardo AI): `esnaf-yuz.webp` (shopkeeper), `memur-yuz.webp` (commuter and VIP)
+- Yellow dolmuş with the driver at the wheel (Leonardo AI; the car-maker badge on the bonnet painted out): `dolmus-sofor.webp` (title card)
+- Painted clay-cloud sky (Leonardo AI): `gok.webp` (daytime sky dome; its horizon colour also tints the fog)
+
+The in-game people (chibi heads, round bodies, smooth clay shading) are still procedural geometry in `index.html` (`pedGeos`).
